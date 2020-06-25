@@ -1,3 +1,14 @@
+## Motivation
+
+Basically, I got tired of waiting for create-react-app to create my project directory every time I needed to start working on a new website. Instead, I reorganized the folders to allow for compilation of multiple websites from the same directory. 
+
+Current projects which are hosted withing this repository include: 
+
+##### DreamCatcher: 
+A modern digital dream journal for recording your dreams using speech recognition and reviewing them later. 
+
+##### More to come!
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
