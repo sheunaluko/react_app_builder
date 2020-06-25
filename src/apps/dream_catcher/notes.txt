@@ -1,0 +1,17 @@
+
+  TODO ADD CARDS WITH TRANITIONS AND PAGINATION TO CREATE 
+   A SERIES OF INTRO NOTES  
+   
+   Can have a MANUAL TAB which displays a permanent drawer on the left and 
+   IS like a resource for lucid dreaming with youtube links, etc 
+   
+   Have a way for people to send feedback for the APP, which sends the message to firebase 
+   where I can see it (an an optional email if they like) 
+
+
+
+//cool components = pagination/ card/ speed dial 
+
+//use the "toggle button" in the Lab components for showing AUDIO/Manual Entry 
+
+//HAVE A VOICE CONTROL TUTORIAL ! 

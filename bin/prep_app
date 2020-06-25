@@ -1,0 +1,4 @@
+dir="src/apps/$1/public/"
+cp -r  $dir public/
+echo "Copied files from $dir into public directory" 
+
