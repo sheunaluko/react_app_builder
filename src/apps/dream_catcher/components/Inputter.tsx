@@ -105,11 +105,9 @@ function Inputter() {
 	)
     })
 
-    
-    
     smgr.register("inputterSetEntryMethod" , function(m : string) {
-	state.entry_method = m 
-	setState(state) 
+	//setState({entry_method : m}) 
+	console.log(m)
     })
     
     
@@ -117,13 +115,13 @@ function Inputter() {
     
     switch (state.entry_method) { 
 	case 'none' : 
-	    input_interface = EntrySelectionCard(setState) 
+	    input_interface = <EntrySelectionCard setState={setState} /> 
 	    break 
 	case 'voice' : 
-	    input_interface = EntrySelectionCard(setState)
+	    input_interface = <EntrySelectionCard setState={setState} />   
 	    break 
 	case 'type' : 
-	    input_interface = TypeInterface()
+	    input_interface = <TypeInterface setState={setState}  /> 
 	    break 
     } 
     
@@ -347,14 +345,14 @@ async function dream_saver(uid : string) {
     
 } 
 
-function TypeInterface(uid? : any) { 
-    
+function TypeInterface(ops :any ) { 
+    let {setState ,uid } = ops 
+	
     let [key, setKey ] = React.useState(uuid()) 
 
     
-    
     function set_mode(m :string) {
-	smgr.get("inputterSetEntryMethod")(m)
+	setState({entry_method : m}) 
     } 
 
     const useStyles = makeStyles((theme: Theme) =>
@@ -518,7 +516,9 @@ function TypeInterface(uid? : any) {
     ) 
 }
 
-function EntrySelectionCard(setState : any) { 
+function EntrySelectionCard(ops : any) { 
+    
+    let {setState} = ops 
     
     let icon_size = 149
     let icon_margin = "4%" 
