@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect}  from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -6,6 +6,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
+
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -22,6 +23,10 @@ import SettingsVoiceIcon from '@material-ui/icons/SettingsVoice';
 import LockIcon from '@material-ui/icons/Lock';
 import LocalFloristIcon from '@material-ui/icons/LocalFlorist';
 
+import * as mfirebase from './Firebase' 
+
+
+import Signin from "./Signin" 
 /* 
 
  INTRO FOR NEW USERS 
@@ -29,6 +34,25 @@ import LocalFloristIcon from '@material-ui/icons/LocalFlorist';
  */
 
 function Info() {
+    
+    
+    useEffect( () => {
+	//check the logged in status 
+	
+	mfirebase.await_login().then( (loggedin : boolean)=>  { 
+	    
+	    if (loggedin) { 
+		console.log("Info: Logged in")
+		setLoginState(true) 
+	    } else {
+		console.log("Info: Not logged in") 
+		setLoginState(false) 		
+	    } 
+	})
+    }) ; 
+    
+    const [loginState, setLoginState] = React.useState(true)
+
     
     const [state, setState] = React.useState(
 	{index: 0 } 
@@ -65,7 +89,7 @@ function Info() {
 
 	["Your dreams are for your eyes only.",
 	 "privacy", 
-	 "The dreams you record using DreamCatcher are stored directly inside your web browser safe and sound. However, because DreamCatcher utilizes Google speech recognition, if you choose to record your dreams by voice then the audio will be sent to Google's servers and transformed to text before it is sent back. Our recommendation is to utilize the voice feature unless one of your dreams contains extremely sensitive information. If you want to ensure that Google has absolutely no access to your dreams then please enter your dreams manually."] , 
+	 "The dreams you record using DreamCatcher are encrypted using a password you provide prior to being stored so that no one, not even the creators of DreamCatcher, can read them. However, because DreamCatcher utilizes Google speech recognition, if you choose to record your dreams by voice then the audio will be sent to Google's servers and transformed to text before it is sent back. Our recommendation is to utilize the voice feature unless one of your dreams contains extremely sensitive information. If you want to ensure that Google has absolutely no access to your dreams then please enter your dreams manually."] , 
 	
 	["Welcome to the start of a journey.",
 	 "journey", 
@@ -80,12 +104,14 @@ function Info() {
 	    <Card  > 
 		<CardContent style={{textAlign :"center"}}>
 
-		    <Typography variant="h5" component="h2">
+		    <Typography variant="h4" component="h2">
 			{x[0]}
 		    </Typography>
 		    <br/> 		    
 		    { icons[x[1]]   }
-		    <Typography  color="textSecondary" gutterBottom>
+		    <Typography  color="textSecondary" gutterBottom 
+			style={{fontSize : '2vh'}}
+		    >
 			<br/> 
 			{x[2]} 
 		    </Typography>
@@ -102,16 +128,23 @@ function Info() {
 	)
     } 
     
+    
     return (
 	<Container style={{backgroundColor : "" , flexGrow : 1 , padding : "2%" }}> 
 	    
 	    <Box style={{height : "100%" , 
 			 display : "flex", 
 			 flexDirection : "column", 
-			 justifyContent :"space-between" }} >
-	    
-	    { make_card(content[state.index]) } 
-	    
+			 justifyContent :"flex-start" }} >
+		
+		{ make_card(content[state.index]) } 
+		
+		<br/>
+		<br/>		
+		
+		{ !loginState ? <Signin /> : null }  
+		
+		
 	    </Box>
 
 	</Container>

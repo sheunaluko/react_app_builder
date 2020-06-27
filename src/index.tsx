@@ -13,11 +13,12 @@ import App from './apps/dream_catcher/App';
 declare var window : any ; 
 
 window.tys = tys 
+window.fp = tys.util.common.fp
 
- 
+
 ReactDOM.render(
     <App />, 
-  document.getElementById('root')
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

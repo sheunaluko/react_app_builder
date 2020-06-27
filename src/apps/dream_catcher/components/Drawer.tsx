@@ -16,8 +16,17 @@ import HotelIcon from '@material-ui/icons/Hotel';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications'; 
+
+import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
+
+
+import * as Firebase from "./Firebase" 
+
 import * as smgr from '../state_manager' 
 
+declare var window : any ;
 
 export default function AppDrawer() {
 
@@ -33,7 +42,14 @@ export default function AppDrawer() {
     
     //grab the selectedMenuSetter
     let select_menu_fn = function(m : string) {
-	return function() { smgr.get("setAppSelectedMenu")(m) ;  }
+	
+	return function() { 
+	    if (( m == "input" || m == "review" || m == "settings" ) && !Firebase.getUser() ) {
+		console.log(window.state) 
+		smgr.get("snackbarInfo")("You must be logged in to use this functionality.")
+	    } 
+	    smgr.get("setAppSelectedMenu")(m) ;
+	}
     } 
     
 
@@ -50,9 +66,34 @@ export default function AppDrawer() {
 
 	setState({ ...state, open : true  });
     };
+    
+    let SignIn = ()=> {
+	if (!Firebase.getUser()) {
+	    return ( 
+	    <React.Fragment > 
+		<ListItem button key="sign" onClick={select_menu_fn("sign")}>
+		    <ListItemIcon> <AccountBoxIcon /> </ListItemIcon>
+		    <ListItemText primary={"Sign In"} />
+		</ListItem>
+		<Divider /> 
+	    </React.Fragment > 
+	    ) 
+	} else {
+	    return (
+		<React.Fragment > 
+		    <ListItem button key="sign" onClick={function() {
+			Firebase.signOut().then(select_menu_fn("info"))}}>
+			<ListItemIcon> <DirectionsRunIcon/> </ListItemIcon>
+			<ListItemText primary={"Sign Out"} />
+		    </ListItem>
+		    <Divider/> 
+		</React.Fragment > 
+	    )
+	} 
+    } 
 
     const list = () => (
-	<div
+	<div 
 	    role="presentation"
 	    onClick={()=>setState({open:false}) } 
 	    onKeyDown={()=>setState({open:false}) }
@@ -63,20 +104,29 @@ export default function AppDrawer() {
 		    <ListItemText primary={"Get Started"} />
 		</ListItem>
 		<Divider />	      	      
+		
+
 		<ListItem button key="inputter"  onClick={select_menu_fn("input")}>
 		    <ListItemIcon> <HotelIcon /> </ListItemIcon>
-		    <ListItemText primary={"Record New Dreams"} />
+		    <ListItemText primary={"Record Dreams"} />
 		</ListItem>
 		<Divider />	      
 		<ListItem button key="reviewer"  onClick={select_menu_fn("review")}>
 		    <ListItemIcon> <ImportContactsIcon /> </ListItemIcon>
-		    <ListItemText primary={"Review Saved Dreams"} />
+		    <ListItemText primary={"Review Dreams"} />
 		</ListItem>
 		<ListItem button key="manual"  onClick={select_menu_fn("manual")}>
 		    <ListItemIcon> <LibraryBooksIcon/> </ListItemIcon>
 		    <ListItemText primary={"Manual"} />
 		</ListItem>
 		<Divider />	      
+		<SignIn /> 
+		<ListItem button key="settings"  onClick={select_menu_fn("settings")}>
+		    <ListItemIcon> <SettingsApplicationsIcon/> </ListItemIcon>
+		    <ListItemText primary={"Settings"} />
+		</ListItem>
+		<Divider />	      
+		
 	    </List>
 
 

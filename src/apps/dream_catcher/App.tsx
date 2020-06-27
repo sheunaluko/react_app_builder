@@ -1,6 +1,8 @@
 import React from 'react';
 
 import './App.css'
+
+import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -12,20 +14,36 @@ import Reviewer from "./components/Reviewer"
 import Inputter from "./components/Inputter" 
 import Info from "./components/Info" 
 import Manual from "./components/Manual" 
+import Signin from "./components/Signin"  
+import Settings from "./components/Settings" 
+
+import Snackbar from "./components/SnackBar" 
+
 
 import * as smgr from "./state_manager" 
+import * as crypto from "./Crypto"  
+import * as mFirebase from "./components/Firebase" 
+import GenericDialog from "./components/GenericDialog" 
+import {AsyncTextQueryDialog} from "./components/AsyncTextQueryDialog" 
+
 
 import dream_catcher from "./dream_catcher.jpg" 
+import  "./dev" 
+
+
+
+
 
 const MenuComponents : {[k:string] : any }  = { 
     "review" : <Reviewer />, 
     "input" : <Inputter /> , 
     "info" : <Info /> , 
     "manual" : <Manual /> , 
+    "sign" : <Box style={{ marginTop: "10%" }}><Signin /></Box>, 
+    "settings" : <Settings /> , 
 } 
 
 function App() {
-    
     
     const [state, setState] = React.useState("input") 
 
@@ -53,6 +71,10 @@ function App() {
 	    { MenuComponents[state] } 
 	    
 	    
+	 <Snackbar />
+	 <GenericDialog/> 
+	 <AsyncTextQueryDialog /> 
+
 	</div>
     );
 }

@@ -15,3 +15,10 @@
 //use the "toggle button" in the Lab components for showing AUDIO/Manual Entry 
 
 //HAVE A VOICE CONTROL TUTORIAL ! 
+
+
+
+TOCHECK 
+: when editing then saving a dream - is the data and time preserved? 
+
+
