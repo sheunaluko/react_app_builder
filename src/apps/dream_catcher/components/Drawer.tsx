@@ -10,7 +10,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import GitHubIcon from '@material-ui/icons/GitHub';
 import HeadsetMicIcon from '@material-ui/icons/HeadsetMic';
+import ContactSupportIcon from '@material-ui/icons/ContactSupport';
 
 import TimelineIcon from '@material-ui/icons/Timeline';
 import InfoIcon from '@material-ui/icons/Info';
@@ -110,8 +112,11 @@ export default function AppDrawer() {
 		    <ListItemText primary={"Get Started"} />
 		</ListItem>
 		<Divider />	      	      
-		
-
+		<ListItem button key="voice_tutorial"  onClick={select_menu_fn("voice_tutorial")}>
+		    <ListItemIcon> <HeadsetMicIcon/> </ListItemIcon>
+		    <ListItemText primary={"Voice Tutorial"} />
+		</ListItem>
+		<Divider />	      
 		<ListItem button key="inputter"  onClick={select_menu_fn("input")}>
 		    <ListItemIcon> <HotelIcon /> </ListItemIcon>
 		    <ListItemText primary={"Record Dreams"} />
@@ -121,27 +126,33 @@ export default function AppDrawer() {
 		    <ListItemIcon> <ImportContactsIcon /> </ListItemIcon>
 		    <ListItemText primary={"Review Dreams"} />
 		</ListItem>
-		<ListItem button key="manual"  onClick={coming_soon}>
-		    <ListItemIcon> <LibraryBooksIcon/> </ListItemIcon>
-		    <ListItemText primary={"Manual"} />
-		</ListItem>
-		<Divider />	      
 		<ListItem button key="analytics"  onClick={coming_soon}>
 		    <ListItemIcon> <TimelineIcon/> </ListItemIcon>
 		    <ListItemText primary={"Analytics"} />
 		</ListItem>
 		<Divider />	      
-		<SignIn /> 
-		<ListItem button key="voice_tutorial"  onClick={select_menu_fn("voice_tutorial")}>
-		    <ListItemIcon> <HeadsetMicIcon/> </ListItemIcon>
-		    <ListItemText primary={"Voice Tutorial"} />
+		<ListItem button key="manual"  onClick={coming_soon}>
+		    <ListItemIcon> <LibraryBooksIcon/> </ListItemIcon>
+		    <ListItemText primary={"Dream Manual"} />
 		</ListItem>
 		<Divider />	      
+		<SignIn /> 
 		<ListItem button key="settings"  onClick={select_menu_fn("settings")}>
 		    <ListItemIcon> <SettingsApplicationsIcon/> </ListItemIcon>
 		    <ListItemText primary={"Settings"} />
 		</ListItem>
 		<Divider />	      
+		<ListItem button key="settings"  onClick={()=> window.open("https://github.com/sheunaluko/react_app_builder/tree/master/src/apps/dream_catcher")}>
+		    <ListItemIcon> <GitHubIcon/> </ListItemIcon>
+		    <ListItemText primary={"Source Code"} />
+		</ListItem>
+		<Divider />	      
+		<ListItem button key="settings"  onClick={()=> window.state.snackbarInfo("Please email Sheun Aluko at alukosheun@gmail.com with any feedback or concerns! I would be happy to hear from you!")}>
+		    <ListItemIcon> <ContactSupportIcon/> </ListItemIcon>
+		    <ListItemText primary={"Contact"} />
+		</ListItem>
+		<Divider />	      
+		
 		
 	    </List>
 

@@ -605,6 +605,7 @@ let new_dream = function() {
     dispatch("new dream") 
     snd.input_ready()  
     
+    window.state.snackbarInfo("If you have not already, I highly recommend doing the \"Voice Tutorial\" in the settings menu to learn how to use the voice entry mode!") 
     //have to change the handlers now  
     VM.set_handlers(dream_editing_handlers) 
     

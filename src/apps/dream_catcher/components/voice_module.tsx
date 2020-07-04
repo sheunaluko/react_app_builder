@@ -51,6 +51,9 @@ window.addEventListener('tidyscripts_web_speech_recognition_result' , function(e
 })
 
 export function reset() { 
+    if (vi.recognition_state == "LISTENING" || vi.recognition_state == "PAUSED" ) { 
+	stop() 
+    } 
     VoiceChannel.flush() 
     handlers = null 
 } 
