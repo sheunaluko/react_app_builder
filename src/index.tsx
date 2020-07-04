@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import * as tys from 'tidyscripts_web'  
+import * as tsw from 'tidyscripts_web'  
 /* 
    This repo contains the ability to compile many typescript react applications for development purposes 
    To compile a specific app, simply import the top level App.tsx file 
@@ -12,9 +12,11 @@ import App from './apps/dream_catcher/App';
 
 declare var window : any ; 
 
-window.tys = tys 
-window.fp = tys.util.common.fp
-
+window.tsw = tsw
+window.fp = tsw.util.common.fp
+window.tts = tsw.util.tts 
+window.sr = tsw.util.speech_recognition 
+window.vi = tsw.util.voice_interface 
 
 ReactDOM.render(
     <App />, 

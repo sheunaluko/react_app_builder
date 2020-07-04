@@ -14,8 +14,11 @@ import Reviewer from "./components/Reviewer"
 import Inputter from "./components/Inputter" 
 import Info from "./components/Info" 
 import Manual from "./components/Manual" 
+import Analytics from "./components/Analytics" 
 import Signin from "./components/Signin"  
 import Settings from "./components/Settings" 
+import VoiceTutorial from "./components/VoiceTutorial" 
+import * as VoiceModule from "./components/voice_module"
 
 import Snackbar from "./components/SnackBar" 
 
@@ -26,12 +29,12 @@ import * as mFirebase from "./components/Firebase"
 import GenericDialog from "./components/GenericDialog" 
 import {AsyncTextQueryDialog} from "./components/AsyncTextQueryDialog" 
 
+import * as VM from "./components/voice_module" 
+let VC = VM.VoiceChannel //get the voice channel 
 
-import dream_catcher from "./dream_catcher.jpg" 
-import  "./dev" 
+declare var window : any ; 
 
-
-
+window.voice = VoiceModule 
 
 
 const MenuComponents : {[k:string] : any }  = { 
@@ -41,29 +44,40 @@ const MenuComponents : {[k:string] : any }  = {
     "manual" : <Manual /> , 
     "sign" : <Box style={{ marginTop: "10%" }}><Signin /></Box>, 
     "settings" : <Settings /> , 
+    "analytics"  : <Analytics /> ,
+    "voice_tutorial" : <VoiceTutorial />, 
 } 
 
 function App() {
     
-    const [state, setState] = React.useState("input") 
-
-    smgr.register("setAppSelectedMenu", setState) 
+    
+    const [state, setState] = React.useState("info") 
+    
+    let selectedSetter = function(s : string) {
+	//first flush the voice channel 
+	VM.reset() 
+	//then change the UI 
+	setState(s) 
+    } 
+    
+    smgr.register("setAppSelectedMenu", selectedSetter) 
     
     let toggle = ()=> smgr.get("drawerToggle")() 
     
     return (
 	<div className="App" style={{display: "flex" , 
 				     flexDirection: "column", 
-				     backgroundImage:`url(${dream_catcher})`  }}>
+				      }}>
 	    
 	    <AppBar position="static">
 		<Toolbar>
 		    <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggle} >
 			<MenuIcon />
 		    </IconButton>
-		    <Typography variant="h6" >
+		    <Typography variant="h6" style={{flexGrow : 1}} >
 			DreamCatcher
 		    </Typography>
+		    { VoiceModule.VoiceToggler() }
 		</Toolbar>
 	    </AppBar>
 	    <Drawer /> 

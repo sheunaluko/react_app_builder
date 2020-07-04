@@ -22,3 +22,5 @@ TOCHECK
 : when editing then saving a dream - is the data and time preserved? 
 
 
+TODO : 
+ake sure to update the GET ALL TAGS function 

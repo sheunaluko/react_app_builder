@@ -9,7 +9,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Container from '@material-ui/core/Container';
 
 
-function Manual() {
+function Analytics() {
     return (
 	<Container >
 	    <Card >
@@ -24,4 +24,4 @@ function Manual() {
 }
 
 
-export default Manual ; 
+export default Analytics ; 

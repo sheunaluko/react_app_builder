@@ -46,56 +46,38 @@ import {asyncTextQueryDialog} from './AsyncTextQueryDialog'
 import DeleteIcon from '@material-ui/icons/Delete'; 
 import ReplayIcon from '@material-ui/icons/Replay';
 
-import * as DS from "../DreamSchema" 
+import * as VM from "./voice_module" 
+import * as tsw from "tidyscripts_web" 
 
+
+
+
+let VC = VM.VoiceChannel 
+let snd = tsw.util.sounds 
 
 declare var window : any ; 
 
 /* 
-   TODO 
-   
-   IMPLEMEN THE SAVE BUTTON!  
-   - will create an abstraction over mongo that ASSUMES THE WEB APP CAN PULL ALL OF
-   - The dreams AT ONCE AND STORE ALL OF THEM BACK 
-   - considering that they are tiny text files this is an OK abstraction 
-   
-   I CAN DEVELOP MY OWN DATABASE CLASS which talks to LocalStorage OR TO MONGO backend 
-   IF ONE IS CONFIGURED 
-   
-   I WILL ALSO NEED TO ADD A SETTINGS Selection in the menu for default configurations 
-   
-   POTENTIALLY ADD OPTION TO ADD A DREAM TITLE 
-   
-   
-   Modular interface for inputting via voice or text 
-   Make text interface first , should be minimal funcitonality like 
-   free text of the dream as well as any tags , ALSO THE date -- can keep it simple at first 
-   The TEXT EDITING INTERFACE SHOULD ACTUALLY BE THE SAME AS THE CARD WHICH DISPLAYS THE DREAM, 
-   AND THERE CAN BE A TOGGLE SWITCH to turn it into view or edit more
-   
-   Dreams can be referenced by uuids, which are generated upon creation 
-   
-   OK, so I will do the above --- but also 
-   
-   WILL incorporate two of my first MODULES into tidyscripts web 
-   1) sounds (check if existing?) 
-   2) chrome web speech (pretty sure exists!? ) 
-   
-   Then will plug these into dream catcher 
-   
-   Can make a voice tutorial as well, when this module isloaded it can check if it is 
-   the first time the app is running, and if it is then forward the USER TO THE VOICE_TUTORIAL 
-   MENU TAB 
-
+ Set up a way for the tutorial to know when things are happening 
+   via dispatch to window custom event 
  */ 
 
+function dispatch(msg: string) {
+    window.dispatchEvent(new CustomEvent('tutorial', { detail : msg }))
+} 
+
+var setEntryState = null 
 
 
 function Inputter() {
     
+ 
+    
     let [state,setState] = React.useState({
-	entry_method : "type" 
+	entry_method : "none" 
     }) 
+    
+    setEntryState = setState 
     
     let [login , setlogin] = React.useState(true) 
 
@@ -106,8 +88,7 @@ function Inputter() {
     })
 
     smgr.register("inputterSetEntryMethod" , function(m : string) {
-	//setState({entry_method : m}) 
-	console.log(m)
+	setState({entry_method : m}) 
     })
     
     
@@ -118,7 +99,7 @@ function Inputter() {
 	    input_interface = <EntrySelectionCard setState={setState} /> 
 	    break 
 	case 'voice' : 
-	    input_interface = <EntrySelectionCard setState={setState} />   
+	    input_interface = <VoiceCard setState={setState} />   
 	    break 
 	case 'type' : 
 	    input_interface = <TypeInterface setState={setState}  /> 
@@ -150,16 +131,10 @@ function DatePickerFormat() {
 } 
 
 function get_all_tags() {
-    return [
-	"happy" , 
-	"sad", 
-	"lucid" , 
-	"sleepy" , 
-	"wrong location" ,
-	"committing a crime" ,
-	"naked" , 
-	"flying"  
-    ]
+    let ts = localStorage['stored_tags']
+    if (ts) { return JSON.parse(ts) } else { 
+	return ["lucid"]
+    } 
 } 
 
 
@@ -182,6 +157,21 @@ interface ChipData {
     key: number;
     label: string;
 }
+
+var global_uuid :any  = null
+var global_add_tag :any  = null 
+var global_add_description : any  = function(msg : string) {
+    var el = (document.querySelector("textarea") as any ) 
+    if (el) {
+	if (el.value == "") { 
+	    el.value = msg 
+	} else { 
+	    el.value = el.value+ "\n" + msg 
+	} 
+    } 
+} 
+
+var global_add_title : any = null 
 
 function TagAdder() { 
     
@@ -207,6 +197,8 @@ function TagAdder() {
 	} 
 	setState( { ...state, chip_data : cur } ) 
     } 
+    
+    global_add_tag = add_tag 
     
     let add_tag_button = function() {
 	let el = (document.getElementById("tag-search-box") as any) 
@@ -238,14 +230,6 @@ function TagAdder() {
     ) 
 } 
 
-async function dream_deleter(uid : string) {  
-    console.log("Deleting dream: " + uid) 
-    //if it exists in the database (uuid) then delete it 
-    
-    
-    //press the back button 
-    
-}
 
 async function dream_saver(uid : string) {  
     
@@ -273,7 +257,7 @@ async function dream_saver(uid : string) {
 		//but the encryption password is missing 
 		console.log("Opening async dialog...") 
 		ekey =  await window.state.asyncTextQueryDialog({ title : "Enter encryption key",
-								  text : "Current settings indicate that you would like to encrypt your dreams prior to storage in the cloud so that no one but you can ever read them. Current settings also indicate that you would like to store the encryption key in your web browser. However, you have not yet chosen a key. Please input your encryption key now and it will be saved for future use. If you would NOT like to encrypt your dreams or if you would like to manually enter your key each time, click out of this dialog and go to the settings menu to update your preferences.", 
+								  text : "Current settings indicate that you would like to encrypt your dreams prior to storage in the cloud so that no one but you can ever read them. Current settings also indicate that you would like to store the encryption key in your web browser. However, you are either using a new device or have not yet chosen a key. Please input your encryption key now and it will be saved for future use. If you would NOT like to encrypt your dreams or if you would like to manually enter your key each time, click out of this dialog and go to the settings menu to update your preferences.", 
 								  confirm : true, 
 								  hide  :  true , 
 								  label : "Encryption Key" }) 
@@ -330,7 +314,7 @@ async function dream_saver(uid : string) {
 	    let title = input_el.value
 	    
 	    //now we actually store the dream 
-	    await DS.save_dream( { description, datetime, tags, title, uuid : uid } , encryption, ekey ) 
+	    await mFirebase.save_dream( { description, datetime, tags, title, uuid : uid } , encryption, ekey ) 
 	} 
 	
 	
@@ -349,7 +333,8 @@ function TypeInterface(ops :any ) {
     let {setState ,uid } = ops 
 	
     let [key, setKey ] = React.useState(uuid()) 
-
+    
+    global_setKey = setKey 
     
     function set_mode(m :string) {
 	setState({entry_method : m}) 
@@ -391,6 +376,21 @@ function TypeInterface(ops :any ) {
     
     let dream_uid = uid || uuid() 
     
+    global_uuid = dream_uid 
+    
+    let [titleValue, setTitleValue ] = React.useState("")
+    
+    window.title = [titleValue, setTitleValue]
+    
+    let titleChange = function(event : any) {
+	let t = event.target.value
+	setTitleValue(t) 
+    } 
+    
+    global_add_title = function(t : string) {
+	setTitleValue(t) 
+    }
+    
     return ( 
 	
 	<Box key={key}> 
@@ -422,7 +422,13 @@ function TypeInterface(ops :any ) {
 	    Optional Title
 	</Typography>
 
-	<TextField margin="dense" variant="outlined" label="Dream Title"> </TextField>
+	<TextField id ="dream_title" 
+	           //defaultValue={titleDefault}
+		   margin="dense" 
+		   variant="outlined" 
+	           value={titleValue}
+	           onChange={titleChange}
+		   label="Dream Title"> </TextField>
 
 		    </Grid>
 		    
@@ -461,20 +467,7 @@ function TypeInterface(ops :any ) {
 			Back 
 		    </Typography>
 		</Box>
-
-		<Box style={{display: "flex" , 
-			     flexDirection : "column",
-			     alignItems : "center",  
-		             marginLeft : "4%"}}> 
-
-		    
-	    	    <IconButton onClick={ ()=> dream_saver(dream_uid) }> 
-			<SaveIcon/>
-		    </IconButton>		  
-		    <Typography> 
-			Save
-		    </Typography>
-		</Box>
+	
 		
 		<Box style={{display: "flex" , 
 			     flexDirection : "column",
@@ -490,20 +483,21 @@ function TypeInterface(ops :any ) {
 		</Box>
 		
 
+		
+		
 		<Box style={{display: "flex" , 
 			     flexDirection : "column",
 			     alignItems : "center",  
 		             marginLeft : "4%"}}> 
 
-	    	    <IconButton onClick={ ()=> dream_deleter(dream_uid) }> 
-			<DeleteIcon/>
+		    
+	    	    <IconButton onClick={ ()=> dream_saver(dream_uid) }> 
+			<SaveIcon/>
 		    </IconButton>		  
 		    <Typography> 
-			Delete
+			Save
 		    </Typography>
 		</Box>
-		
-
 		
 	    </CardActions>
 	    
@@ -516,12 +510,137 @@ function TypeInterface(ops :any ) {
     ) 
 }
 
+
+
+var dream_editing_handlers = function(text : string) {  
+    let tags = text.match(new RegExp("^(add|new|you) tag (.*)$"))
+    if (tags) { 
+	console.log("tags")
+	let tag = tags[2]
+	//add the tag foo 
+	dispatch("tag") 
+	VM.speak("added tag " + tag ) 
+	snd.proceed() 
+	global_add_tag(tag) 
+	return 
+    } 
+    
+    let titles = text.match(new RegExp("^(add|new) title (.*)$"))
+    if (titles) { 
+	console.log("title")	
+	let title = titles[2]	
+	//add thet title 
+	dispatch("title") 
+	VM.speak("added title " + title)
+	snd.proceed() 
+	global_add_title(title) 
+	return 
+    } 
+
+    let titles2 = text.match(new RegExp("^title (.*)$"))
+    if (titles2) { 
+	console.log("title")	
+	let title = titles2[2]	
+	//add the title 
+	dispatch("title") 
+	VM.speak("added title " + title)
+	snd.proceed() 
+	global_add_title(title) 
+	return 
+    } 
+
+    var finished = text.match(new RegExp("^(finish|finished)$"))
+    if (finished) {
+	console.log("finished")		
+	dispatch("finished")
+	//save the dream 
+	dream_saver(global_uuid) 
+	snd.success() 
+	VM.speak("dream saved") 	
+	window.state.inputterSetEntryMethod("voice") 
+	VM.set_handlers(voice_entry_handlers)
+	return 
+    } 
+    
+    var abort = text.match("^(abort|exit)$")
+    if (abort) {
+	console.log("abort")
+	dispatch("abort")  
+	snd.success() 
+	window.state.inputterSetEntryMethod("none") 
+	VM.stop()
+	VM.speak("dream deleted") 
+	return 
+    } 
+    
+    var refreshes1 = text.match(new RegExp("^(new|record) dream$"))
+    var refreshes2 = text.match(new RegExp("^(you|recorded) dream$"))    
+    var refreshes2 = text.match(new RegExp("^(refresh|restart)$"))        
+    if (refreshes1 || refreshes2 ) {
+	console.log("refresh")	
+	dispatch("refresh")
+	VM.speak("Restarting dream")
+	snd.proceed() 
+	global_setKey(uuid())
+	global_add_title("")
+	return 
+    } 
+
+    
+    //if here then we assume we just add to description 
+    console.log("description")
+    global_add_description(text) 
+    dispatch("description")
+    snd.proceed() 
+    
+} 
+
+
+var global_setKey : any  = null 
+
+
+let new_dream = function() {
+    window.state.inputterSetEntryMethod("type")
+    VM.speak("Creating new dream")
+    dispatch("new dream") 
+    snd.input_ready()  
+    
+    //have to change the handlers now  
+    VM.set_handlers(dream_editing_handlers) 
+    
+} 
+
+let voice_entry_handlers = { 
+    'what time is it' : ()=>VM.speak(VM.voice_time()) , 
+    'are you there' : ()=> VM.speak("yes") , 
+    'record dream' : ()=> new_dream(), 
+    'recorded dream' : ()=> new_dream(), 
+    'new dream' : ()=> new_dream() , 
+    'dream' : ()=> new_dream() , 
+    'you dream' : ()=> new_dream() , 
+    'blue dream' : ()=> new_dream() , 	    
+}
+
+
 function EntrySelectionCard(ops : any) { 
     
     let {setState} = ops 
     
     let icon_size = 149
     let icon_margin = "4%" 
+    
+    let voice_click = function() {
+	dispatch("voice_clicked")
+	setState({entry_method: "voice"})
+	//and start the audio 
+	VM.init()
+	snd.proceed() 
+	
+	VM.set_handlers(voice_entry_handlers)
+	
+	
+	
+    } 
 
     
     return ( 
@@ -536,7 +655,7 @@ function EntrySelectionCard(ops : any) {
 		<Box style={{display: "flex" , 
 			     alignItems : "center" , 				 
 			     flexDirection : "column"}}> 
-		    <IconButton onClick={()=>setState({entry_method : "voice"})}> 
+		    <IconButton onClick={voice_click}> 
 			<SettingsVoiceIcon style={{fontSize : icon_size}} /> 
 		    </IconButton>
 		    <Typography> 
@@ -553,6 +672,50 @@ function EntrySelectionCard(ops : any) {
 		    </IconButton>
 		    <Typography> 
 			I'll type it
+		    </Typography>
+		</Box>
+		
+	    </CardActions>
+	</Card> 
+    ) 
+} 
+
+
+
+function VoiceCard(ops : any) { 
+    
+    let {setState} = ops 
+    
+    let icon_size = 149
+    let icon_margin = "4%" 
+    
+    let back = function() {
+	setState({entry_method: "none"})
+	VM.stop() 
+    } 
+    
+    return ( 
+	<Card style={{padding : "3%"}}> 
+	    <CardContent style={{textAlign : "center"}}> 
+		<Typography variant="h5" component="h2">
+		    Voice Entry Mode
+		</Typography>
+		
+		<Typography color="textSecondary" > 
+		    Say "New Dream" or "Record Dream" to start 
+		</Typography>
+		
+	    </CardContent>
+	    
+	    <CardActions style={{justifyContent : "center"}}>
+		<Box style={{display: "flex" , 
+			     alignItems : "center" , 				 
+			     flexDirection : "column"}}> 
+		    <IconButton onClick={back}> 
+			<NavigateBeforeIcon style={{fontSize : icon_size}} /> 
+		    </IconButton>
+		    <Typography> 
+			Back 
 		    </Typography>
 		</Box>
 		

@@ -10,7 +10,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import HeadsetMicIcon from '@material-ui/icons/HeadsetMic';
 
+import TimelineIcon from '@material-ui/icons/Timeline';
 import InfoIcon from '@material-ui/icons/Info';
 import HotelIcon from '@material-ui/icons/Hotel';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
@@ -70,19 +72,19 @@ export default function AppDrawer() {
     let SignIn = ()=> {
 	if (!Firebase.getUser()) {
 	    return ( 
-	    <React.Fragment > 
-		<ListItem button key="sign" onClick={select_menu_fn("sign")}>
-		    <ListItemIcon> <AccountBoxIcon /> </ListItemIcon>
-		    <ListItemText primary={"Sign In"} />
-		</ListItem>
-		<Divider /> 
-	    </React.Fragment > 
+		<React.Fragment > 
+		    <ListItem button key="sign" onClick={select_menu_fn("sign")}>
+			<ListItemIcon> <AccountBoxIcon /> </ListItemIcon>
+			<ListItemText primary={"Sign In"} />
+		    </ListItem>
+		    <Divider /> 
+		</React.Fragment > 
 	    ) 
 	} else {
 	    return (
 		<React.Fragment > 
 		    <ListItem button key="sign" onClick={function() {
-			Firebase.signOut().then(select_menu_fn("info"))}}>
+			    Firebase.signOut().then(select_menu_fn("info"))}}>
 			<ListItemIcon> <DirectionsRunIcon/> </ListItemIcon>
 			<ListItemText primary={"Sign Out"} />
 		    </ListItem>
@@ -90,6 +92,10 @@ export default function AppDrawer() {
 		</React.Fragment > 
 	    )
 	} 
+    } 
+    
+    let coming_soon = function(){
+	window.state.snackbarInfo("This feature is coming soon!")
     } 
 
     const list = () => (
@@ -115,12 +121,22 @@ export default function AppDrawer() {
 		    <ListItemIcon> <ImportContactsIcon /> </ListItemIcon>
 		    <ListItemText primary={"Review Dreams"} />
 		</ListItem>
-		<ListItem button key="manual"  onClick={select_menu_fn("manual")}>
+		<ListItem button key="manual"  onClick={coming_soon}>
 		    <ListItemIcon> <LibraryBooksIcon/> </ListItemIcon>
 		    <ListItemText primary={"Manual"} />
 		</ListItem>
 		<Divider />	      
+		<ListItem button key="analytics"  onClick={coming_soon}>
+		    <ListItemIcon> <TimelineIcon/> </ListItemIcon>
+		    <ListItemText primary={"Analytics"} />
+		</ListItem>
+		<Divider />	      
 		<SignIn /> 
+		<ListItem button key="voice_tutorial"  onClick={select_menu_fn("voice_tutorial")}>
+		    <ListItemIcon> <HeadsetMicIcon/> </ListItemIcon>
+		    <ListItemText primary={"Voice Tutorial"} />
+		</ListItem>
+		<Divider />	      
 		<ListItem button key="settings"  onClick={select_menu_fn("settings")}>
 		    <ListItemIcon> <SettingsApplicationsIcon/> </ListItemIcon>
 		    <ListItemText primary={"Settings"} />

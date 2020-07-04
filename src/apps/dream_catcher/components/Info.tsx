@@ -78,10 +78,10 @@ function Info() {
 	 "DreamCatcher will help you to build a deeper relationship with your dreams. According to many resources, including Stephen LaBerge's book Exploring the World of Lucid Dreaming, keeping a dream journal is the first step to remembering more of your dreams and to having lucid dreams (dreams in which you know you are dreaming but do not wake up). DreamCatcher will help you do this in a effortless way!" ], 
 	["DreamCatcher helps you record and review you dreams.",
 	 "hotel", 
-	 "You can use the menu button in the upper left to switch to the recording and reviewing modes."] , 
+	 "You can use the menu button in the upper left to switch to the recording and reviewing modes, and to access other features."] , 
 	["Record your dreams with your voice or by typing them.",
 	 "voice", 
-	 "After completing this intro, you can use the menu and select \"Record New Dreams\" to learn how to get started. There are many advantages to recording your dreams using your voice - you don't have to move, get out of bed, or even open your eyes to record and learn from your dreams!"] ,
+	 "After completing this intro, please use the menu and select \"Voice Tutorial\" to learn how to get started. There are many advantages to recording your dreams using your voice - you don't have to move, get out of bed, or even open your eyes to record and learn from your dreams!"] ,
 	["Review your recorded dreams to learn valuable insights.",
 	 "book", 
 	 "Our dreams serve as a gateway to the vast wealth of meaningful information stored in our subconscious. Use the dream reviewer tab to gain deeper understanding of patterns and meaning from your dreams.", 
@@ -89,11 +89,11 @@ function Info() {
 
 	["Your dreams are for your eyes only.",
 	 "privacy", 
-	 "The dreams you record using DreamCatcher are encrypted using a password you provide prior to being stored so that no one, not even the creators of DreamCatcher, can read them. However, because DreamCatcher utilizes Google speech recognition, if you choose to record your dreams by voice then the audio will be sent to Google's servers and transformed to text before it is sent back. Our recommendation is to utilize the voice feature unless one of your dreams contains extremely sensitive information. If you want to ensure that Google has absolutely no access to your dreams then please enter your dreams manually."] , 
+	 "The dreams you record using DreamCatcher are encrypted using a password you provide prior to being stored so that no one, not even the creators of DreamCatcher, can read them. However, because DreamCatcher utilizes Google speech recognition, if you choose to record your dreams by voice then the audio will be sent to Google's servers and transformed to text before it is sent back. Our recommendation is to utilize the voice feature unless one of your dreams contains extremely sensitive information. If you want to ensure that Google has absolutely no access to your dreams then please enter your dreams manually. You can manage all of this in the Settings tab in the lefthand menu."] , 
 	
 	["Welcome to the start of a journey.",
 	 "journey", 
-	 "The seed of awakening has already been planted! The dreams you record will be the nutrients and water which nourish that seed and encourage it to grow into a beautiful plant. The time you spend reviewing your dreams is like the sun toward which the plant of awakening grows. For more resources, check out the manual from the main menu. Have fun, and sweet (lucid) dreams!"] , 
+	 "The seed of awakening has already been planted! The dreams you record will be the nutrients and water which nourish that seed and encourage it to grow into a beautiful plant. The time you spend reviewing your dreams is like the sun toward which the plant of awakening grows. I encourage you to check out the voice tutorial next! For more resources, check out the manual from the main menu. Have fun, and sweet (lucid) dreams!"] , 
 	
 
     ]

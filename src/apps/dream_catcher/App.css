@@ -6,8 +6,12 @@ html {
 body { 
     background-color : #CACACA  ; 
     height : 100% ; 
+    overflow-x :hidden ; 
+    background-image: url("dream_catcher.jpg");
+    background-repeat: repeat-y;    
  
 } 
+
 
 div#root { 
     height : 100% ; 

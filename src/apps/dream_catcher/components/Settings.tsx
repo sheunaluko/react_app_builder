@@ -136,7 +136,7 @@ function Settings () {
 	  el : "checkbox" } , 
 	{ id : "ep" ,
 	  main : "Use the following encryption password for my dreams" ,
-	  note : "Note: If you lose or change this password it will IMPOSSIBLE to recover any of your previously recorded dreams. Please choose it wisely and only change it if you have not already recorded any dreams!" , 
+	  note : "Note: If you lose or change this password it will be IMPOSSIBLE to recover any of your previously recorded dreams. Please choose it wisely and only change it if you have not already recorded any dreams!" , 
 	  el : "hiddenTextField" } 
     ] 
 

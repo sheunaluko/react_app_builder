@@ -27,7 +27,7 @@ var uiConfig = {
 	    
 	    
 	    
-	    return false;
+	    return true ; 
 	},
 	uiShown: function() {
 	    // The widget is rendered.
