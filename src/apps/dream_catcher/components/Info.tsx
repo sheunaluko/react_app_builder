@@ -25,11 +25,13 @@ import LocalFloristIcon from '@material-ui/icons/LocalFlorist';
 
 import * as mfirebase from './Firebase' 
 
+import * as smgr from "../state_manager" 
+
 
 import Signin from "./Signin" 
 /* 
 
- INTRO FOR NEW USERS 
+   INTRO FOR NEW USERS 
    
  */
 
@@ -52,6 +54,9 @@ function Info() {
     }) ; 
     
     const [loginState, setLoginState] = React.useState(true)
+    
+    smgr.register("setLoginState" , setLoginState) 
+    
 
     
     const [state, setState] = React.useState(

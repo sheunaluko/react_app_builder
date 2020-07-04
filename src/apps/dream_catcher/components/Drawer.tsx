@@ -86,7 +86,7 @@ export default function AppDrawer() {
 	    return (
 		<React.Fragment > 
 		    <ListItem button key="sign" onClick={function() {
-			    Firebase.signOut().then(select_menu_fn("info"))}}>
+			    Firebase.signOut().then(window.location= window.location)}}>
 			<ListItemIcon> <DirectionsRunIcon/> </ListItemIcon>
 			<ListItemText primary={"Sign Out"} />
 		    </ListItem>
@@ -142,12 +142,12 @@ export default function AppDrawer() {
 		    <ListItemText primary={"Settings"} />
 		</ListItem>
 		<Divider />	      
-		<ListItem button key="settings"  onClick={()=> window.open("https://github.com/sheunaluko/react_app_builder/tree/master/src/apps/dream_catcher")}>
+		<ListItem button key="source"  onClick={()=> window.open("https://github.com/sheunaluko/react_app_builder/tree/master/src/apps/dream_catcher")}>
 		    <ListItemIcon> <GitHubIcon/> </ListItemIcon>
 		    <ListItemText primary={"Source Code"} />
 		</ListItem>
 		<Divider />	      
-		<ListItem button key="settings"  onClick={()=> window.state.snackbarInfo("Please email Sheun Aluko at alukosheun@gmail.com with any feedback or concerns! I would be happy to hear from you!")}>
+		<ListItem button key="contact"  onClick={()=> window.state.snackbarInfo("Please email Sheun Aluko at alukosheun@gmail.com with any feedback or concerns! I would be happy to hear from you!")}>
 		    <ListItemIcon> <ContactSupportIcon/> </ListItemIcon>
 		    <ListItemText primary={"Contact"} />
 		</ListItem>

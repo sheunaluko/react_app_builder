@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 
+import * as smgr from "../state_manager" 
+
 import * as mFirebase from "./Firebase" 
 window.mFirebase = mFirebase ; 
 
@@ -26,6 +28,7 @@ var uiConfig = {
 	    mFirebase.handle_login_callbacks()
 	    
 	    
+	    window.state.setLoginState(true)
 	    
 	    return true ; 
 	},
@@ -36,7 +39,7 @@ var uiConfig = {
     },
     // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
     signInFlow: 'popup',
-    signInSuccessUrl: '#loggedIn',
+   signInSuccessUrl: '#loggedIn',
     signInOptions: [
 	// Leave the lines as is for the providers you want to offer your users.
 	firebase.auth.GoogleAuthProvider.PROVIDER_ID,
