@@ -25,6 +25,8 @@ import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
 
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 
+import * as tsw from "tidyscripts_web" 
+
 
 import * as Firebase from "./Firebase" 
 
@@ -112,7 +114,14 @@ export default function AppDrawer() {
 		    <ListItemText primary={"Get Started"} />
 		</ListItem>
 		<Divider />	      	      
-		<ListItem button key="voice_tutorial"  onClick={select_menu_fn("voice_tutorial")}>
+		<ListItem button key="voice_tutorial"  onClick={()=>{
+			if ( !window.voice_supported() ) {
+			    return 
+			} else { 
+			    console.log("No mobile")			    
+			    select_menu_fn("voice_tutorial")()
+			} 
+		} }>
 		    <ListItemIcon> <HeadsetMicIcon/> </ListItemIcon>
 		    <ListItemText primary={"Voice Tutorial"} />
 		</ListItem>

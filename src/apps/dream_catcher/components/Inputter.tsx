@@ -159,6 +159,9 @@ interface ChipData {
 }
 
 var global_uuid :any  = null
+
+window.inputter_global_uuid = global_uuid 
+
 var global_add_tag :any  = null 
 var global_add_description : any  = function(msg : string) {
     var el = (document.querySelector("textarea") as any ) 
@@ -233,6 +236,8 @@ function TagAdder() {
 
 async function dream_saver(uid : string) {  
     
+    console.log("REQUEST TO SAVE: ") 
+    console.log(uid) 
     //
     if (! mFirebase.getUser() ) { 
 	window.state.snackbarInfo("You must be logged in to save any dreams")
@@ -302,6 +307,7 @@ async function dream_saver(uid : string) {
     let el = document.getElementById(uid) ; 
     
     if (el) { 
+	console.log("Got element") 
 	let description_el = (el.querySelector("textarea")  as any) 
 	let date_el = (el.querySelector("#datetime-local") as any) 
 	let tags_el = (el.querySelector("ul") as any) 
@@ -314,13 +320,15 @@ async function dream_saver(uid : string) {
 	    let title = input_el.value
 	    
 	    //now we actually store the dream 
+	    console.log("saving dream now") 
 	    await mFirebase.save_dream( { description, datetime, tags, title, uuid : uid } , encryption, ekey ) 
-	} 
+	}
 	
 	
 
 
-    } else { 
+    } else {
+	console.log("could not get eement") 
 	smgr.get("snackbarInfo")("Error saving dream")
 	return null 
 	
@@ -374,9 +382,13 @@ function TypeInterface(ops :any ) {
 	);
     }
     
-    let dream_uid = uid || uuid() 
     
-    global_uuid = dream_uid 
+    var [dream_uid , setUid] = React.useState(uid || uuid() ) 
+    
+    window.global_dream_uid = dream_uid 
+    console.log("Setting global uuid: " + window.global_dream_uid )
+	
+	
     
     let [titleValue, setTitleValue ] = React.useState("")
     
@@ -512,7 +524,7 @@ function TypeInterface(ops :any ) {
 
 
 
-var dream_editing_handlers = function(text : string) {  
+var dream_editing_handlers = async (text : string) => {  
     let tags = text.match(new RegExp("^(add|new|you) tag (.*)$"))
     if (tags) { 
 	console.log("tags")
@@ -554,7 +566,10 @@ var dream_editing_handlers = function(text : string) {
 	console.log("finished")		
 	dispatch("finished")
 	//save the dream 
-	dream_saver(global_uuid) 
+	console.log("using global_uuid" + global_uuid) 
+	let result = await dream_saver(window.global_dream_uid) 
+	console.log("result from saving") 
+	console.log(result)
 	snd.success() 
 	VM.speak("dream saved") 	
 	window.state.inputterSetEntryMethod("voice") 
@@ -630,8 +645,21 @@ function EntrySelectionCard(ops : any) {
     let icon_size = 149
     let icon_margin = "4%" 
     
+    
     let voice_click = function() {
+	
+	if ( ! window.voice_supported()  ) {
+	    return 
+	} else { 
+	    console.log("No mobile")			    
+	} 
+	
+	
 	dispatch("voice_clicked")
+	
+	
+	
+	
 	setState({entry_method: "voice"})
 	//and start the audio 
 	VM.init()

@@ -353,7 +353,7 @@ function Voice2(done : any) {
 	
 	"Great! Notice how you have to pause between sentences in order for DreamCatcher to understand you. This is the best way to use DreamCatcher. Now say, \"It is the first of many to come\"..." , 
 	
-	"See how easy it is! OK, lets move on. It is enough to simply record the description and save the dream, after all, you may be feeling tired during the night and only have energy to do that. You can come back later and edit the title, description, and tags on your computer or on your mobile device while you are on the go. In fact, lets go ahead and save this dream -- dont worry... you can delete it later! Go ahead and say, \"Finished\", to save the dream" , 
+	"See how easy it is! OK, lets move on. It is enough to simply record the description and save the dream, after all, you may be feeling tired during the night and only have energy to do that. You can come back later and edit the title, description, and tags on your computer or on your mobile device while you are on the go. In fact, lets go ahead and save this dream -- dont worry... you can delete it later! By the way, you may be prompted to input an encryption key if this is your first time saving a dream. This is to ensure that you and only you can read your dreams, even though they are stored on the cloud! Go ahead and say, \"Finished\", to save the dream" , 
 	
 	"Congratulations, you saved your first dream! Before I set you free to become a master dream explorer, let's finish this tutorial by learning how to enter the dream title and tags using your voice. Please start a new dream (do you remember how to do this?)", 
 	

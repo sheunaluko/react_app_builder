@@ -22,23 +22,23 @@ export var handlers : any  = null
 console.log("Handlers")
 console.log(handlers) 
 
-window.addEventListener('tidyscripts_web_speech_recognition_result' , function(e :any) {
+window.addEventListener('tidyscripts_web_speech_recognition_result' , async function(e :any) {
     console.log("Got recognition result!") 
     let text = e.detail.trim().toLowerCase()
     console.log(text) 
     
     if (handlers)  { 
 	console.log("Processing handlers")
-	if (handlers.constructor == Function) { 
+	if (typeof handlers == "function" ) { 
 	    console.log("handling function") 
-	    handlers(text) 
+	    await handlers(text) 
 	    return 
 	} 
 	
 	let handler  = handlers[text] 
 	if (handler) {
 	    //got the handler -- run it 
-	    handler() 
+	    await handler() 
 	} else { 
 	    //handlers in place , but none matched --- 
 	    snd.error() 
@@ -73,6 +73,11 @@ export function stop() {
 
 
 export function toggle() {
+    
+    if (!window.voice_supported()) {
+	return 
+    } 
+    
     if (vi.recognition_state == "LISTENING" ) {
 	stop() 
     }  else { 
@@ -97,13 +102,13 @@ export function VoiceToggler() {
     setColor = _setColor 
     
     let thecolor  = color ? 'action' : 'secondary' 
-        
+    
     return ( 
 	<IconButton onClick={toggle}> 
 	    <HeadsetMicIcon  color={(thecolor as Color)} /> 
 	</IconButton>
     ) 
-         
+    
 
 } 
 
@@ -125,4 +130,27 @@ export function set_handlers(_handlers : any) {
     console.log("setting handlers") 
     console.log(handlers) 
     handlers = _handlers 
+} 
+
+
+
+
+
+
+
+window.voice_supported = function() {
+    if ( tsw.util.is_mobile() ) {
+	console.log("Detected mobile")
+	window.state.snackbarInfo("Please use a laptop or desktop with the Google Chrome Web Browser to enable voice features.")			    	
+	return false 
+	
+    } else if ( !tsw.util.is_chrome() )  { 
+	console.log("Detected NOT CHROME")
+	window.state.snackbarInfo("Please use a laptop or desktop with the Google Chrome Web Browser to enable voice features.")			    		
+	
+    } else  { 
+	console.log("No mobile")			    
+	return true 
+    } 
+
 } 

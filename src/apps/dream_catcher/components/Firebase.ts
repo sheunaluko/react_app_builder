@@ -143,6 +143,9 @@ export async function handle_login_callbacks() {
 	    } 
 	} 
 	
+	//and also will retrieve their dreams...
+	await get_user_dreams() 
+	
     } else {
 	// No user is signed in.
 	console.log("fb: user not logged in") 
@@ -312,39 +315,44 @@ export async function get_decrypted_dreams() {
 	if (!ekey) {
 	    //have to prompt user for ekey then decrypt and store dreams 
 	    ekey =  await asyncTextQueryDialog({title : "Enter encryption key", 
-						text : "Some or all of your dreams are encrypted, however there is no encryption key stored on the current device. Please enter it now, and remember that you can update your settings so you do not need to enter every time.", 
+						text : "Some or all of your dreams are encrypted, however there is no encryption key stored on the current device. Please enter it now, and remember that you can update your settings so you do not need to enter every time", 
 						hide : true, 
 						confirm : true, 
 						label :"EncryptionKey"})
 	    console.log("Got ekey: "+ ekey) 
+	    //if the settings say that key should be stored we will store it 
+	    let settings = await await_user_settings() 
+	    if (settings.store_ep) {
+		console.log("Storing key locally given settings") 
+		localStorage["encryption_key"] = ekey 
+	    } 
+	    
 	    if (!ekey ) { 
 		return {error : "Unable to retrieve decrypted dreams"}
 	    } 
+	}
 	    
-	    
-	} else { 
-	    //can directly decrypt the dreams 
-	    let value :DS.DecryptedUserDreams = {} 
-	    try {
-		let dream_objs = fp.values(dreams) 
-		dream_objs.map((x:DS.FireStorePayload)=>{
-		    //console.log(x)
-		    if (x.encrypted) {
-			let cipher = x.dream_text 
-			//console.log("decrypting: " + cipher)			
-			//console.log(x.uuid) 
-			let res = crypto.decrypt(cipher,ekey)
-			//console.log("res: " + res) 
-			value[x.uuid] = JSON.parse(res) 
-		    } 
-		})
-		return {value, error : false} 
-	    } catch (e) {
-		console.log(e) 
-		return {error : "Sorry, An error occured while attempting to decrypt your dreams"}
-	    } 
-	    
+	//now  decrypt the dreams 
+	let value :DS.DecryptedUserDreams = {} 
+	try {
+	    let dream_objs = fp.values(dreams) 
+	    dream_objs.map((x:DS.FireStorePayload)=>{
+		//console.log(x)
+		if (x.encrypted) {
+		    let cipher = x.dream_text 
+		    //console.log("decrypting: " + cipher)			
+		    //console.log(x.uuid) 
+		    let res = crypto.decrypt(cipher,ekey)
+		    //console.log("res: " + res) 
+		    value[x.uuid] = JSON.parse(res) 
+		} 
+	    })
+	    return {value, error : false} 
+	} catch (e) {
+	    console.log(e) 
+	    return {error : "Sorry, An error occured while attempting to decrypt your dreams"}
 	} 
+
     } else { 
 	//can directly store dreams 
 	try { 
@@ -354,6 +362,7 @@ export async function get_decrypted_dreams() {
 	    })
 	    return {value : dreams , error : false } 
 	} catch(e) {
+	    console.log(e) 
 	    return {error :"Sorry, An error occured whil attempting to read your dreams"}
 	} 
     } 

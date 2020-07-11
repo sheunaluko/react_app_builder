@@ -30,6 +30,7 @@ import GenericDialog from "./components/GenericDialog"
 import {AsyncTextQueryDialog} from "./components/AsyncTextQueryDialog" 
 
 import * as VM from "./components/voice_module" 
+
 let VC = VM.VoiceChannel //get the voice channel 
 
 declare var window : any ; 
