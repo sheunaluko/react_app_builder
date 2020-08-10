@@ -7,6 +7,12 @@ Current projects within this repository include:
 ##### DreamCatcher (src/apps/dream_catcher/App.tsx): 
 A modern digital dream journal for recording your dreams using speech recognition and reviewing them later. 
 
-##### More to come!
+##### MedKit (src/apps/medkit/App.tsx): 
+A toolkit for clinical decision support and medical education. 
 
+##### BinanceListener (src/apps/binance_listener/App.tsx): 
+A web interface that connects to a binance market data socket and plays beeps for buys and sells. Volume of the beep is proportional to volume of the trade, and the pitch goes up if its a buy and down if its a sell.
+
+
+##### More to come!
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
