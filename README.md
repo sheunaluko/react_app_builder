@@ -5,7 +5,7 @@ React app builder is a modified typescript create-react-app project directory. I
 Current projects within this repository include: 
 
 ##### DreamCatcher (src/apps/dream_catcher/App.tsx): 
-A modern digital dream journal for recording your dreams using speech recognition and reviewing them later. 
+A modern digital dream journal for recording your dreams using speech recognition.
 
 ##### MedKit (src/apps/medkit/App.tsx): 
 A toolkit for clinical decision support and medical education. 
