@@ -78,7 +78,7 @@ function Component() {
 		<Autocomplete
 		    id="combo-box-demo"
 		    options={state.options}
-		    getOptionLabel={(option) => option.label}
+		    getOptionLabel={(option) => ("-->" + option.label )  }
 		    fullWidth={true}
 		    onInputChange={
 			function(e : object , value : string) { 

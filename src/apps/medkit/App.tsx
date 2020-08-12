@@ -12,7 +12,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import LeftDrawer from "./components/LeftDrawer" 
 import RightDrawer from "./components/RightDrawer"  
+
 import WikiDataSearch from "./components/WikiDataSearch"  
+import MeshSearch from "./components/MeshSearch2"  
+import TestComponent from "./components/TestComponent" 
 
 import { ThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -22,11 +25,14 @@ import green from '@material-ui/core/colors/green';
 import blue from '@material-ui/core/colors/blue';
 
 const theme = createMuiTheme({
-    palette: {
-	primary: green,
-    },
-});
+    palette : { 
+	primary: green  
+    } 
+}) 
 
+
+let primary_component = MeshSearch 
+//let primary_component = TestComponent
 
 function App() {
     
@@ -55,7 +61,7 @@ function App() {
 		<RightDrawer /> 
 		
 		<Box style={{flexGrow : 1}}> 
-		    <WikiDataSearch /> 
+		    { primary_component() }  
 		</Box>
 
 	    </div>
