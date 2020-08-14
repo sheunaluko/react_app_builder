@@ -7,7 +7,7 @@ Medkit is a collection of tools for building clinical decision support and medic
 1) [Medical Subject Headings, Mesh](https://www.nlm.nih.gov/mesh/meshhome.html) [NIH] 
 2) [Wikidata](https://www.wikidata.org/wiki/Wikidata:Main_Page) [Global] 
 
-### APPLICATIONS 
+### Applications  
 
 1. Clinical decision support 
    - Core Medkit components include: 
