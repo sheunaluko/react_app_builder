@@ -7,11 +7,49 @@ A collection of tools for building clinical decision support and medical educati
 1) Medical Subject Headings, MeSH [NIH] 
 2) Wikidata [Global] 
 
+### APPLICATIONS 
+
+What can Medkit be used for? At its inception, Medkit focused on two main applications: 
+
+1. Clinical decision support 
+   - Core Medkit components include: 
+     - Problem List 
+     - The MeSH Entity Selector [an interface to MeSH that facilitates quick building of the Problem List] * 
+     - Signs and Symptoms 
+     - Signs and Symptoms Selector 
+     - Labs, Imaging, and Procedures Components/Selectors 
+   - These components are either automatically populated via the FHIR api [1] or input by the user. Once the information is populated, the user can select from a wide range of actions (not yet implmented) which include: 
+     - Calculate risk scores like ASCVD, MELD, CHADS-VASc 
+     - Rank likely diagnoeses based on the available symptoms, labs, and imaging data
+     - Show the diseases which this patient has risk factors for  
+     - Much more. In the future, Medkit may provide an easy way for anyone in the world to create a Medkit "Widget". 
+
+2. Medical education 
+   - By leveraging the ability to query the MeSH and Wikidata ontologies, the application can answer questions such as: 
+     - Show me pictures for all diseases that present with maculopapular rash. 
+     - What are causes of hypokalemia? 
+
+
+[1] This could be done by making Medkit a SMART on FHIR app which can be directly integrated into the EMR. It is not currently being implemented but the intent is to do this in the future to allow EHR embedding. 
+
+* Indicates that the software for the feature has been completed 
+
+
+### MeSH and Wikidata 
+
+MeSH is a comprehensive and annually updated ontology of medical terminology. Before a new article is added to the pubmed database, MeSH descriptors are added to its metadata and these descriptors are used by the pubmed search engine to locate the article in the future. In addition, Wikidata medical entities like disease and symptoms contain MeSH identifiers attached. Thus, by representing a patients problem list using MeSH descriptors, Medkit is easily able to link a disease within the MeSH ontology to the corresponding entity in Wikidata and thus elucidate any associated symptoms, risk factors, possible treatments, etc. 
+
+Wikidata holds much promise as queryable global database of medical knowledge [2]. Wikidata, launched in 2012, is one of the most recent successful efforts to create a global knowledge graph which is self maintaining [3]. The concurrent expansion of networking and computing power, as well as the growing availability of digitized medical data will allow for more complex and useful insight to be gained from knowledge bases such as Wikidata. Projects already exists which aim to populate Wikidata with more high quality medical information, such as WikiProject Medicine [4]. In the future, there may even exist a system which incentivizes users to contribute medical information to Wikidata by rewarding them with a digital token that has an open market value, such as the system employed by Everipedia [5]. 
+
+[2] Turki et al, Wikidata: A large-scale collaborative ontological medical database
+[3] https://en.wikipedia.org/wiki/Wikidata
+[4] https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Medicine
+[5] https://everipedia.org/
+
+
 ### Architecture  
 
-Medkit  components utilize well-established ontologies for their queries, including: 
-1) Medical Subject Headings (MeSH)  [NIH]
-2) Wikidata [Global]
+Medkit components utilize well-established and actively maintained ontologies (MeSH, Wikidata) for their queries. This makes Medkit a future proof interface for building clinical decision support and medical education systems. 
 
 Medkit was written as a web application to optimize development iteration time and ease of application distribution. Because http requests from web applications are limited by the cross origin resources sharing policy (CORS), when making http get requests Medkit utilizes a "hyperloop" service hosted in Google Cloud at the following public IP: 35.227.177.177. This choice has other benefits as well, the main one being that there is a single configurable endpoint for all web application queries. This leaves the door open for many future possibilities such as: 
 1) Authentication of the api prior to servicing requests 
