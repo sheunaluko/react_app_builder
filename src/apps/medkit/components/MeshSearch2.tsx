@@ -59,6 +59,7 @@ export default function MeshSearch() {
 		    marginTop  : "10%" , 
 		    backgroundColor : theme.palette.background.paper , 
 		    padding : "2%",  
+		    borderRadius : "15px",
 		    
 		    
  		}}>
@@ -230,6 +231,7 @@ function SearchCard(props : any) {
 				    backgroundColor : (is_selected ? theme.palette.primary.light : theme.palette.background.paper) 
 			    }}
 			    elevation={elevation}
+			    square={false}
 
 			    > 
 			    <div style={{display: "flex" ,

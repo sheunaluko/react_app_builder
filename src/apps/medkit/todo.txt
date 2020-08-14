@@ -1,0 +1,42 @@
+
+[ ] Prep for Clinic 
+[ ] Send Gao email and padda 
+
+
+[x] create MeSH Entity Selector  
+
+[ ] create problem list widget , which uses TABS to toggle between MESH Entity Selector and the DISPLAY 
+
+[ ] create Wikidata Symptom Selector 
+  - would probably be better to allow for modular searching of all the properties below  (i.e. findings, treatments etc) 
+
+[ ] create symptom list widget , which uses TABS to toggle between Wikidata Symptom Selector and the DISPLAY 
+
+[ ] some kind of metrics / analytics for looking at WIkidata properties/ entities/ etc..  
+
+Interesting properties: 
+- possible medical findings 
+- risk factor 
+- symptoms 
+- possible treatment 
+- drug used for treatment 
+- prevalence  
+- incidence
+- medical condition treated 
+- has cause
+- medical examinations 
+- significant drug ineraction 
+
+
+Think about the data that has to be input for a patient 
+
+HPI (symptoms) 
+PMH (problem list) 
+PSH (problem list) 
+SH  (? risk factors)
+VITALS (observations) 
+LAB VALUES (loinc?) 
+PHYSICAL EXAM FINDINGS (?possible medical findings) 
+Imaging findings ? 
+Microbiology findings 
+

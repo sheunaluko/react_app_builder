@@ -24,6 +24,8 @@ import purple from '@material-ui/core/colors/purple';
 import green from '@material-ui/core/colors/green';
 import blue from '@material-ui/core/colors/blue';
 
+import * as tsw from "tidyscripts_web" 
+
 const theme = createMuiTheme({
     palette : { 
 	primary: green  
@@ -33,6 +35,7 @@ const theme = createMuiTheme({
 
 let primary_component = MeshSearch 
 //let primary_component = TestComponent
+let widget_list = [ MeshSearch, MeshSearch] 
 
 function App() {
     
@@ -61,7 +64,24 @@ function App() {
 		<RightDrawer /> 
 		
 		<Box style={{flexGrow : 1}}> 
-		    { primary_component() }  
+		    { 
+			/*
+			widget_list.map(  
+			    function(c: any) {
+				return ( 
+				    <div key={tsw.util.uuid()} 
+					style={{
+					    marginBottom : "5px"
+					}}
+					> 
+					{c()}
+				    </div>
+				) 
+			    }
+			)
+			*/
+			primary_component() 
+		    } 
 		</Box>
 
 	    </div>
