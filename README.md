@@ -7,7 +7,7 @@ Current projects within this repository include:
 ##### DreamCatcher (src/apps/dream_catcher/App.tsx): 
 A modern digital dream journal for recording your dreams using speech recognition.
 
-##### MedKit (src/apps/medkit/App.tsx): 
+##### [MedKit (src/apps/medkit/App.tsx)](https://github.com/sheunaluko/react_app_builder/tree/master/src/apps/medkit): 
 A toolkit for clinical decision support and medical education. 
 
 ##### BinanceListener (src/apps/binance_listener/App.tsx): 
