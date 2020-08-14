@@ -37,8 +37,10 @@ What can Medkit be used for? At its inception, Medkit focused on two main applic
 
 ### MeSH and Wikidata 
 
+##### Mesh
 MeSH is a comprehensive and annually updated ontology of medical terminology. Before a new article is added to the pubmed database, MeSH descriptors are added to its metadata and these descriptors are used by the pubmed search engine to locate the article in the future. In addition, Wikidata medical entities like disease and symptoms contain MeSH identifiers attached. Thus, by representing a patients problem list using MeSH descriptors, Medkit is easily able to link a disease within the MeSH ontology to the corresponding entity in Wikidata and thus elucidate any associated symptoms, risk factors, possible treatments, etc. 
 
+##### Wikidata
 Wikidata holds much promise as queryable global database of medical knowledge [2]. Wikidata, launched in 2012, is one of the most recent successful efforts to create a global knowledge graph which is self maintaining [3]. The concurrent expansion of networking and computing power, as well as the growing availability of digitized medical data will allow for more complex and useful insight to be gained from knowledge bases such as Wikidata. Projects already exists which aim to populate Wikidata with more high quality medical information, such as WikiProject Medicine [4]. In the future, there may even exist a system which incentivizes users to contribute medical information to Wikidata by rewarding them with a digital token that has an open market value, such as the system employed by Everipedia [5]. 
 
 [2] Turki et al, Wikidata: A large-scale collaborative ontological medical database
