@@ -3,7 +3,7 @@
 
 ### Medkit
 
-A collection of tools for building clinical decision support and medical education systems powered by two key knowledge bases: 
+Medkit is a collection of tools for building clinical decision support and medical education systems powered by two key knowledge bases: 
 1) Medical Subject Headings, MeSH [NIH] 
 2) Wikidata [Global] 
 
