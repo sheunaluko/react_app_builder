@@ -13,9 +13,9 @@ Medkit  components utilize well-established ontologies for their queries, includ
 1) Medical Subject Headings (MeSH)  [NIH]
 2) Wikidata [Global]
 
-Medkit was written as a web application to optimize development iteration time and ease of application distribution. Because http requests from web applications are limited by the cross origin resources sharing policy (CORS), when making http get requests Medkit utilizes a "hyperloop" service hosted in Google Cloud at the following public IP: 35.227.177.177. This choice has other benefits as well, the main one being that there is a configurable endpoint through which all web application queries will come through, thus leaving the door open for many future possibilities such as: 
-1) authentication of the api prior to servicing requests 
-2) by setting up a load balancer at this endpoint the application can quickly scale horizontally 
+Medkit was written as a web application to optimize development iteration time and ease of application distribution. Because http requests from web applications are limited by the cross origin resources sharing policy (CORS), when making http get requests Medkit utilizes a "hyperloop" service hosted in Google Cloud at the following public IP: 35.227.177.177. This choice has other benefits as well, the main one being that there is a single configurable endpoint for all web application queries. This leaves the door open for many future possibilities such as: 
+1) Authentication of the api prior to servicing requests 
+2) By setting up a load balancer at this endpoint the application can quickly scale horizontally 
    - for high loads can develop request caching strategies at the server or client side 
    
 

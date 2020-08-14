@@ -1,8 +1,4 @@
 
-[ ] Prep for Clinic 
-[ ] Send Gao email and padda 
-
-
 [x] create MeSH Entity Selector  
 
 [ ] create problem list widget , which uses TABS to toggle between MESH Entity Selector and the DISPLAY 
