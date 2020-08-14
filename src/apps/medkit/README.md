@@ -53,14 +53,14 @@ Wikidata, launched in 2012, is one of the most recent successful efforts to crea
 
 Medkit components utilize well-established and actively maintained ontologies (MeSH, Wikidata) for their queries. This makes Medkit a future proof interface for building clinical decision support and medical education systems. 
 
-Medkit was written as a web application to optimize development iteration time and ease of application distribution. Specifically, Medkit utilizes [React](https://reactjs.org/) with the user interface framework [Material UI](https://material-ui.com/) for interface development. [Typescript](https://www.typescriptlang.org/) is used rather than javascript. The combination of Typescript, React, and Material-UI achieves a robust harmony between software iteration time, stability, and likelihood of persistent functionality into the future. 
+Medkit is written as a web application to optimize development iteration time and ease of application distribution. Specifically, Medkit utilizes [React](https://reactjs.org/) with the user interface framework [Material UI](https://material-ui.com/) for interface development. [Typescript](https://www.typescriptlang.org/) is used rather than javascript. The combination of Typescript, React, and Material-UI achieves a robust harmony between software iteration time, stability, and likelihood of persistent functionality into the future. 
 
 Because http requests from web applications are limited by the cross origin resources sharing policy (CORS), when making http get requests Medkit utilizes a "hyperloop" service hosted in Google Cloud at the following public IP: 35.227.177.177 [note2]. This choice has other benefits as well, the main one being that there is a single configurable endpoint for all web application queries. In the future, this will enable:
 1) Authentication of the api prior to servicing requests 
 2) Load balancing 
    
 
-* Note2: Notably, the hyperloop service is provided by a public "sattsys" node, the code which is available open source [here](https://github.com/sheunaluko/tidyscripts/blob/master/src/deno/bin/hyperloop_init.ts). It is also maintained by the maintainer of Medkit. This separation of cloud enpoint and application interface allows for more system modularity - the cloud code can be upgraded independently of the client code and vice versa. 
+* Note2: The hyperloop service is provided by a public [tidyscripts](https://github.com/sheunaluko/tidyscripts) node, the code which is available open source [here](https://github.com/sheunaluko/tidyscripts/blob/master/src/deno/bin/hyperloop_init.ts). [Tidyscripts](https://github.com/sheunaluko/tidyscripts) is also maintained by the maintainer of Medkit. This separation of cloud enpoint and application interface allows for more system modularity - the cloud code can be upgraded independently of the client code and vice versa. 
 
 
 
