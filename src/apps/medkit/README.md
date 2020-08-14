@@ -32,7 +32,7 @@ What can Medkit be used for? At its inception, Medkit focused on two main applic
 
 [1] This could be done by making Medkit a SMART on FHIR app which can be directly integrated into the EMR. It is not currently being implemented but the intent is to do this in the future to allow EHR embedding. 
 
-* Indicates that the software for the feature has been completed 
+* Asterisk indicates that the software for the feature has been completed 
 
 
 ### MeSH and Wikidata 
