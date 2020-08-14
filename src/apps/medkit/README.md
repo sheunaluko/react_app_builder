@@ -18,7 +18,7 @@ What can Medkit be used for? At its inception, Medkit focused on two main applic
      - Signs and Symptoms 
      - Signs and Symptoms Selector 
      - Labs, Imaging, and Procedures Components/Selectors 
-   - These components are either automatically populated via the FHIR api [1] or input by the user. Once the information is populated, the user can select from a wide range of actions (not yet implmented) which include: 
+   - These components are either automatically populated via the FHIR api [n1] or input by the user. Once the information is populated, the user can select from a wide range of actions (not yet implmented) which include: 
      - Calculate risk scores like ASCVD, MELD, CHADS-VASc 
      - Rank likely diagnoeses based on the available symptoms, labs, and imaging data
      - Show the diseases which this patient has risk factors for  
@@ -30,7 +30,7 @@ What can Medkit be used for? At its inception, Medkit focused on two main applic
      - What are causes of hypokalemia? 
 
 
-* [1] This could be done by making Medkit a SMART on FHIR app which can be directly integrated into the EMR. It is not currently being implemented but the intent is to do this in the future to allow EHR embedding. 
+* [n1] This could be done by making Medkit a SMART on FHIR app which can be directly integrated into the EMR. It is not currently being implemented but the intent is to do this in the future to allow EHR embedding. 
 
 * Asterisk indicates that the software for the feature has been completed 
 
@@ -39,6 +39,8 @@ What can Medkit be used for? At its inception, Medkit focused on two main applic
 
 ##### Mesh
 MeSH is a comprehensive and annually updated ontology of medical terminology. Before a new article is added to the pubmed database, MeSH descriptors are added to its metadata and these descriptors are used by the pubmed search engine to locate the article in the future. In addition, Wikidata medical entities like disease and symptoms contain MeSH identifiers attached. Thus, by representing a patients problem list using MeSH descriptors, Medkit is easily able to link a disease within the MeSH ontology to the corresponding entity in Wikidata and thus elucidate any associated symptoms, risk factors, possible treatments, etc. 
+
+* [1] https://www.nlm.nih.gov/mesh/meshhome.html
 
 ##### Wikidata
 Wikidata holds much promise as queryable global database of medical knowledge [2]. Wikidata, launched in 2012, is one of the most recent successful efforts to create a global knowledge graph which is self maintaining [3]. The concurrent expansion of networking and computing power, as well as the growing availability of digitized medical data will allow for more complex and useful insight to be gained from knowledge bases such as Wikidata. Projects already exists which aim to populate Wikidata with more high quality medical information, such as WikiProject Medicine [4]. In the future, there may even exist a system which incentivizes users to contribute medical information to Wikidata by rewarding them with a digital token that has an open market value, such as the system employed by Everipedia [5]. 
