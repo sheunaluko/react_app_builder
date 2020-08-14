@@ -30,7 +30,7 @@ What can Medkit be used for? At its inception, Medkit focused on two main applic
      - What are causes of hypokalemia? 
 
 
-[1] This could be done by making Medkit a SMART on FHIR app which can be directly integrated into the EMR. It is not currently being implemented but the intent is to do this in the future to allow EHR embedding. 
+* [1] This could be done by making Medkit a SMART on FHIR app which can be directly integrated into the EMR. It is not currently being implemented but the intent is to do this in the future to allow EHR embedding. 
 
 * Asterisk indicates that the software for the feature has been completed 
 
@@ -43,10 +43,10 @@ MeSH is a comprehensive and annually updated ontology of medical terminology. Be
 ##### Wikidata
 Wikidata holds much promise as queryable global database of medical knowledge [2]. Wikidata, launched in 2012, is one of the most recent successful efforts to create a global knowledge graph which is self maintaining [3]. The concurrent expansion of networking and computing power, as well as the growing availability of digitized medical data will allow for more complex and useful insight to be gained from knowledge bases such as Wikidata. Projects already exists which aim to populate Wikidata with more high quality medical information, such as WikiProject Medicine [4]. In the future, there may even exist a system which incentivizes users to contribute medical information to Wikidata by rewarding them with a digital token that has an open market value, such as the system employed by Everipedia [5]. 
 
-[2] Turki et al, Wikidata: A large-scale collaborative ontological medical database
-[3] https://en.wikipedia.org/wiki/Wikidata
-[4] https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Medicine
-[5] https://everipedia.org/
+* [2] Turki et al, Wikidata: A large-scale collaborative ontological medical database
+* [3] https://en.wikipedia.org/wiki/Wikidata
+* [4] https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Medicine
+* [5] https://everipedia.org/
 
 
 ### Architecture  
