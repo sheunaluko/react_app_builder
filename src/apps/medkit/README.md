@@ -36,7 +36,7 @@ Medkit is a collection of tools for building clinical decision support and medic
 ### MeSH and Wikidata 
 
 ##### Mesh
-MeSH is a comprehensive ontology of medical terminology that updated annually by the National Institutes of Health in the United States of America [1]. Before a new article is added to the pubmed database, MeSH descriptors are added to its metadata and these descriptors are used by the pubmed search engine to locate the article in the future. In addition, Wikidata medical entities like diseases and symptoms have MeSH identifiers. Thus, by representing a patients problem list using MeSH descriptors, Medkit is easily able to link a disease within the MeSH ontology to the corresponding entity in Wikidata and thus elucidate any associated symptoms, risk factors, possible treatments, etc. 
+MeSH is a comprehensive ontology of medical terminology that is updated annually by the National Institutes of Health in the United States of America [1]. Before a new article is added to the [MEDLINE](https://www.nlm.nih.gov/bsd/medline.html) database which [PubMed](https://pubmed.ncbi.nlm.nih.gov/) uses, MeSH descriptors are added to its metadata and these descriptors are used by the pubmed search engine to locate the article in the future. In addition, Wikidata medical entities like diseases and symptoms have MeSH identifiers. Thus, by representing a patients problem list using MeSH descriptors, Medkit is easily able to link a disease within the MeSH ontology to the corresponding entity in Wikidata and thus elucidate any associated symptoms, risk factors, possible treatments, etc. 
 
 * [1] https://www.nlm.nih.gov/mesh/meshhome.html
 
