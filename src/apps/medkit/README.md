@@ -36,15 +36,15 @@ Medkit is a collection of tools for building clinical decision support and medic
 ### MeSH and Wikidata 
 
 ##### Mesh
-MeSH is a comprehensive ontology of medical terminology that is updated annually by the National Institutes of Health in the United States of America [1]. Before a new article is added to the [MEDLINE](https://www.nlm.nih.gov/bsd/medline.html) database which [PubMed](https://pubmed.ncbi.nlm.nih.gov/) uses, MeSH descriptors are added to its metadata and these descriptors are used by the pubmed search engine to locate the article in the future. In addition, Wikidata medical entities like diseases and symptoms have MeSH identifiers. Thus, by representing a patients problem list using MeSH descriptors, Medkit is easily able to link a disease within the MeSH ontology to the corresponding entity in Wikidata and thus elucidate any associated symptoms, risk factors, possible treatments, etc. 
+MeSH is a comprehensive ontology of medical terminology that is updated annually by the National Institutes of Health in the United States of America [1]. Before a new article is added to the [MEDLINE](https://www.nlm.nih.gov/bsd/medline.html) database which [PubMed](https://pubmed.ncbi.nlm.nih.gov/) uses, MeSH descriptors are added to its metadata and these descriptors are used by the PubMed search engine to locate the article in the future. In addition, Wikidata medical entities like diseases and symptoms have MeSH identifiers. Thus, by representing a patients problem list using MeSH descriptors, Medkit is easily able to link a disease within the MeSH ontology to the corresponding entity in Wikidata and thus elucidate any associated symptoms, risk factors, possible treatments, etc. 
 
 * [1] https://www.nlm.nih.gov/mesh/meshhome.html
 
 ##### Wikidata
-Wikidata holds much promise as a queryable global database of medical knowledge [2]. Wikidata, launched in 2012, is one of the most recent successful efforts to create a global knowledge graph which is self maintaining [3]. The concurrent expansion of networking and computing power, as well as the growing availability of digitized medical data will allow for more complex and useful insight to be gained from knowledge bases such as Wikidata. Projects already exists which aim to populate Wikidata with more high quality medical information, such as WikiProject Medicine [4]. In the future, there may even exist a system which incentivizes users to contribute medical information to Wikidata by rewarding them with a digital token that has an open market value, such as the system employed by Everipedia [5]. 
+Wikidata, launched in 2012, is one of the most recent successful efforts to create a global knowledge graph which is self maintaining [2]. Wikidata also holds much promise as a queryable global database of medical knowledge [3]. The concurrent expansion of networking and computing power, as well as the growing availability of digitized medical data will allow for more complex and useful insight to be gained from knowledge bases such as Wikidata. Projects already exists which aim to populate Wikidata with more high quality medical information, such as WikiProject Medicine [4]. In the future, there may even exist a system which incentivizes users to contribute medical information to Wikidata by rewarding them with a digital token that has an open market value, such as the system employed by Everipedia [5]. 
 
-* [2] [Turki et al, 2019. Wikidata: A large-scale collaborative ontological medical database](https://doi.org/10.1016/j.jbi.2019.103292)
-* [3] https://en.wikipedia.org/wiki/Wikidata
+* [2] https://en.wikipedia.org/wiki/Wikidata
+* [3] [Turki et al, 2019. Wikidata: A large-scale collaborative ontological medical database](https://doi.org/10.1016/j.jbi.2019.103292)
 * [4] https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Medicine
 * [5] https://everipedia.org/
 
