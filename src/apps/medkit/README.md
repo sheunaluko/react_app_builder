@@ -9,8 +9,6 @@ Medkit is a collection of tools for building clinical decision support and medic
 
 ### APPLICATIONS 
 
-What can Medkit be used for? At its inception, Medkit focused on two main applications: 
-
 1. Clinical decision support 
    - Core Medkit components include: 
      - Problem List 
