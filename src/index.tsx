@@ -13,6 +13,12 @@ import * as tsw from 'tidyscripts_web'
 //import App from './apps/dream_catcher/App';
 import App from './apps/medkit/App';
 
+// TODO 
+// Create a search widget which allows selection of the app to display
+// also in the search component can useEffect which checks 
+// the URL for #infoRegardingPrefferedApp and will 
+// set the selected APP appropriately
+
 declare var window : any ; 
 
 window.tsw = tsw
