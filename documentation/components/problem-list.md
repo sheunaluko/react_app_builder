@@ -18,16 +18,23 @@ A view associated with an individual descriptor takes a dictionary as input and 
 
 Views associated with a group of MeSH Descriptors also take a dictionary as input and return a React component. However, in their case the required field is "descriptors", which refers to an array of "descriptor" objects which contain the "mesh\_id" subfield as well as any other associated cached data. These views will analyze and compare among the various available descriptors and return a component that displays comparative or summative information about the group of descriptors. For example:
 
-* A view dedicated to showing if there are any OVERLAPPING medications which treat the conditions listed 
+* A view that shows if there are any overlapping medications which treat the conditions listed 
 * A view that renders a bar graph of the risk factors by count \(color coded by the descriptor from which they originate\) 
+* etc... 
 
 #### Why is the "View" abstraction useful? 
 
-If you have read this far then you may be wondering how useful this abstraction is. The Problem List component will keep track of a list of "View" components. When the user activates a specific problem then a Grid is rendered that contains a list of "View" components relevant for that descriptor. Specifically, the code should look something like this: 
+If you have read this far then you may be wondering how useful this abstraction of "Views" really is. The Problem List component will keep track of a list of "View" components. When the user activates a specific problem then a grid is rendered that contains a list of "View" components relevant for that descriptor. Specifically, the code would look something like this: 
 
-```text
+```jsx
+/* 
+  Note: 
+    - MedKit uses React and Material UI
+    - MedKit also uses Typescript but this example uses Javascript in 
+          order to reach a wider audience 
+*/ 
+
 let DescriptorViewArea = function(descriptorInfo,registeredViews) {
-
     return ( 
         <Grid> 
             {
@@ -42,9 +49,13 @@ let DescriptorViewArea = function(descriptorInfo,registeredViews) {
 
 It would be really cool if in the future there was a library of "Views" which you could browse and incorporate into your problem list. Then, people all over the world could contribute to the interface, and yet you could customize your own "profile" of default views. 
 
+#### Views over multiple descriptors 
+
+The view abstraction will also help to create a diversity of possible analyses which can be run over a set of descriptors \(i.e. a problem list\). For example in the "Analysis" tab of the Problem List component, the user could select a list of Views to render into a grid container, in a similar manner as described directly above. 
+
 #### Disclaimer 
 
-Partly, this documentation serve as a specification or reference as I am building the application. Everything is subject to change as MedKit is in very early stages! 
+Partly, this documentation serves as a specification or reference as I am building MedKit. Everything is subject to change as MedKit is in very early stages! 
 
 
 
