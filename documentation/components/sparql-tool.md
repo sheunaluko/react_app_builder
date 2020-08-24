@@ -14,3 +14,5 @@ The MeSH presets connect to the public MeSH SPARQL endpoint
 
 The Wikidata presets connect to the public Wikidata SPARQL endpoint 
 
+**Note:** You can edit the text in the SPARQL editor and then run the query! This is probably a great way to learn how to use write SPARQL queries. The SPARQL result is returned as a json object which is then directly rendered in the component as is. You can click on the data fields to explore the object and interpret the response. 
+
