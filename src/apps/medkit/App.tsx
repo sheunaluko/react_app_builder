@@ -16,6 +16,9 @@ import RightDrawer from "./components/RightDrawer"
 import WikiDataSearch from "./components/WikiDataSearch"  
 import MeshSearch from "./components/MeshSearch2"  
 import TestComponent from "./components/TestComponent" 
+import ProblemList from "./components/ProblemList"
+import MeshTreeAccordion from "./components/MeshTreeAccordion"
+import SparqlWidget from "./components/SparqlWidget"
 
 import { ThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -28,14 +31,14 @@ import * as tsw from "tidyscripts_web"
 
 const theme = createMuiTheme({
     palette : { 
-	primary: green  
+	primary: green
     } 
 }) 
 
 
-let primary_component = MeshSearch 
-//let primary_component = TestComponent
-let widget_list = [ MeshSearch, MeshSearch] 
+
+//let widget_list = [ MeshTreeAccordion ] 
+let widget_list = [ SparqlWidget, ProblemList ] 
 
 function App() {
     
@@ -55,7 +58,7 @@ function App() {
 			    <MenuIcon />
 			</IconButton>
 			<Typography variant="h6" style={{flexGrow : 1}} >
-			    MEDKIT 
+			    Medkit 
 			</Typography>
 		    </Toolbar>
 		</AppBar> 
@@ -65,13 +68,12 @@ function App() {
 		
 		<Box style={{flexGrow : 1}}> 
 		    { 
-			/*
 			widget_list.map(  
 			    function(c: any) {
 				return ( 
 				    <div key={tsw.util.uuid()} 
 					style={{
-					    marginBottom : "5px"
+					    marginTop : "10px"
 					}}
 					> 
 					{c()}
@@ -79,8 +81,7 @@ function App() {
 				) 
 			    }
 			)
-			*/
-			primary_component() 
+//			primary_component() 
 		    } 
 		</Box>
 

@@ -1,0 +1,27 @@
+
+html { 
+    height : 100% ; 
+} 
+
+body { 
+    background-color : #CACACA  ; 
+    height : 100% ; 
+    overflow-x :hidden ; 
+    background-image: url("space.jpg");
+    background-repeat: repeat-y;    
+ 
+} 
+
+
+
+
+
+div#root { 
+    height : 100% ; 
+} 
+
+.App { 
+    height : 100% ; 
+} 
+
+

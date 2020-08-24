@@ -4,3 +4,5 @@ cp WidgetTemplate.tsx "$1.tsx"
 cp WidgetTemplateContext.tsx "$1Context.tsx"
 
 echo "Goodluck with making the $1 component!" 
+
+# we also want to modify our 

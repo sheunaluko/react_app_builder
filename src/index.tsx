@@ -29,6 +29,8 @@ window.fp = tsw.util.common.fp
 window.tts = tsw.util.tts 
 window.sr = tsw.util.speech_recognition 
 window.vi = tsw.util.voice_interface 
+window.debug = tsw.util.common.debug 
+
 
 ReactDOM.render(
     <App />, 

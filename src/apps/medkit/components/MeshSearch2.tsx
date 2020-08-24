@@ -6,7 +6,17 @@ import { ObjectInspector, TableInspector } from "react-inspector";
 import * as tsw from "tidyscripts_web" 
 import * as mui from "./list" 
 
-import MSContext from "./MeshSearchContext" 
+import {handleMeshQuery} from "./mesh_query" 
+
+import MeshTreeAccordion from "./MeshTreeAccordion" 
+
+interface State { 
+    state : any, 
+    setState : any 
+} 
+
+const MSContext = React.createContext<State>({state: null, setState : null})  ; 
+
 
 let { Container, 
       Grid, 
@@ -15,11 +25,16 @@ let { Container,
       Link, 
       TextField, 
       FormControl,
+      Box, 
       FormHelperText, 
       Breadcrumbs, 
       Chip,
       FaceIcon, 
       IconButton, 
+      Accordion,
+      AccordionSummary, 
+      AccordionDetails,
+      ExpandMoreIcon, 
       Icon, 
       InputLabel,
       OutlinedInput, 
@@ -36,19 +51,32 @@ let fp = tsw.util.common.fp
 let mesh = tsw.apis.mesh 
 let wikidata = tsw.apis.wikidata 
 let log = console.log 
+let debug = tsw.util.common.debug 
 
-
-
-
-export default function MeshSearch() { 
+export default function MeshSearch(args? : any) {  
+    
+    
+    let {selectHandler} = (args || {}) ; 
 
     const theme = useTheme();
     
     const [state, setState] = React.useState<any>({searchValue : null, 
 						   options : [], 
+						   tools : { 
+						       treeState : null, 
+						       commonParametersState  : null, 
+						   } ,
 						   selectedEntities : [], 
 						   textFieldText :""}) 
     
+    
+    let clickHandler = selectHandler || function(x :any){console.log(x)}
+    
+    
+    let paper_style = { 
+	padding : "2%" , 
+	margin : "10px" , 
+    } 
 
     return (
 	<MSContext.Provider value={{ state , setState }} > 
@@ -56,44 +84,94 @@ export default function MeshSearch() {
 	    <Container > 
 		
 		<div style={{ 
-		    marginTop  : "10%" , 
+
 		    backgroundColor : theme.palette.background.paper , 
 		    padding : "2%",  
 		    borderRadius : "15px",
 		    
-		    
  		}}>
+	
+	<div style={{display: "flex" ,
+		     flexDirection : "row" }} > 
+	    
+	    <Typography style={{flexGrow: 1}} variant="h4" > 
+		MeSH Entity Selector  
+	    </Typography>			
+	    
+	    <Button variant="outlined" 
+		color="primary"
+		onClick={ ()=>clickHandler(state.selectedEntities) } > 
+		SELECT
+	    </Button>	    
+	    
+	</div>
+	
+	<br /> 
+	
+	<Box style={{padding : "3%"}}> 
+	    <Accordion>
+		<AccordionSummary
+		    expandIcon={<ExpandMoreIcon />}
+		>
+		    <Typography >Search Tools</Typography>
+		</AccordionSummary>
+		
+		<AccordionDetails> 
 		    
-		    <div style={{display: "flex" ,
-				 flexDirection : "row" }} > 
+		    <Box> 
+
+
+			<Accordion>
+			    
+			    <AccordionSummary expandIcon={<ExpandMoreIcon />} >
+				<Typography > Tree Structure Filter </Typography>
+			    </AccordionSummary>
+			    <AccordionDetails> 
+				<MeshTreeAccordion parentState={{state,setState}} /> 
+			    </AccordionDetails>
+			    
+			    
+			</Accordion>
 			
-			<Typography style={{flexGrow: 1}} variant="h4" > 
-			    MeSH Entity Selector  
-			</Typography>			
 			
-			<Button variant="outlined" 
-				color="primary"
-				onClick={ 
-				    function(){
-					//need to add this option to the global state 
-					console.log(state.selectedEntities) 
-				    } 
-				}> 
-			    SELECT
-			</Button>	    
+
+
+			<Accordion>
+			    
+			    <AccordionSummary expandIcon={<ExpandMoreIcon />} >
+				<Typography > Common Parameters  </Typography>
+			    </AccordionSummary>
+			    <AccordionDetails> 
+				
+				<CommonParameters parentState={{state,setState}} > </CommonParameters>
+				
+			    </AccordionDetails>
+			    
+			    
+			</Accordion>
 			
-		    </div>
+			
+			
+			
+		    </Box>
 		    
-		    <br /> 
 		    
-		    <SelectedEntities />
 		    
-		    <br /> 
-		    
-		    <MTextField /> 
-		    
-		    <OptionsArea /> 
-		    
+		</AccordionDetails>
+		
+	    </Accordion>
+	</Box>
+	
+	
+	
+	<SelectedEntities />
+	
+	<br /> 
+	
+	<MTextField /> 
+	
+	<OptionsArea /> 
+	
 		</div>  
 		
 	    </Container > 
@@ -102,6 +180,49 @@ export default function MeshSearch() {
     
 
 } 
+
+
+function CommonParameters(props : any){ 
+    
+    let { state: MS_state, setState: set_MS_state } = props.parentState || {};
+    
+    const [state, setState] = React.useState<any>({
+	limit : 15
+    });
+
+    React.useEffect(() => {
+	//any time the state changes, we will update the parent component
+	set_MS_state({ ...MS_state, tools : {...MS_state.tools,
+					     commonParametersState: state} })
+	log("New limit: " + state.limit)
+    }, [state]);
+    
+    
+    return ( 
+	<Grid container spacing={3}>
+	    
+	    {
+		([ 
+		    [<TextField
+			 label="Limit"
+		         value={state.limit}
+		         onChange={function(e:any){ 
+			     setState({...state, limit : e.target.value})
+			 }}
+			 variant="outlined"
+			 size="small"  />, 
+		     "Limit"]
+		    
+		]).map((op:any)=>  (
+		    <Grid key={op[1]} item xs={3}>
+			{op[0]}
+		    </Grid>
+		))}
+	    
+	</Grid>
+	
+    ) 
+}
 
 
 
@@ -113,8 +234,21 @@ export function MTextField() {
 	console.log("Debouncer activating")
 	if (val ==""){console.log("ignoring empy");return} 	
 	// here we should actually conduct the search and THEN set the state
-	let result = await mesh.mesh_contains(args[0])
-	setState({...state, searchValue : val, options : result.result.value})
+	
+	
+	// need to modify this because it is the heart of the MeSH Query 
+	// in fact this function will read the entire widget state in order 
+	// to issue the correct sparql query and retrieve results 
+	// because this funcitonality is so imporant and compartmentalized
+	// I will separate it into a separate file 
+	
+	//let result = await mesh.mesh_contains(args[0])
+	let results = await handleMeshQuery({  val , state })
+	
+	setState({...state, searchValue : val, options : results})
+	
+	log("Storing state to tsw debug") 
+	debug.add("searchState", state) 
     })
 
     
@@ -123,12 +257,16 @@ export function MTextField() {
     return ( 
 	<MSContext.Consumer >
 	    {({state,setState}) => ( 
+		
+		//can get access to the search tools information here because it is also 
+		// in the context ? 
+		
+		
 		<div style={{width : "100%" }}>
 		    <FormControl fullWidth variant="outlined">
 			<InputLabel htmlFor="outlined-adornment-amount">MeSH</InputLabel>
 			<OutlinedInput
 			    id="outlined-adornment-amount"
-			//value={state.textFieldText}
 			    onChange={ function(e:any) {
 				    
 			            let val = e.target.value
@@ -221,7 +359,7 @@ function SearchCard(props : any) {
 		function({state,setState}) { 
 		    
 		    //if this option is in the selected entities 
-		    let is_selected = (state.selectedEntities.map((k:any)=>k.resource).indexOf(option.resource) > -1)
+		    let is_selected = (state.selectedEntities.map((k:any)=>k.option.resource).indexOf(option.resource) > -1)
 		    
 		    return   (
 			<Paper
@@ -246,7 +384,7 @@ function SearchCard(props : any) {
 				    function(){
 					//need to add this option to the global state 
 					console.log(option) 
-					state.selectedEntities.push(option)
+					state.selectedEntities.push({option, wikidataInfo, treeInfo})
 					setState({...state, selectedEntities : state.selectedEntities})
 				    } 
 				    
@@ -257,7 +395,13 @@ function SearchCard(props : any) {
 				
 			    </div>
 			    
-			    <br /> 
+
+			    
+			    <Typography variant="subtitle1"> 
+				{ wikidataInfo ? wikidataInfo['description'] : null } 
+			    </Typography>
+			    
+			    <br/>
 
 			    <Link href={option.resource} > 
 				{option.resource} 
@@ -312,7 +456,10 @@ export function SelectedEntities() {
 				      justifyContent: 'center',
 				      flexWrap: 'wrap' }}>
 			    { 
-				state.selectedEntities.map( function(x : any){
+				state.selectedEntities.map( function(y : any){
+				    
+				    let {option : x} = y
+				    
 				    return (
 					<Chip key={x.resource}
 					      label={x.label} 

@@ -25,6 +25,11 @@ import FormControl from '@material-ui/core/FormControl';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Icon from '@material-ui/core/Icon';
 
+import SpeedDial from '@material-ui/lab/SpeedDial';
+import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
+import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+
+
 
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -38,37 +43,68 @@ import DoneIcon from '@material-ui/icons/Done';
 import Link from '@material-ui/core/Link';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
+
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+import Switch from '@material-ui/core/Switch';
+import Radio from '@material-ui/core/Radio';
+
+import Checkbox from '@material-ui/core/Checkbox';
+
+
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 
 export { 
-       Box, 
-       AppBar, 
-       Toolbar, 
-       Typography,
-       IconButton,
-       Button,       
-       AddCircleOutlineIcon,
-       Breadcrumbs, 
-       MenuIcon,
-       Icon, 
-       Container, 
-       Grid, 
-       Link, 
-       Paper,
-       Autocomplete, 
-       TextField, 
-       Input, 
-       FilledInput,
-       OutlinedInput,
-       InputLabel,
-       Chip,
-       FaceIcon, 
-       DoneIcon,
-       Avatar,
-       InputAdornment,
-       FormHelperText, 
-       FormControl, 
-       Visibility, 
-       VisibilityOff, 
+    Box, 
+    AppBar, 
+    SpeedDial,
+    SpeedDialIcon,
+    SpeedDialAction,
+    Toolbar, 
+    Typography,
+    FormControlLabel,
+    Radio, 
+    IconButton,
+    Button,       
+    AddCircleOutlineIcon,
+    Breadcrumbs, 
+    Switch, 
+    Checkbox, 
+    MenuIcon,
+    Icon, 
+    Tabs, 
+    Tab, 
+    Accordion,
+    AccordionSummary, 
+    AccordionDetails,
+    CircularProgress,
+    ExpandMoreIcon, 
+    Container, 
+    Grid, 
+    Link, 
+    Paper,
+    Autocomplete, 
+    TextField, 
+    Input, 
+    FilledInput,
+    OutlinedInput,
+    InputLabel,
+    Chip,
+    FaceIcon, 
+    DoneIcon,
+    Avatar,
+    InputAdornment,
+    FormHelperText, 
+    FormControl, 
+    Visibility, 
+    VisibilityOff, 
 } 
