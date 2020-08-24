@@ -312,7 +312,7 @@ ORDER BY ?d`
 SELECT ?item ?itemLabel 
 WHERE 
 {
-  ?item wdt:P486 "MESH_ID" .
+  ?item wdt:P486 "D002481" .
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
 }`
 	    

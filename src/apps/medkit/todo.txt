@@ -1,13 +1,33 @@
 
 [x] create MeSH Entity Selector  
 
-[ ] create problem list widget , which uses TABS to toggle between MESH Entity Selector and the DISPLAY 
+[x] create problem list widget , which uses TABS to toggle between MESH Entity Selector and the DISPLAY 
   - working on this currently  
   - Finish problem list search tools, add another top level accordion 
   - ACtually implement search which filters based on tree numbers 
   - Add a limit selector to the serach tools 
   - create profiles for the tree selection so I can quickly embed a MeSH searcher which 
     - defaults to particular inclusions/ etc 
+    
+[ ] Have a concept called Views 
+  - There are Views over single problems [problems here is synonymous with MeSH descriptors] (for example a view which takes a problem and shows all 'drugs used for treatment' if any exist) 
+    - or one that renders the 'anatomical location' 
+    - these single views can be displayed in a grid to show case the attributes of a particular problem in (or outside) the problem list 
+    - the views should support being able to pass information to them, and they will only request it from the apis if it is missing 
+    
+
+  - There are Views over a SET of descriptors/problems, which may perform more complex data retrieval/ calculations in order to render insightful information 
+    - for example a View dedicated to showing if there are any OVERLAPPING medications which treat the condition 
+    - renders a bar graph of the risk factors 
+    - the views should support being able to pass information to them, and they will only request it from the apis if it is missing 
+
+
+[ ] Add little info icon next to componenets that links to the gitbook documentation 
+
+[ ] Create a MetaWidget that allows addition/deletion/changeTo of any other MedKit widget  
+
+[ ] Update sattsys node to keep a log of all activity and RESTART the websocket server if it crashes ... 99% uptime will be very important 
+  - when working on a team 
 
 [ ] create Wikidata Symptom Selector 
   - would probably be better to allow for modular searching of all the properties below  (i.e. findings, treatments etc) 
