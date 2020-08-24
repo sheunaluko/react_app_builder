@@ -8,6 +8,7 @@
 
 ## Documentation
 
+* [Welcome](documentation/welcome.md)
 * [Components](documentation/components/README.md)
   * [Problem List](documentation/components/problem-list.md)
   * [MeSH Search](documentation/components/mesh-search.md)
