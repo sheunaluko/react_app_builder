@@ -1,6 +1,6 @@
 # Welcome
 
-#### MedKit
+### MedKit
 
 Medkit is a collection of software tools for building clinical decision support and medical education systems powered by two key knowledge bases: 
 

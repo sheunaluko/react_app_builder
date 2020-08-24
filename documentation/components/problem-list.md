@@ -4,7 +4,7 @@ The problem list component facilitates entry, storage, and analysis of a patient
 
 Structurally, the component consists of a "Display" tab \(renders information about each problem\) and an "Edit" tab \(allows adding diagnoses to the list\). The "Edit" tab itself utilizes the [MeSH Search component](https://alukosheun.gitbook.io/medkit/documentation/components/mesh-search), which enables quick user search and entry of a list of [MeSH Descriptor Terms](https://www.nlm.nih.gov/mesh/intro_record_types.html). 
 
-## Views
+## Views \(under development\)
 
 MedKit is all about leveraging existing data to produce quick and valuable insight at the point of care. Because of this, MedKit's underlying software architecture must be optimized for versatility and scalability. One way that we achieve this is with the use of the "View" abstraction. 
 
