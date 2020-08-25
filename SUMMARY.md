@@ -14,3 +14,7 @@
   * [MeSH Search](documentation/components/mesh-search.md)
   * [SPARQL Tool](documentation/components/sparql-tool.md)
 
+---
+
+* [Future Features](future-features.md)
+

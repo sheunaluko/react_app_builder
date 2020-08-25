@@ -2,7 +2,7 @@
 
 The problem list component facilitates entry, storage, and analysis of a patient's relevant medical problems.
 
-Structurally, the component consists of a "Display" tab \(renders information about each problem\) and an "Edit" tab \(allows adding diagnoses to the list\). The "Edit" tab itself utilizes the [MeSH Search component](https://alukosheun.gitbook.io/medkit/documentation/components/mesh-search), which enables quick user search and entry of a list of [MeSH Descriptor Terms](https://www.nlm.nih.gov/mesh/intro_record_types.html). 
+Structurally, the component consists of a "Display" tab \(renders information about each problem\) and an "Edit" tab \(allows adding diagnoses to the list\). The "Edit" tab itself utilizes the [MeSH Search component](https://alukosheun.gitbook.io/medkit/documentation/components/mesh-search), which enables quick user search and entry of a list of [MeSH Descriptor Terms](https://www.nlm.nih.gov/mesh/intro_record_types.html). In the future, an "Analysis" tab will be added which facilitates visualization of insights regarding the patient's problem list. 
 
 ## Views \(under development\)
 
