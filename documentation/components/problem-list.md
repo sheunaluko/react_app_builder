@@ -12,7 +12,7 @@ A "View" can either be "over" an individual MeSH Descriptor or a group of MeSH D
 
 #### Views over individual MeSH Descriptors 
 
-A view associated with an individual descriptor takes a dictionary as input and returns a React component. Its input argument must at least have the key: "mesh\_id". The view rendering function can attempt to access any other fields of the object and will use them in place of making a corresponding network request for the same information. This allows for caching of information associated with MeSH Descriptor IDs. However, the calling function must provide the cached values in order to prevent the network request from occurring.
+A view associated with an individual descriptor takes a dictionary as input and returns a React component. The input dictionary must at least have the key: "mesh\_id". The view rendering function can attempt to access any other fields of the object and will use them in place of making a corresponding network request for the same information. This allows for caching of information associated with MeSH Descriptor IDs. However, the calling function must provide the cached values in order to prevent the network request from occurring.
 
 #### Views over a group of MeSH Descriptors
 
@@ -24,7 +24,7 @@ Views associated with a group of MeSH Descriptors also take a dictionary as inpu
 
 #### Why is the "View" abstraction useful? 
 
-If you have read this far then you may be wondering how useful this abstraction of "Views" really is. The Problem List component will keep track of a list of "View" components. When the user activates a specific problem then a grid is rendered that contains a list of "View" components relevant for that descriptor. Specifically, the code would look something like this: 
+If you have read this far then you may be wondering how useful this abstraction of "Views" really is. The Problem List component will keep track of a list of "View" components. When the user activates a specific problem then a grid is rendered that contains a list of "View" components rendered for that descriptor. Specifically, the code would look something like this: 
 
 ```jsx
 /* 
@@ -47,7 +47,7 @@ let DescriptorViewArea = function(descriptorInfo,registeredViews) {
 }     
 ```
 
-It would be really cool if in the future there was a library of "Views" which you could browse and incorporate into your problem list. Then, people all over the world could contribute to the interface, and yet you could customize your own "profile" of default views. 
+It would be really cool if in the future there was a library of "Views" which you could browse and incorporate into your problem list. Then, people all over the world could contribute to the interface, and yet you could customize your own "profile" of default views \(see [Future Features](https://alukosheun.gitbook.io/medkit/future-features)\).
 
 #### Views over multiple descriptors 
 
