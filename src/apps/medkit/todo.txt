@@ -9,6 +9,10 @@
   - create profiles for the tree selection so I can quickly embed a MeSH searcher which 
     - defaults to particular inclusions/ etc 
     
+[ ] Create ability to show GitBook Docs directly in the app. 
+     - send hyperloop http_get for the docs page (filter out the center content) 
+
+    
 [ ] Have a concept called Views 
   - There are Views over single problems [problems here is synonymous with MeSH descriptors] (for example a view which takes a problem and shows all 'drugs used for treatment' if any exist) 
     - or one that renders the 'anatomical location' 

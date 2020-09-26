@@ -19,6 +19,7 @@ import TestComponent from "./components/TestComponent"
 import ProblemList from "./components/ProblemList"
 import MeshTreeAccordion from "./components/MeshTreeAccordion"
 import SparqlWidget from "./components/SparqlWidget"
+import Diagnoser from "./components/Diagnoser"
 
 import { ThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -38,7 +39,7 @@ const theme = createMuiTheme({
 
 
 //let widget_list = [ MeshTreeAccordion ] 
-let widget_list = [ SparqlWidget, ProblemList ] 
+let widget_list = [ Diagnoser , SparqlWidget ] 
 
 function App() {
     

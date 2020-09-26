@@ -245,7 +245,7 @@ export function MTextField() {
 	//let result = await mesh.mesh_contains(args[0])
 	let results = await handleMeshQuery({  val , state })
 	
-	setState({...state, searchValue : val, options : results})
+	setState({...state, searchValue : val, options : (results || [])})
 	
 	log("Storing state to tsw debug") 
 	debug.add("searchState", state) 

@@ -162,8 +162,15 @@ export default function Widget(args? : any) {
 					    <Button
 						onClick={()=>activate_preset({...presets.wikidata.label_for_meshid,state,setState})}
 					    > 
-						Label for MeSH ID
+						Label for MeSH ID (Cellulitis) 
 					    </Button> 
+					    
+					    <Button
+						onClick={()=>activate_preset({...presets.wikidata.diseases_with_symptom,state,setState})}
+					    > 
+						Diseases with Symptom Cough
+					    </Button> 					    
+					    
 					</AccordionDetails>
 				    </Accordion>
 				    
@@ -183,12 +190,12 @@ export default function Widget(args? : any) {
 			    marginBottom : "10px",
 			}}
 		    
-			label="Endpoint"
+		    label="Endpoint"
 		        value={state.endpoint}
 		        onChange={function(e:any){ 
 				setState({...state, endpoint : e.target.value})
 			    }}
-			variant="outlined"	  /> 
+		    variant="outlined"	  /> 
 		    
 		    
 		    <Typography variant="subtitle1"> 
@@ -196,14 +203,14 @@ export default function Widget(args? : any) {
 		    </Typography>
 		    
 		    <AceEditor
-		    debounceChangePeriod={1000}
-		    width="100%"
-		    value={state.sparql_text}
-		    mode="mysql"
-		    theme="github"
-		    name="ace_editor_sparql"
-		    onChange={(sparql_text:string)=> setState({...state,sparql_text })}
-		    editorProps={{ $blockScrolling: true }}
+			debounceChangePeriod={1000}
+			width="100%"
+			value={state.sparql_text}
+			mode="mysql"
+			theme="github"
+			name="ace_editor_sparql"
+			onChange={(sparql_text:string)=> setState({...state,sparql_text })}
+			editorProps={{ $blockScrolling: true }}
 		    />		    
 		    
 		    
@@ -316,7 +323,19 @@ WHERE
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
 }`
 	    
-	}
+	} , 
+	
+	'diseases_with_symptom' : { 
+	    ep : wiki_ep , 
+	    query : ` 
+SELECT ?item ?itemLabel 
+WHERE 
+{
+  ?item wdt:P780 wd:Q35805  .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+	    `
+	}, 
     } , 
 }
 
