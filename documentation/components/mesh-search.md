@@ -14,6 +14,8 @@ If you want to include all "Anatomy" terms but also exclude any terms within the
 
 When you run the query, MedKit will generate the appropriate SPARQL query and send it to the MeSH SPARQL endpoint. 
 
+To get more experience with SPARQL queries, you can try out the [SPARQL Tool](https://app.gitbook.com/@alukosheun/s/medkit/~/drafts/-MFXIc0Y2xjFH_awP753/documentation/components/sparql-tool) which allows you to edit requests directly in MedKit and then visualize the results.
+
 For more information about the MeSH hierarchy and tree structures, please see this [NIH resource](https://www.nlm.nih.gov/mesh/intro_trees.html).
 
 ### Common Parameters 
