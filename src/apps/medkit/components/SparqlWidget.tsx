@@ -336,6 +336,21 @@ WHERE
 }
 	    `
 	}, 
+	
+	'diseases_with_findings' : { 
+	    ep  : wiki_ep, 
+	    query: `
+SELECT ?item ?itemLabel ?finding ?findingLabel
+WHERE 
+{
+  VALUES ?finding {  wd:Q1090174 wd:Q9690  } 
+  
+  ?item wdt:P5131 ?finding  .
+  
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+	    `
+	} , 
     } , 
 }
 

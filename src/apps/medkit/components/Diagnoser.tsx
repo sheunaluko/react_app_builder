@@ -46,6 +46,7 @@ let mesh = tsw.apis.mesh
 let wikidata = tsw.apis.wikidata 
 let log = console.log 
 
+let debug  = tsw.util.common.debug 
 
 declare var window : any ; 
 
@@ -55,7 +56,7 @@ export default function PL(){
     const theme = useTheme();
     const [state, setState] = React.useState<any>({
 	tabValue : 1, 
-	selected : JSON.parse(localStorage['selection']),
+	selected : JSON.parse(localStorage['diagnoser.selection']),
 	elevations : {} , 
     }) 
     
@@ -165,6 +166,30 @@ function PLDisplayPapers(props : any) {
 	elevations[res] = 10 
 	setElevations({...elevations}) 
     }
+    
+    
+    React.useEffect( ()=> { 
+	
+	const qids  = selected.map( (x:any) => x.wikidataInfo.itemId ) 
+	debug.add("qids" , qids) 
+	//debug.log("Retrieved the following qids: " + qids)   
+	const disease_symptom_data = wikidata.diseases_with_symptoms( qids.map( (s:string)=> "wd:" + s ) ) 
+	disease_symptom_data.then( (dsd: any) => { 
+	    debug.log("Adding disease symptom data to debugger with key 'dsd'")
+	    debug.add("dsd" , dsd) 	    
+	})
+	
+	/* 
+	   
+	   Make a pie chart based on 
+	    1) the frequency of the disease (take top N diseases) with N a configurable parameter 
+	
+	*/ 
+
+	
+    } , [] ) 
+    
+    
 
     return (
 	<div style={{flexGrow: 1, padding : "1%" }}>
@@ -271,6 +296,10 @@ function PLEdit() {
 				    setState({...state, 
 					      selected : e 
 				    })
+				    
+				    //overwrite the local storage 
+				    localStorage['diagnoser.selection'] = JSON.stringify(e) 
+				    
 				}} />
 			</div>
 		    )

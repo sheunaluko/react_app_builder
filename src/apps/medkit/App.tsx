@@ -29,6 +29,13 @@ import green from '@material-ui/core/colors/green';
 import blue from '@material-ui/core/colors/blue';
 
 import * as tsw from "tidyscripts_web" 
+import * as dev from  "./dev"
+
+
+declare var window : any  ;  
+window.dev = dev 
+
+
 
 const theme = createMuiTheme({
     palette : { 
