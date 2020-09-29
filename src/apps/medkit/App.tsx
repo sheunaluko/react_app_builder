@@ -18,8 +18,11 @@ import MeshSearch from "./components/MeshSearch2"
 import TestComponent from "./components/TestComponent" 
 import ProblemList from "./components/ProblemList"
 import MeshTreeAccordion from "./components/MeshTreeAccordion"
+
 import SparqlWidget from "./components/SparqlWidget"
 import Diagnoser from "./components/Diagnoser"
+import EntityViewer from "./components/WikidataEntityViewer" 
+
 
 import { ThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -46,7 +49,8 @@ const theme = createMuiTheme({
 
 
 //let widget_list = [ MeshTreeAccordion ] 
-let widget_list = [ Diagnoser , SparqlWidget ] 
+//let widget_list = [ EntityViewer, Diagnoser , SparqlWidget ] 
+let widget_list = [ Diagnoser  ] 
 
 function App() {
     
