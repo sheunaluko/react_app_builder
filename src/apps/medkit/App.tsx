@@ -19,10 +19,6 @@ import TestComponent from "./components/TestComponent"
 import ProblemList from "./components/ProblemList"
 import MeshTreeAccordion from "./components/MeshTreeAccordion"
 
-import SparqlWidget from "./components/SparqlWidget"
-import Diagnoser from "./components/Diagnoser"
-import EntityViewer from "./components/WikidataEntityViewer" 
-
 
 import { ThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -34,6 +30,9 @@ import blue from '@material-ui/core/colors/blue';
 import * as tsw from "tidyscripts_web" 
 import * as dev from  "./dev"
 
+import * as smgr from './state_manager' 
+
+import { MenuComponents } from "./components/ComponentDictionary" 
 
 declare var window : any  ;  
 window.dev = dev 
@@ -48,15 +47,19 @@ const theme = createMuiTheme({
 
 
 
-//let widget_list = [ MeshTreeAccordion ] 
-//let widget_list = [ EntityViewer, Diagnoser , SparqlWidget ] 
-let widget_list = [ Diagnoser  ] 
-
 function App() {
     
     
-    const [state, setState] = React.useState("info") 
+    const [state, setState] = React.useState("diagnoser") 
     
+    let selectedSetter = function(s : string) {
+	//then change the UI 
+	setState(s) 
+    } 
+    
+    smgr.register("setAppSelectedMenu", selectedSetter) 
+    
+    let toggle = ()=> smgr.get("drawerToggle")() 
     
     return (
 	<ThemeProvider theme={theme}> 
@@ -66,36 +69,22 @@ function App() {
 		
 		<AppBar position="static">
 		    <Toolbar>
-			<IconButton edge="start" color="inherit" aria-label="menu" onClick={()=>null} >
+			<IconButton edge="start" color="inherit" aria-label="menu" onClick={toggle} >
 			    <MenuIcon />
 			</IconButton>
 			<Typography variant="h6" style={{flexGrow : 1}} >
-			    Medkit 
+			    MedKit
 			</Typography>
 		    </Toolbar>
 		</AppBar> 
 		
 		<LeftDrawer /> 
-		<RightDrawer /> 
 		
-		<Box style={{flexGrow : 1}}> 
-		    { 
-			widget_list.map(  
-			    function(c: any) {
-				return ( 
-				    <div key={tsw.util.uuid()} 
-					style={{
-					    marginTop : "10px"
-					}}
-					> 
-					{c()}
-				    </div>
-				) 
-			    }
-			)
-//			primary_component() 
-		    } 
-		</Box>
+		<br/> 
+		{ 
+		    MenuComponents[state]
+		} 
+		
 
 	    </div>
 	</ThemeProvider > 
@@ -103,3 +92,4 @@ function App() {
 }
 
 export default App;
+

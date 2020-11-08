@@ -1,0 +1,34 @@
+
+# define variables 
+name="$1" 
+widget_name="$1.tsx" 
+context_name="$1_Context"  
+context_fname="$1_Context.tsx"  
+template_name="MedkitToolTemplate.tsx"
+template_context_name="TemplateContext.tsx" 
+text_to_replace="VAR_CONTEXT" 
+text_to_insert="$context_name"
+
+
+# copy the template
+cp $template_name $widget_name
+
+# replace the {{VAR_CONTEXT}} with the context name 
+#sed_query="s/${text_to_replace}/${text_to_insert}/g"
+#echo "using sed query: $sed_query" 
+# -i does in place 
+sed -i "" "s/${text_to_replace}/${text_to_insert}/g" $widget_name
+
+# rename the title of the widget 
+text_to_replace="VAR_TITLE" 
+text_to_insert="$name"
+sed -i "" "s/${text_to_replace}/${text_to_insert}/g" $widget_name
+
+
+# - should have the widget file copied, renamed, and edited 
+# - now we copy the context 
+cp $template_context_name $context_fname 
+
+echo "Enjoy the new $name widget!" 
+
+

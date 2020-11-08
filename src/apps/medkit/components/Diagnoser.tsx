@@ -52,12 +52,40 @@ let debug = tsw.util.common.debug;
 
 declare var window: any;
 
+function load_selected() {
+    
+    let dta = localStorage["diagnoser.selection"]
+    
+    if (dta) { 
+	
+	var tmp = JSON.parse(dta) 
+	//ensure that wikidataInfo exists for all of them 
+	return tmp.map( (x:any)=> {
+	    if (!x.wikidataInfo) {
+		x.wikidataInfo = {} 
+	    }
+	    return x 
+	})
+	
+    } else { 
+	
+	// client oes not have any cache 
+	
+	return []
+    } 
+     
+    
+	
+} 
+
+
+
 export default function PL() {
-  const theme = useTheme();
-  const [state, setState] = React.useState<any>({
-    tabValue: 0,
-    selected: JSON.parse(localStorage["diagnoser.selection"]),
-    elevations: {}
+    const theme = useTheme();
+    const [state, setState] = React.useState<any>({
+	tabValue: 1,
+	selected: load_selected() , 
+	elevations: {}
   });
 
   let TabPanel = function(props: any) {
@@ -351,10 +379,19 @@ function PLDisplayPapers(props: any) {
 
       <Typography variant="h6">Ranked Diagnoses:</Typography>
 
+     
       <RankingsInfo />
     </div>
   );
 }
+
+/*
+   // TODO - can have: 
+   // high yield diagnostic steps 
+   // high yield additional symptoms / features   
+   //    - and how they impact suggestions 
+   // high yield treatments  
+ */ 
 
 export function TreeRow(ss: string[]) {
   return (
