@@ -13,6 +13,7 @@
   * [Problem List](documentation/components/problem-list.md)
   * [MeSH Search](documentation/components/mesh-search.md)
   * [SPARQL Tool](documentation/components/sparql-tool.md)
+  * [Diagnosis Support Tool](documentation/components/diagnosis-support-tool.md)
 
 ---
 
