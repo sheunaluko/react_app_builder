@@ -1,23 +1,77 @@
 import React from 'react';
+import * as mk from "../medkit"
+import * as smgr from '../state_manager' 
+import * as mui from "./list";
+
+let {
+    Container,
+    Grid,
+    Paper,
+    AddCircleOutlineIcon,
+    Link,
+    TextField,
+    Box,
+    FormControl,
+    FormHelperText,
+    Breadcrumbs,
+    Tabs,
+    Tab,
+    List,
+    ListItem, 
+    ListItemIcon, 
+    ListItemText, 
+    Divider, 
+    BuildIcon,
+    Drawer,
+    Chip,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    NavigateNextIcon, 
+    ExpandMoreIcon,
+    FaceIcon,
+    IconButton,
+    Icon,
+    InputLabel,
+    OutlinedInput,
+    InputAdornment,
+    DoneIcon,
+    Card, 
+    Avatar,
+    Button,
+    Visibility,
+    VisibilityOff,
+    Typography
+} = mui;
+
+declare var window : any ;
 
 
-import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 
+export default function AppDrawer() {
 
-
-
-function Drawer() { 
+    const [state, setState] = React.useState({
+	open : false  ,
+	html_string : "<div>Whoooo!</div>"
+    });
     
-    return ( 
-	<div></div>  
-    ) ; 
-
-} 
-
-
-export default Drawer ; 
+    smgr.register("RdrawerSetState", setState) 
+    smgr.register("RdrawerState" , state) 
+    smgr.register("RdrawerToggle" , ()=> { setState({...state, open : !state.open}) } ) 
+    smgr.register("RdrawerOpen" , ()=> { setState({...state, open : true}) } ) 
+    smgr.register("RdrawerClose" , ()=> { setState({...state, open : false}) } )     
+    smgr.register("RdrawerSetHtml" , (strang : string)=> { setState({...state, html_string : strang}) } )     
+    
+    
+    return (
+	<div>
+            <Drawer anchor='right' open={state.open} onClose={()=>setState({...state,open: false })}>
+		<iframe
+		
+		    frameBorder="0"
+		    src={"data:text/html;charset=utf-8," + escape(state.html_string)}
+		/> 
+            </Drawer>
+	</div>
+    );
+}

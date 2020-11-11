@@ -6,6 +6,8 @@ import * as tsw from "tidyscripts_web";
 import * as mui from "./list";
 import { ObjectInspector, TableInspector } from "react-inspector";
 
+import * as mk from "../medkit" 
+
 import PLContext from "./PLContext";
 
 import MeshSearch from "./MeshSearch2";
@@ -31,6 +33,7 @@ let {
   ExpandMoreIcon,
   FaceIcon,
   IconButton,
+  InfoIcon, 
   Icon,
   InputLabel,
   OutlinedInput,
@@ -105,40 +108,52 @@ export default function PL() {
   };
 
   return (
-    <PLContext.Provider value={{ state, setState }}>
-      <Container>
-        <div
-          style={{
-            backgroundColor: theme.palette.background.paper,
-            padding: "2%",
-            borderRadius: "15px"
-          }}
-        >
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <Typography style={{ flexGrow: 1 }} variant="h4">
-              Diagnosis Support Tool
-            </Typography>
-          </div>
+      <PLContext.Provider value={{ state, setState }}>
+	  <Container>
+              <div
+		  style={{
+		      backgroundColor: theme.palette.background.paper,
+		      padding: "2%",
+		      borderRadius: "15px"
+		  }}
+              >
+		  <div style={{ display: "flex", flexDirection: "row" }}>
+		      <Typography style={{ flexGrow: 1 }} variant="h4">
+			  Diagnosis Support Tool
+		      </Typography>
+		      
+		      <IconButton onClick={async ()=>{
+			      //console.log("Requesting docs")
+			      //let html = await mk.get_documentation("sparql-tool")
+			      //window.debug_html = html 
+			      //mk.smgr.get("RdrawerSetHtml")(html.outerHTML) 
+			      //mk.smgr.get("RdrawerOpen")()
+			      window.open("https://alukosheun.gitbook.io/medkit/documentation/components/diagnosis-support-tool")
+			      
+		      }}> 
+			  <InfoIcon/> 
+		      </IconButton>
+		  </div>
 
-          <Tabs
-            //orientation="vertical"
-            value={state.tabValue}
-            onChange={(event: any, newValue: any) => {
-              setState({ ...state, tabValue: newValue });
-            }}
-          >
-            <Tab label="Analyze" />
-            <Tab label="Select Clinical Features" />
-          </Tabs>
-          <TabPanel value={state.tabValue} index={0}>
-            <PLDisplay />
-          </TabPanel>
-          <TabPanel value={state.tabValue} index={1}>
-            <PLEdit />
-          </TabPanel>
-        </div>
-      </Container>
-    </PLContext.Provider>
+		  <Tabs
+		      //orientation="vertical"
+		      value={state.tabValue}
+		      onChange={(event: any, newValue: any) => {
+			      setState({ ...state, tabValue: newValue });
+		      }}
+		  >
+		      <Tab label="Analyze" />
+		      <Tab label="Select Clinical Features" />
+		  </Tabs>
+		  <TabPanel value={state.tabValue} index={0}>
+		      <PLDisplay />
+		  </TabPanel>
+		  <TabPanel value={state.tabValue} index={1}>
+		      <PLEdit />
+		  </TabPanel>
+              </div>
+	  </Container>
+      </PLContext.Provider>
   );
 }
 

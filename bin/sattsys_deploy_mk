@@ -1,0 +1,10 @@
+
+# first build it 
+yarn build 
+
+echo "Build finished -- now copying to sattsys server" 
+
+gcloud compute scp --recurse build/* sattsys:~/srv/medkit
+
+echo "Done! The updated application should be available @ https://sattsys.com/medkit" 
+

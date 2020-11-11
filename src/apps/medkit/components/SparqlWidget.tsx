@@ -35,6 +35,7 @@ let { Container,
       Box, 
       FormHelperText, 
       Breadcrumbs, 
+      InfoIcon, 
       Chip,
       FaceIcon, 
       IconButton, 
@@ -112,10 +113,21 @@ export default function Widget(args? : any) {
 		    borderRadius : "15px",
 		    
  		}}>		
-		    <Typography variant="h4" > 
-			SPARQL Tool
-		    </Typography> 
 		    
+		    <div style={{ display: "flex", flexDirection: "row" , justifyContent: "space-between"}}> 
+			<Typography variant="h4" > 
+			    SPARQL Tool
+			</Typography> 
+			
+			<IconButton onClick={async ()=>{
+				window.open("https://alukosheun.gitbook.io/medkit/documentation/components/sparql-tool")
+				
+			}}> 
+			    <InfoIcon/> 
+			</IconButton>
+			
+		    </div>
+
 		    <br /> 
 		    
 		    <Box> 
@@ -190,12 +202,12 @@ export default function Widget(args? : any) {
 			    marginBottom : "10px",
 			}}
 		    
-		    label="Endpoint"
+			label="Endpoint"
 		        value={state.endpoint}
 		        onChange={function(e:any){ 
 				setState({...state, endpoint : e.target.value})
 			    }}
-		    variant="outlined"	  /> 
+			variant="outlined"	  /> 
 		    
 		    
 		    <Typography variant="subtitle1"> 
@@ -203,14 +215,14 @@ export default function Widget(args? : any) {
 		    </Typography>
 		    
 		    <AceEditor
-			debounceChangePeriod={1000}
-			width="100%"
-			value={state.sparql_text}
-			mode="mysql"
-			theme="github"
-			name="ace_editor_sparql"
-			onChange={(sparql_text:string)=> setState({...state,sparql_text })}
-			editorProps={{ $blockScrolling: true }}
+		    debounceChangePeriod={1000}
+		    width="100%"
+		    value={state.sparql_text}
+		    mode="mysql"
+		    theme="github"
+		    name="ace_editor_sparql"
+		    onChange={(sparql_text:string)=> setState({...state,sparql_text })}
+		    editorProps={{ $blockScrolling: true }}
 		    />		    
 		    
 		    

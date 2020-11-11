@@ -2,6 +2,7 @@
   "name": "meta_app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://sattsys.com/medkit",
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
@@ -25,7 +26,7 @@
     "react-dom": "^16.13.1",
     "react-fittext": "^1.0.0",
     "react-inspector": "^5.0.1",
-    "react-scripts": "3.4.1",
+    "react-scripts": "4.0.0",
     "typescript": "~3.7.2",
     "uuid": "^8.2.0"
   },

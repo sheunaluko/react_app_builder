@@ -36,6 +36,7 @@ let { Container,
       AccordionDetails,
       ExpandMoreIcon, 
       Icon, 
+      InfoIcon, 
       InputLabel,
       OutlinedInput, 
       InputAdornment, 
@@ -90,88 +91,98 @@ export default function MeshSearch(args? : any) {
 		    borderRadius : "15px",
 		    
  		}}>
-	
-	<div style={{display: "flex" ,
-		     flexDirection : "row" }} > 
-	    
-	    <Typography style={{flexGrow: 1}} variant="h4" > 
-		MeSH Entity Selector  
-	    </Typography>			
-	    
-	    <Button variant="outlined" 
-		color="primary"
-		onClick={ ()=>clickHandler(state.selectedEntities) } > 
-		SELECT
-	    </Button>	    
-	    
-	</div>
-	
-	<br /> 
-	
-	<Box style={{padding : "3%"}}> 
-	    <Accordion>
-		<AccordionSummary
-		    expandIcon={<ExpandMoreIcon />}
-		>
-		    <Typography >Search Tools</Typography>
-		</AccordionSummary>
-		
-		<AccordionDetails> 
 		    
-		    <Box> 
-
-
-			<Accordion>
-			    
-			    <AccordionSummary expandIcon={<ExpandMoreIcon />} >
-				<Typography > Tree Structure Filter </Typography>
-			    </AccordionSummary>
-			    <AccordionDetails> 
-				<MeshTreeAccordion parentState={{state,setState}} /> 
-			    </AccordionDetails>
-			    
-			    
-			</Accordion>
+		    <div style={{display: "flex" ,
+				 flexDirection : "row" }} > 
+			
+			<Typography style={{flexGrow: 1}} variant="h4" > 
+			    MeSH Entity Selector  
+			</Typography>			
 			
 			
-
-
+			
+			<Button variant="outlined" 
+			    color="primary"
+			    onClick={ ()=>clickHandler(state.selectedEntities) } > 
+			    SELECT
+			</Button>	    
+			
+			
+			<IconButton onClick={async ()=>{
+				window.open("https://alukosheun.gitbook.io/medkit/documentation/components/mesh-search")
+				
+			}}> 
+			    <InfoIcon/> 
+			</IconButton>
+			
+		    </div>
+		    
+		    <br /> 
+		    
+		    <Box style={{padding : "3%"}}> 
 			<Accordion>
-			    
-			    <AccordionSummary expandIcon={<ExpandMoreIcon />} >
-				<Typography > Common Parameters  </Typography>
+			    <AccordionSummary
+				expandIcon={<ExpandMoreIcon />}
+			    >
+				<Typography >Search Tools</Typography>
 			    </AccordionSummary>
+			    
 			    <AccordionDetails> 
 				
-				<CommonParameters parentState={{state,setState}} > </CommonParameters>
+				<Box> 
+
+
+				    <Accordion>
+					
+					<AccordionSummary expandIcon={<ExpandMoreIcon />} >
+					    <Typography > Tree Structure Filter </Typography>
+					</AccordionSummary>
+					<AccordionDetails> 
+					    <MeshTreeAccordion parentState={{state,setState}} /> 
+					</AccordionDetails>
+					
+					
+				    </Accordion>
+				    
+				    
+
+
+				    <Accordion>
+					
+					<AccordionSummary expandIcon={<ExpandMoreIcon />} >
+					    <Typography > Common Parameters  </Typography>
+					</AccordionSummary>
+					<AccordionDetails> 
+					    
+					    <CommonParameters parentState={{state,setState}} > </CommonParameters>
+					    
+					</AccordionDetails>
+					
+					
+				    </Accordion>
+				    
+				    
+				    
+				    
+				</Box>
+				
+				
 				
 			    </AccordionDetails>
 			    
-			    
 			</Accordion>
-			
-			
-			
-			
 		    </Box>
 		    
 		    
 		    
-		</AccordionDetails>
-		
-	    </Accordion>
-	</Box>
-	
-	
-	
-	<SelectedEntities />
-	
-	<br /> 
-	
-	<MTextField /> 
-	
-	<OptionsArea /> 
-	
+		    <SelectedEntities />
+		    
+		    <br /> 
+		    
+		    <MTextField /> 
+		    
+		    <OptionsArea /> 
+		    
 		</div>  
 		
 	    </Container > 

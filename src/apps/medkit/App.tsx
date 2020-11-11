@@ -11,7 +11,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 
 import LeftDrawer from "./components/LeftDrawer" 
-import RightDrawer from "./components/RightDrawer"  
+import RightDrawer from "./components/RightDrawer" 
+
+
 
 import WikiDataSearch from "./components/WikiDataSearch"  
 import MeshSearch from "./components/MeshSearch2"  
@@ -32,11 +34,13 @@ import * as dev from  "./dev"
 
 import * as smgr from './state_manager' 
 
+import * as mk from "./medkit" 
+
 import { MenuComponents } from "./components/ComponentDictionary" 
 
 declare var window : any  ;  
 window.dev = dev 
-
+window.mk = mk 
 
 
 const theme = createMuiTheme({
@@ -79,6 +83,7 @@ function App() {
 		</AppBar> 
 		
 		<LeftDrawer /> 
+		<RightDrawer/> 
 		
 		<br/> 
 		{ 
