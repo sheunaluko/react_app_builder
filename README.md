@@ -15,7 +15,7 @@ Medkit is a collection of software tools for building clinical decision support 
 
 2\) [Wikidata](https://www.wikidata.org/wiki/Wikidata:Main_Page) \[Global\] 
 
-#### _Please note:  MedKit is NOT intended for use by patient's in order to "diagnose" themselves. Because of the noisy and inaccurate nature of Wikidata, results may be displayed by MedKit which are misleading. MedKit cannot testify to the validity of any data returned, it is experimental software_
+#### _Please note:  MedKit is NOT intended for use by patients in order to diagnose themselves. Because of the noisy and inaccurate nature of Wikidata, results may be displayed by MedKit which are misleading. MedKit cannot testify to the validity of any data returned, it is experimental software_
 
 #### Applications
 
