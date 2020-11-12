@@ -2,7 +2,7 @@
 
 ## Running from the public url 
 
-The most recent version of the MedKit web application \(website\) will be accessible [here](https://github.com/sheunaluko/react_app_builder/tree/master/src/apps/medkit). However, right now MedKit is in a pre-release form and thus this link points to the github repository. When I release MedKit, the link above will point to a live demo of the application. 
+The most recent version of the MedKit web application \(website\) is accessible [here](https://sattsys.com/medkit). 
 
 ## Running locally 
 
