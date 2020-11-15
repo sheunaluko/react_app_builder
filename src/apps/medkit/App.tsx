@@ -63,7 +63,7 @@ let console_cntr = () => console_cnt++
 function App() {
     
     let default_text = [
-	"[" + String(new Date()).split(" ").slice(0,5).join(" ") + "] - Initialized" , 
+	"INIT: " + String(new Date()).split(" ").slice(0,5).join(" ")  , 
 	"Welcome to the MedKit UI Console", 
 	"Helpful information will be displayed here", 
 	"Use the button in the bottom right to toggle this window" , 
@@ -120,7 +120,7 @@ function App() {
 		
 		
 		<div style={{
-		    position: 'absolute',
+		    position: 'fixed',
 		    bottom: "60px",
 		    right: "30px",
 		    borderRadius : "10px" ,
@@ -137,7 +137,7 @@ function App() {
 		
 		
 		<div style={{
-		    position: 'absolute',
+		    position: 'fixed',
 		    bottom: "10px",
 		    right: "30px",
 		    fontSize : "30px" , 

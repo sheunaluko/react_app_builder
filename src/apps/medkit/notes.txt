@@ -2,7 +2,10 @@
 MEDKIT 
 ------ 
 
-[ ] Request the preliminary dat afrom hlm wikidata queries 
+
+[x] Request the preliminary dat afrom hlm wikidata queries 
+
+[ ] Fix the MeSH Entity Selector Filter (in the tsw/apis/mesh )  
 
 [ ] Can I create a JS Console element which evaluates everything inside of an iframe with limited permissions? 
 Once the user inputs a query it is posted to the iframe, there it is evaled and some data structure is returned, 
