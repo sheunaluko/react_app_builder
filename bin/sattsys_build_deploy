@@ -1,0 +1,10 @@
+
+# first build it 
+yarn build 
+
+echo "Build finished -- now copying to sattsys server" 
+
+gcloud compute scp --recurse build "sattsys:~/srv/apps/$1" 
+
+echo "Done! The updated application has been transfered to -> https://sattsys.com/srv/apps/$1" 
+

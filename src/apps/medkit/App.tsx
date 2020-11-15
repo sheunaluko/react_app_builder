@@ -34,9 +34,17 @@ import * as dev from  "./dev"
 
 import * as smgr from './state_manager' 
 
+import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
+
 import * as mk from "./medkit" 
 
 import { MenuComponents } from "./components/ComponentDictionary" 
+
+import {
+    Button, 
+} from "./components/list" 
+
+
 
 declare var window : any  ;  
 window.dev = dev 
@@ -49,12 +57,32 @@ const theme = createMuiTheme({
     } 
 }) 
 
-
+var console_cnt = 0 
+let console_cntr = () => console_cnt++
 
 function App() {
     
+    let default_text = [
+	"[" + String(new Date()).split(" ").slice(0,5).join(" ") + "] - Initialized" , 
+	"Welcome to the MedKit UI Console", 
+	"Helpful information will be displayed here", 
+	"Use the button in the bottom right to toggle this window" , 
+	"Take care!", 
+    ]
     
     const [state, setState] = React.useState("diagnoser") 
+    const [consoleState, setConsoleState] = React.useState(false)     
+    const [console_text, setConsoleText] = React.useState(default_text)         
+    
+    smgr.register("console_text" , console_text) 
+    smgr.register("setConsoleText" , setConsoleText)     
+    smgr.register("addConsoleText" , function(t:string) { 
+	
+	let new_lines = console_text.slice(1,console_text.length)
+	new_lines.push(t)
+	setConsoleText( new_lines) 
+	
+    })
     
     let selectedSetter = function(s : string) {
 	//then change the UI 
@@ -89,6 +117,41 @@ function App() {
 		{ 
 		    MenuComponents[state]
 		} 
+		
+		
+		<div style={{
+		    position: 'absolute',
+		    bottom: "60px",
+		    right: "30px",
+		    borderRadius : "10px" ,
+		    fontSize : "15px" , 
+		    color : "black" ,
+		    padding : "8px" , 
+		    backgroundColor : "white", 
+		    opacity : "0.5", 
+		    visibility : consoleState ? "visible" : "hidden"  , 
+		    width : "40%" , 
+		}}>  
+		    {console_text.map( (t:string)=> (<div key={console_cntr()}> {t} </div>)  ) } 
+		</div>
+		
+		
+		<div style={{
+		    position: 'absolute',
+		    bottom: "10px",
+		    right: "30px",
+		    fontSize : "30px" , 
+		    //width : "10%" , 
+		    //height : "10%" , 
+		}}> 
+		    <Button variant="outlined" 
+			    color="primary" 
+			    onClick={function(){setConsoleState(!consoleState)}} 
+			    //onMouseOver={function(){setConsoleState(!consoleState)}} 
+		    > > </Button>
+		</div>
+		
+
 		
 
 	    </div>

@@ -2,6 +2,8 @@
 MEDKIT 
 ------ 
 
+[ ] Request the preliminary dat afrom hlm wikidata queries 
+
 [ ] Can I create a JS Console element which evaluates everything inside of an iframe with limited permissions? 
 Once the user inputs a query it is posted to the iframe, there it is evaled and some data structure is returned, 
 a number, string, array, or dictrionary, and this is passed back using postMessage. This result is then 

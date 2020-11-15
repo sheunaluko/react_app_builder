@@ -1,8 +1,9 @@
 import * as tsw from "tidyscripts_web";
 import  * as _smgr from "./state_manager" 
 
-export var  smgr  = _smgr 
 
+//probably a slightly better way to do these exports 
+export var  smgr  = _smgr 
 
 let hlm = tsw.hyperloop.main;
 let fp = tsw.util.common.fp;
@@ -15,10 +16,21 @@ declare var window: any;
 
 // --- 
 
+wikidata.all_predicates() 
 
 export function log(msg : string) { 
     console.log("[mk]:: " + msg) 
 } 
+
+
+/*
+  
+  Hijack the console.log function and route things 
+  Nevermind wont do that now. .. 
+  
+ */
+
+
 
 
 

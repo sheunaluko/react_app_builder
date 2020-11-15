@@ -1,0 +1,15 @@
+# create directories and default files or new app
+
+name="$1"
+
+cp -r "src/apps/templateApp" "src/apps/$1"
+
+
+# replace APP_NAME in App.tsx and index.html
+sed -i "" "s/APP_NAME/${name}/g" "src/apps/$1/App.tsx" 
+sed -i "" "s/APP_NAME/${name}/g" "src/apps/$1/public/index.html" 
+
+
+echo "Enjoy the new $name app!" 
+
+

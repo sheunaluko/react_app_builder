@@ -12,6 +12,7 @@ import * as tsw from 'tidyscripts_web'
 //import App from './apps/binance_listener/App';
 //import App from './apps/dream_catcher/App';
 import App from './apps/medkit/App';
+//import App from './apps/musicapp/App';
 
 // TODO 
 // Create a search widget which allows selection of the app to display
