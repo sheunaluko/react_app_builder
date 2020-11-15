@@ -2,6 +2,10 @@
 MEDKIT 
 ------ 
 
+[ ] create a hyperloop main setLog function in tsw and then call this in the medkit.ts file, to 
+wire the http request logging directly into the smgr.get("addConsoleText")  -- that way we get automatic 
+logging of all the http requests (sparql, json, mesh,etc)... . 
+
 
 [x] Request the preliminary dat afrom hlm wikidata queries 
 
