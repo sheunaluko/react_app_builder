@@ -2,7 +2,7 @@
   "name": "meta_app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sattsys.com/apps/webpiano",
+  "homepage": "https://sattsys.com/medkit",
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",

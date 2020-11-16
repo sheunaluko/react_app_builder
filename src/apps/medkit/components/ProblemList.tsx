@@ -53,9 +53,12 @@ declare var window : any ;
 export default function PL(){
     
     const theme = useTheme();
+    
+    let old_selection = localStorage['problem_list.selection']
+    
     const [state, setState] = React.useState<any>({
 	tabValue : 1, 
-	selected : JSON.parse(localStorage['selection']),
+	selected : old_selection ? JSON.parse(old_selection)  : [] ,
 	elevations : {} , 
     }) 
     
@@ -255,27 +258,28 @@ function WikidataDisplay(info : any ) {
 
 function PLEdit() {
     return ( 
-    <PLContext.Consumer > 
-	{
-	    function({state,setState}) {
-		
-		//define callbacks for meshsearch
-		
-		
-		return (
-		    <div style={{flexGrow: 1, padding : "1%" }}>
-			<MeshSearch selectHandler={function(e:any){
-				log("Received selection")
-				log(e)
-				window.selection = e 
-				setState({...state, 
-					  selected : e 
-				})
-			    }} />
-		    </div>
-		)
+	<PLContext.Consumer > 
+	    {
+		function({state,setState}) {
+		    
+		    //define callbacks for meshsearch
+		    
+		    
+		    return (
+			<div style={{flexGrow: 1, padding : "1%" }}>
+			    <MeshSearch selectHandler={function(e:any){
+				    log("Received selection")
+				    log(e)
+				    window.selection = e 
+				    setState({...state, 
+					      selected : e 
+				    })
+				    localStorage['problem_list.selection'] = JSON.stringify(e) 
+				}} />
+			</div>
+		    )
+		}
 	    }
-	}
-    </PLContext.Consumer> 
+	</PLContext.Consumer> 
     )
 } 
