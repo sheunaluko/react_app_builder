@@ -63,15 +63,18 @@ let console_cntr = () => console_cnt++
 function App() {
     
     let default_text = [
-	"INIT: " + String(new Date()).split(" ").slice(0,5).join(" ")  , 
-	"Welcome to the MedKit UI Console", 
-	"Helpful information will be displayed here", 
-	"Use the button in the bottom right to toggle this window" , 
-	"Take care!", 
+
+	" - - - ",
+	" - - - ",
+	String(new Date()).split(" ").slice(0,5).join(" ")  , 	
+	"Welcome to the MedKit UI Console!", 
+	"Helpful information will be displayed here.", 
+	"Use the button in the bottom right to toggle this window." , 
+	" - - - ", 
     ]
     
     const [state, setState] = React.useState("diagnoser") 
-    const [consoleState, setConsoleState] = React.useState(false)     
+    const [consoleState, setConsoleState] = React.useState(true)     
     const [console_text, setConsoleText] = React.useState(default_text)         
     
     smgr.register("console_text" , console_text) 
@@ -128,7 +131,7 @@ function App() {
 		    color : "black" ,
 		    padding : "8px" , 
 		    backgroundColor : "white", 
-		    opacity : "0.5", 
+		    opacity : "0.6", 
 		    visibility : consoleState ? "visible" : "hidden"  , 
 		    width : "40%" , 
 		}}>  

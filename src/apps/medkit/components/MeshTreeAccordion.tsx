@@ -209,7 +209,7 @@ export default function Componenet(props: any) {
     if (set_MS_state) {
       set_MS_state({
         ...MS_state,
-        tools: { ...MS_state.tools, treeState: state }
+        tools: { ...MS_state.tools, treeState: fp.clone(state) } //maybe ? 
       });
     }
   }, [state]);

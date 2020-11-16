@@ -1,19 +1,18 @@
 
 
 /* 
-A module that can be used by all the 'meta' apps 
-for super easily sharing their state 
+A module for sharing state  
 */
 
 declare var window  : any ; 
 
-window.state = {} 
+window.state_manager = {} 
 
 
 export function register(s : string, val : any) : void { 
-    window.state[s] = val 
+    window.state_manager[s] = val 
 } 
 
 export function get(s : string) : any { 
-    return window.state[s] 
+    return window.state_manager[s]  
 } 

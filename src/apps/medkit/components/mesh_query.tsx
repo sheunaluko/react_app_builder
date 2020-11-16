@@ -26,6 +26,10 @@ interface MQOps {
 
 export async function handleMeshQuery( ops : MQOps) { 
     
+    
+    log("Handling mesh query with ops!:") 
+    console.log(ops) 
+    
     let { val : search_term  , state } = ops 
     
     let { tools } = state  ; 
@@ -38,14 +42,19 @@ export async function handleMeshQuery( ops : MQOps) {
     let {includedMap, 
 	 excludedMap } = (treeState || {})  ; 
     
-    let includeList = fp.values(includedMap || {}).map( fp.getter("TreeNumber") )
-    let excludeList = fp.values(excludedMap || {}).map( fp.getter("TreeNumber") )
-    
+    let get_tree_number_if_state = function (d : any) { 
+	if (d['state']) {
+	    return d['TreeNumber'] 
+	} else { 
+	    return null
+	} 
+    } 
+	
+    let includeList = fp.remove_empty( fp.values(includedMap || {}).map( get_tree_number_if_state ) )
+    let excludeList = fp.remove_empty( fp.values(excludedMap || {}).map( get_tree_number_if_state ) ) 
     
     log(`Got search term: ${search_term}`) 
-    
     log(`Got limit: ${limit}`) 
-    
     log("Got the following tree filtering info") 
     
     console.log({ 
@@ -78,9 +87,10 @@ export async function handleMeshQuery( ops : MQOps) {
 } 
 
 
+let include_filter_line = "FILTER(STRSTARTS(?treeNumLabel,?include)) ."
+let exclude_filter_line = "FILTER(!STRSTARTS(?treeNumLabel,?exclude)) ."
 
-
-var mesh_query_handler_template = `
+var global_mesh_query_handler_template = `
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -109,13 +119,14 @@ WHERE {
 
 
   FILTER(REGEX(?dName,'SEARCH_TERM','i') || REGEX(?cName,'SEARCH_TERM','i')) . 
-  FILTER(STRSTARTS(?treeNumLabel,?include)) . 
-  FILTER(!STRSTARTS(?treeNumLabel,?exclude)) . 
+
+  INCLUDE_FILTER 
+  EXCLUDE_FILTER 
 
 } 
 ORDER BY ?dName
 LIMIT LIMIT_VALUE
-` 
+								     ` 
 
 
 interface MQSearchOps { 
@@ -127,6 +138,8 @@ interface MQSearchOps {
 
 export async function do_mesh_query(ops : MQSearchOps) {
     
+    var mesh_query_handler_template : string =  `${global_mesh_query_handler_template}`   // make a copy 
+    
     let { 
 	search_term, 
 	limit, 
@@ -134,9 +147,13 @@ export async function do_mesh_query(ops : MQSearchOps) {
 	excludeList, 
     }  = ops ; 
     
+
+    log("mesh query") 
+    console.log([includeList,excludeList]) 
+    
+    
     /* 
        For sanity, excludeList trumps the include list 
-       
        This was a quick fix, actually there is probably a bug in the accordion selection as the state is not updating properly 
     */ 
     let excludeSet = new Set(excludeList)
@@ -150,10 +167,13 @@ export async function do_mesh_query(ops : MQSearchOps) {
     if ( fp.is_empty(includeList) ) { 
 	includeListReplacer = "" 
 	//manually edit the template since the include will be missing
-	mesh_query_handler_template = mesh_query_handler_template.replace("FILTER(STRSTARTS(?treeNumLabel,?include)) .","")
+	mesh_query_handler_template = mesh_query_handler_template.replace("INCLUDE_FILTER","")
+	log("removed include filter") 
 	
     } else { 
 	includeListReplacer = `VALUES ?include { ${transform(includeList)} } .`
+	mesh_query_handler_template = mesh_query_handler_template.replace("INCLUDE_FILTER", include_filter_line)	
+	log("put in include filter")
     } 
     
     debug.add("template_post_include", mesh_query_handler_template)    
@@ -161,14 +181,17 @@ export async function do_mesh_query(ops : MQSearchOps) {
     if ( fp.is_empty(excludeList) ) { 
 	excludeListReplacer = "" 
 	//manually edit the template since the exclude will be missing
-	mesh_query_handler_template = mesh_query_handler_template.replace("FILTER(!STRSTARTS(?treeNumLabel,?exclude)) .","")
-	log("Removed excluded list")
+	mesh_query_handler_template = mesh_query_handler_template.replace("EXCLUDE_FILTER","")
+	log("Removed exclude filter")
 	console.log(excludeList)
     } else { 
 	excludeListReplacer = `VALUES ?exclude { ${transform(excludeList)} } .`
+	mesh_query_handler_template = mesh_query_handler_template.replace("EXCLUDE_FILTER", exclude_filter_line)		
+	log("put in exclude filter")
     } 
     
     debug.add("template_preflight", mesh_query_handler_template)
+    debug.add("replacers" , [includeListReplacer, excludeListReplacer] ) 
     
     let tmp = await mesh.sparql_template_fn( {
 	template : mesh_query_handler_template , 

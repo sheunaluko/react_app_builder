@@ -5,6 +5,7 @@ import { useTheme } from '@material-ui/core/styles';
 import { ObjectInspector, TableInspector } from "react-inspector";
 import * as tsw from "tidyscripts_web" 
 import * as mui from "./list" 
+import * as mk from "../medkit" 
 
 import {handleMeshQuery} from "./mesh_query" 
 
@@ -53,6 +54,8 @@ let mesh = tsw.apis.mesh
 let wikidata = tsw.apis.wikidata 
 let log = console.log 
 let debug = tsw.util.common.debug 
+let smgr = mk.smgr 
+
 
 export default function MeshSearch(args? : any) {  
     
@@ -73,6 +76,8 @@ export default function MeshSearch(args? : any) {
     
     let clickHandler = selectHandler || function(x :any){console.log(x)}
     
+    smgr.register("mesh2state", state) 
+    smgr.register("mesh2setstate", setState)     
     
     let paper_style = { 
 	padding : "2%" , 
