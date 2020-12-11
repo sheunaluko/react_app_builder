@@ -239,6 +239,10 @@ export function print_dsd_rankings(dsd: any) {
   cts.map((x: any) => console.log(fp.format("{}, {}", x)));
 }
 
+
+
+var num_rankings = 150 ; 
+
 function PLDisplayPapers(props: any) {
   let { selected } = props;
 
@@ -362,7 +366,7 @@ function PLDisplayPapers(props: any) {
   };
 
   let RankingsInfo = function() {
-    return <div>{dsd_rankings.slice(0, 15).map(RankingsRenderUnit)}</div>;
+    return <div>{dsd_rankings.slice(0, 100).map(RankingsRenderUnit)}</div>;
   };
 
   return (

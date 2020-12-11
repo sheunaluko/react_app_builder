@@ -1,6 +1,8 @@
 import React from 'react' 
 
 
+import * as tsw from "tidyscripts_web" 
+
 import WikiDataSearch from "./WikiDataSearch"  
 import MeshSearch from "./MeshSearch2"  
 import ProblemList from "./ProblemList"
@@ -13,8 +15,13 @@ import Settings from "./Settings"
 import Console from "./JSConsole"  
 import Html from "./Html" 
 
+//import {VoicePanel} from "tidyscripts_web/components/material_ui" 
 
 //import_marker 
+
+let VoicePanel = tsw.components.material_ui.VoicePanel
+
+
 
 export var MenuComponents : {[k:string] : any }  = { 
     "diagnoser" : <Diagnoser />, 
@@ -27,6 +34,8 @@ export var MenuComponents : {[k:string] : any }  = {
     "problem_list" : <ProblemList  /> , 	 
     "html" : <Html /> , 
     "settings" : <Settings  /> , 	     
+    "voice_panel" : <VoicePanel /> , 
+    
     //dictionary_marker
 } 
 

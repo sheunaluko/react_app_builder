@@ -1,0 +1,14 @@
+import * as common from "../../common/util/index";
+export { common };
+import * as tts from "./tts";
+import * as speech_recognition from "./speech_recognition";
+import * as sounds from "./sounds";
+import * as audio_processing from "./audio_processing";
+import * as voice_interface from "./voice_interface";
+import * as ws from "./ws";
+import * as http from "./base_http";
+export { tts, ws, http, speech_recognition, sounds, voice_interface, audio_processing };
+export declare function alert(s: string): void;
+export declare function is_chrome(): boolean;
+export declare function is_mobile(): boolean;
+export declare function uuid(): string;

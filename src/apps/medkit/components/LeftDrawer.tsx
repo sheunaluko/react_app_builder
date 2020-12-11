@@ -3,6 +3,8 @@ import React from 'react';
 import * as smgr from '../state_manager' 
 import * as mui from "./list";
 
+
+
 let {
     Container,
     Grid,
@@ -100,7 +102,7 @@ export default function AppDrawer() {
 	["wiki_search", "Wiki Search"], 	
 	["nccih_herbs", "NCCIH Herb Info"],
 	["problem_list", "Problem List"], 
-	["console", "Console"],
+	["voice_panel", "Voice Panel"],
 	["settings", "Settings"] 
 
     ] 

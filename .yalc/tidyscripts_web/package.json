@@ -1,0 +1,15 @@
+{
+  "name": "tidyscripts_web",
+  "version": "1.0.0+e7902e85",
+  "description": "Tidy collection of typescript libraries for the web",
+  "main": "./lib/web/index.js",
+  "repository": "https://github.com/sheunaluko/tidyscripts",
+  "author": "Sheun Aluko",
+  "license": "MIT",
+  "private": null,
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "yalcSig": "e7902e857ecb18c151dc49e6dcf63f4e"
+}
