@@ -6,13 +6,13 @@ React app builder is a modified typescript create-react-app project directory. I
 
 Current projects within this repository include:
 
-DreamCatcher (src/apps/dream_catcher/App.tsx):
+DreamCatcher [src/apps/dream_catcher/App.tsx](https://github.com/sheunaluko/react_app_builder/tree/master/src/apps/dream_catcher): <br/>
 A modern digital dream journal for recording your dreams using speech recognition.
 
-MedKit (src/apps/medkit/App.tsx):
+MedKit [src/apps/medkit/App.tsx](https://github.com/sheunaluko/react_app_builder/tree/master/src/apps/medkit): <br/>
 A toolkit for clinical decision support and medical education.
 
-BinanceListener (src/apps/binance_listener/App.tsx):
+BinanceListener [src/apps/binance_listener/App.tsx](https://github.com/sheunaluko/react_app_builder/tree/master/src/apps/binance_listener): <br/>
 A web interface that connects to a binance market data socket and plays beeps for buys and sells. Volume of the beep is proportional to volume of the trade, and the pitch goes up if its a buy and down if its a sell.
 
 More to come!
