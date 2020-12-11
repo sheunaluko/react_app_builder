@@ -9,7 +9,7 @@ Note: the directory structure may be of interest, but cloning this entire reposi
 <b>Current projects within this repository include:</b>
 
 <b>DreamCatcher</b> [src/apps/dream_catcher/App.tsx](https://github.com/sheunaluko/react_app_builder/tree/master/src/apps/dream_catcher): <br/>
-A modern digital dream journal for recording your dreams using speech recognition.
+A modern digital dream journal for recording your dreams using speech recognition. Live app accesible [HERE](https://thedreamcatchersite.web.app). 
 
 <b>MedKit</b> [src/apps/medkit/App.tsx](https://github.com/sheunaluko/react_app_builder/tree/master/src/apps/medkit): <br/>
 A toolkit for clinical decision support and medical education.
