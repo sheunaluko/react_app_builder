@@ -8,8 +8,12 @@ import Button from '@material-ui/core/Button';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import InfoIcon from '@material-ui/icons/Info';
+import MicIcon from '@material-ui/icons/Mic';
+import MicOffIcon from '@material-ui/icons/MicOff';
+
 
 import Container from '@material-ui/core/Container';
+
 
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -56,6 +60,8 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 
 import Switch from '@material-ui/core/Switch';
 import Radio from '@material-ui/core/Radio';
@@ -103,17 +109,18 @@ export {
     Checkbox, 
     MenuIcon,
     Icon, 
+    MicIcon, 
+    MicOffIcon, 
     Tabs, 
     Tab, 
     Accordion,
     AccordionSummary, 
     AccordionDetails,
     CircularProgress,
+    LinearProgress, 
     ExpandMoreIcon, 
     Container, 
     Grid, 
-    
-    
     InfoIcon, 
     Link, 
     Paper,

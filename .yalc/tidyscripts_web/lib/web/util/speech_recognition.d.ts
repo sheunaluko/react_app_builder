@@ -3,6 +3,9 @@ export interface RecognitionOps {
     interimResults?: boolean;
     onStart?: () => void;
     onSoundStart?: () => void;
+    onSoundEnd?: () => void;
+    onSpeechStart?: () => void;
+    onSpeechEnd?: () => void;
     onResult?: () => void;
     onError?: () => void;
     onEnd?: () => void;

@@ -15,11 +15,10 @@ import Settings from "./Settings"
 import Console from "./JSConsole"  
 import Html from "./Html" 
 
-//import {VoicePanel} from "tidyscripts_web/components/material_ui" 
+import VoicePanel from "./VoicePanel" 
 
 //import_marker 
-
-let VoicePanel = tsw.components.material_ui.VoicePanel
+//let VoicePanel = tsw.components.material_ui.VoicePanel
 
 
 

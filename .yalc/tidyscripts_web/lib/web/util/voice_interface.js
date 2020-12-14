@@ -38,8 +38,10 @@ export var recognition = null;
 export var RecognitionState;
 (function (RecognitionState) {
     RecognitionState["NULL"] = "NULL";
+    RecognitionState["STOPPED"] = "STOPPED";
     RecognitionState["PAUSED"] = "PAUSED";
     RecognitionState["LISTENING"] = "LISTENING";
+    RecognitionState["STOPPING"] = "STOPPING";
 })(RecognitionState || (RecognitionState = {}));
 export var recognition_state = RecognitionState.NULL;
 export function initialize_recognition(ops) {
@@ -47,8 +49,15 @@ export function initialize_recognition(ops) {
     ops = ops || {};
     let old_on_end = ops.onEnd;
     ops.onEnd = function () {
-        recognition_state = RecognitionState.PAUSED;
-        console.log("Recognition ended");
+        if (recognition_state == RecognitionState.STOPPING) {
+            console.log("Recognition stopped");
+            recognition_state = RecognitionState.STOPPED;
+        }
+        else {
+            recognition_state = RecognitionState.PAUSED;
+            console.log("Recognition paused");
+        }
+        //any other on end callbacks 
         old_on_end ? old_on_end() : null;
     };
     recognition = sr.get_recognition_object(ops);
@@ -65,19 +74,20 @@ export function pause_recognition() {
 }
 export function stop_recognition() {
     if (recognition) {
+        console.log("Stopping recognition");
+        recognition_state = RecognitionState.STOPPING;
         recognition.abort();
         recognition = null;
-        recognition_state = RecognitionState.NULL;
     }
     ap.stop();
 }
 export function start_recognition() {
     return __awaiter(this, void 0, void 0, function* () {
-        //if tts is speaking then we should wait 
         if (recognition_state == RecognitionState.LISTENING) {
             //console.log("Already listening")
             return;
         }
+        //if tts is speaking then we should wait     
         if (tts.is_speaking()) {
             console.log("Wont start recognition while tts active");
         }
@@ -101,19 +111,28 @@ export function start_recognition_and_detection(t) {
     start_recognition();
     ap.set_detection_threshold(t);
 }
-export function speak(text) {
+export var default_voice = null;
+export function set_default_voice(v) {
+    default_voice = v;
+}
+export function speak_with_voice(text, voiceURI) {
     return __awaiter(this, void 0, void 0, function* () {
         if (recognition) {
             let thresh = stop_recognition_and_detection();
-            tts.speak({ text });
+            tts.speak({ text, voiceURI });
             yield tts.finished_speaking();
             start_recognition_and_detection(thresh);
         }
         else {
-            tts.speak({ text });
+            tts.speak({ text, voiceURI });
             yield tts.finished_speaking();
         }
         return;
+    });
+}
+export function speak(text) {
+    return __awaiter(this, void 0, void 0, function* () {
+        speak_with_voice(text, default_voice);
     });
 }
 //# sourceMappingURL=voice_interface.js.map

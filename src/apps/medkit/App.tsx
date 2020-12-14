@@ -59,6 +59,8 @@ const theme = createMuiTheme({
 
 var console_cnt = 0 
 let console_cntr = () => console_cnt++
+		       
+let init_component = "voice_panel" 		       
 
 function App() {
     
@@ -73,7 +75,7 @@ function App() {
 	" - - - ", 
     ]
     
-    const [state, setState] = React.useState("diagnoser") 
+    const [state, setState] = React.useState(init_component) 
     const [consoleState, setConsoleState] = React.useState(true)     
     const [console_text, setConsoleText] = React.useState(default_text)         
     
