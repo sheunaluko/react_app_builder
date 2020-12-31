@@ -44,7 +44,14 @@ export declare class Client {
     register(): void;
     register_function(ops: RegisterFunctionOps): void;
     get_available_functions(): Promise<unknown>;
-    call(ops: CallFunctionOps): Promise<unknown>;
+    uncached_call(ops: CallFunctionOps): Promise<unknown>;
+    call(ops: CallFunctionOps): Promise<{
+        hit: true;
+        data: any;
+    } | {
+        hit: false;
+        data: unknown;
+    }>;
     await_registration(): Promise<string>;
     gen_call_id(): string;
 }

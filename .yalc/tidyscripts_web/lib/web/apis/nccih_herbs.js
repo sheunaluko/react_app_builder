@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as hyperloop from "../hyperloop/index";
 import * as common from "../../common/util/index"; //common utilities  
-import * as ls from "./local_storage";
 let log = common.Logger("nccih_herbs");
 let hlm = hyperloop.main;
 let fp = common.fp;
@@ -61,43 +60,69 @@ export function get_info_for_herb(url) {
         return herb_info;
     });
 }
-export function get_and_cache_herb_data(lsk) {
+export function get_all_herb_data() {
     return __awaiter(this, void 0, void 0, function* () {
+        /*
+           should auto cache to indexedDB because I added caching to the hyperloop
+           client directly
+           see below for previous implementation using my local storage api
+        */
         let herb_links = fp.map_get(yield get_herbs(), "link");
         // get promises for the actual data
         let promises = herb_links.map(get_info_for_herb);
         // wait for all of them 
         log("Waiting for all links..");
         let results = yield window.Promise.all(promises);
-        //cache it before returning 
-        ls.store_t(results, lsk);
-        log("cached results: " + lsk);
         return results;
     });
 }
-export function get_all_herb_data() {
-    return __awaiter(this, void 0, void 0, function* () {
-        let lsk = "nccih.herbal_data";
-        let msg = ls.get_t(lsk);
-        if (msg) {
-            //could potentially be old... will update it if >24 hours old 
-            let { timestamp, data } = msg;
-            let now = Number(new Date());
-            let days_since_access = (now - timestamp) / 1000 / 60 / 60 / 24;
-            if (days_since_access <= 1) {
-                //return the cached copy 
-                log("Returning cached herbal data");
-                return data;
-            }
-            else {
-                log("Cached herbal data is old so will re-request");
-                return get_and_cache_herb_data(lsk);
-            }
-        }
-        else {
-            log("No cached herbal data, will request");
-            return get_and_cache_herb_data(lsk);
-        }
-    });
+/*
+   
+   OLD
+   
+
+export async function get_and_cache_herb_data(lsk: string) {
+    
+    let herb_links = fp.map_get(await get_herbs(), "link")
+    // get promises for the actual data
+    let promises = herb_links.map(get_info_for_herb)
+    // wait for all of them
+    log("Waiting for all links..")
+    let results = await window.Promise.all(promises)
+    //cache it before returning
+    ls.store_t(results, lsk)
+    log("cached results: " + lsk)
+    return results
 }
+
+export async function get_all_herb_data() {
+    
+    let lsk = "nccih.herbal_data"
+    let msg = ls.get_t(lsk)
+    
+    if (msg) {
+    //could potentially be old... will update it if >24 hours old
+    let {timestamp , data} = msg
+    let now = Number(new Date())
+    let days_since_access = (now-timestamp)/1000/60/60/24
+    
+    if (days_since_access <= 1 ) {
+        //return the cached copy
+        log("Returning cached herbal data")
+        return data
+    } else {
+        log("Cached herbal data is old so will re-request")
+        return get_and_cache_herb_data(lsk)
+    }
+    
+    } else {
+    
+    log("No cached herbal data, will request")
+    return get_and_cache_herb_data(lsk)
+    }
+    
+}
+   
+   
+   */
 //# sourceMappingURL=nccih_herbs.js.map

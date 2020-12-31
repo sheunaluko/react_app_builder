@@ -18,9 +18,11 @@ import * as audio_processing from "./audio_processing"
 import * as voice_interface from "./voice_interface" 
 import * as ws from "./ws" 
 import * as http from "./base_http" 
+import {ExternalLogger}  from "./ext_log" 
 
 export {tts, 
 	ws , 
+	ExternalLogger, 
 	http , 
 	speech_recognition, 
 	sounds, 

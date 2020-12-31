@@ -29,12 +29,13 @@ let vi = tsw.util.voice_interface
 
 /* 
    
-   [ ]  TTS -> allow user to select the voice and save this to local storage 
-   -- need a local storage API! 
+   [ ]  TTS -> allow user to select the voice and save this to database (use tsw api) 
    
-   [ ] disable power update when componenet not mounted 
+   [ ] move the voice panel compoenent into TSW lib 
    
-   [ [ initialize enabled / disabled state by reading tsw instead of defaulting to disabled 
+   [ ] disable power update when componenet not mounted  ? 
+   
+   [ [ initialize enabled / disabled state by reading tsw instead of defaulting to disabled ? 
 
 
  */ 

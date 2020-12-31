@@ -7,7 +7,8 @@ import * as audio_processing from "./audio_processing";
 import * as voice_interface from "./voice_interface";
 import * as ws from "./ws";
 import * as http from "./base_http";
-export { tts, ws, http, speech_recognition, sounds, voice_interface, audio_processing };
+import { ExternalLogger } from "./ext_log";
+export { tts, ws, ExternalLogger, http, speech_recognition, sounds, voice_interface, audio_processing };
 let log = common.Logger("wutil");
 export function alert(s) {
     log("Alerting web page!");

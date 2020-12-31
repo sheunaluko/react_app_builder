@@ -6,6 +6,7 @@ import  * as _smgr from "./state_manager"
 export var  smgr  = _smgr 
 
 let hlm = tsw.hyperloop.main;
+let hl_external_logger = tsw.hyperloop.external_logger
 let fp = tsw.util.common.fp;
 let asnc = tsw.util.common.asnc 
 let mesh = tsw.apis.mesh;
@@ -16,8 +17,6 @@ declare var window: any;
 
 // --- 
 
-
-
 export function log(msg : string) { 
     console.log("[mk]:: " + msg) 
 } 
@@ -25,23 +24,22 @@ export function log(msg : string) {
 
 /*
   Attach the hyperloop logger to the ui logger
- */
+*/
 
 export async function configure_logger() { 
-    hlm.set_event_logger( 
+    hl_external_logger.set_ext_log( 
 	function(msg: any) {
 	    let f = _smgr.get("addConsoleText") 
 	    if (f) {
 		f(msg) 
 	    } else { 
-		console.log("mk,hlm:: ui not read") 
+		console.log("mk,hl:: ui not ready") 
 	    } 
 	} 
     )  
-    log("Wired the hyperloop.main logger to the console output") 
+    log("Wired the hyperloop extenal logger to the console output") 
     //wait for it to be ready 
     let _  = await asnc.wait_until ( ()=> _smgr.get("addConsoleText") , 8000, 200 ) 
-    //now get the wikidata predicates 
 } 
   
 

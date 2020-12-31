@@ -14,6 +14,7 @@ export function iso_day_filename() {
     return to_iso_day_filename(new Date());
 }
 export function to_ms(d) { return Number(d); }
+export function ms_now() { return to_ms(new Date()); }
 export function dates_eq(d1, d2) {
     return (d1.getTime() == d2.getTime());
 }
@@ -73,4 +74,17 @@ export function shift_date(in_date, amt, t) {
     }
     return d;
 }
+export var times_in_ms = {
+    "1sec": 1000,
+    "5sec": 1000 * 5,
+    "10sec": 1000 * 10,
+    "30sec": 1000 * 30,
+    "1min": 1000 * 60,
+    "2min": 1000 * 60 * 2,
+    "5min": 1000 * 60 * 5,
+    "10min": 1000 * 60 * 10,
+    "30min": 1000 * 60 * 30,
+    "1hr": 1000 * 60 * 60,
+    "1day": 1000 * 60 * 60 * 24,
+};
 //# sourceMappingURL=dates.js.map

@@ -30,7 +30,7 @@ import green from '@material-ui/core/colors/green';
 import blue from '@material-ui/core/colors/blue';
 
 import * as tsw from "tidyscripts_web" 
-import * as dev from  "./dev"
+import * as dev from  "./dev/index"
 
 import * as smgr from './state_manager' 
 

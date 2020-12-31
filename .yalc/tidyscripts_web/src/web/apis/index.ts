@@ -7,6 +7,10 @@ import * as nccih_herbs from "./nccih_herbs"
 import * as key_presses from "./keypresses"  
 import * as bind_sounds_to_keys from "./bind_sounds_to_keys" 
 import * as local_storage from "./local_storage" 
+import * as db from "./db" 
+import * as db_tester from "./db_tester" 
+//import * as idbkv from "idb-keyval" 
+
 
 export { 
     wikidata, 
@@ -15,6 +19,9 @@ export {
     key_presses, 
     local_storage, 
     bind_sounds_to_keys , 
+    db, 
+    db_tester, 
+    //idbkv, 
 } 
 
 

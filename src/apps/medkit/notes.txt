@@ -18,6 +18,7 @@ inspected using the React inspector object
 
 - the security vulnerability would lie in correctly setting iframe evaluation permissions, the postMessage interface, and the way that the inspector object renders its input. 
 
+[ ]  Improve the console logging window to allow for output of objects and inspection 
 
 
 [ ] Can somehow incorporate crypto 

@@ -13,27 +13,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as client from "./client";
 export var default_client = null;
 import * as common from "../../common/util/index"; //common utilities  
-let log = common.Logger("hlm");
 import * as wutil from "../util/index";
+import { ext_log } from "./ext_log"; //import the hyperloop external logger 
+const log = common.Logger("hlm");
 let fp = common.fp;
 let debug = common.debug;
-export var event_logger = null;
-export function set_event_logger(f) {
-    event_logger = f;
-    log("Reset event logger");
-    console.log(f);
-    debug.add("event_logger", event_logger);
-}
-export function event_log(...args) {
-    log("called event log!");
-    console.log(args);
-    if (event_logger) {
-        event_logger.apply(null, args);
-    }
-    else {
-        log("No event logger");
-    }
-}
 // -- async function for checking status of default_client 
 // -- if a react component needs to make an http query inorder to render itself 
 // (via a useEffect hook for example)
@@ -65,7 +49,6 @@ let default_ops = {
 };
 export function get_default_client(ops) {
     return __awaiter(this, void 0, void 0, function* () {
-        //event_log("Getting default client") 
         if (default_client) {
             return default_client;
         }
@@ -100,46 +83,51 @@ function get_url_with_params(_url, params) {
 }
 export function http_json(url_base, url_params) {
     return __awaiter(this, void 0, void 0, function* () {
-        /*
-           
-           Want to build a default caching strategy which is flexible but simple.
-           
-           I can have a dictionary like this =>
-           
-           {
-            'id' : { filter : (url,params)=> boolean ,
-                 max_time_elapsed_ms : number } ,
-             
-        'id2' : { ... } ,
-        
-        ...
-           }
-           
-           Loop through the keys, check the regex on the url, and if it matches apply the max_time_elapsed to
-           determine the caching strategy for that particular request
-           
-         */
-        event_log("HTTP_JSON Request:");
-        event_log(url_base);
+        //ext_log("HTTP_JSON Request:")
+        //ext_log(url_base) 
         let url = get_url_with_params(url_base, url_params);
         let client = yield get_default_client();
         log(`Using url: ${url.toString()}`);
-        let data = yield client.call({ id: "sattsys.hyperloop.http_json", args: { url: url.toString() } });
+        let { hit, data } = yield client.call({ id: "sattsys.hyperloop.http_json", args: { url: url.toString() } });
         log("Done");
-        log("Got value: " + JSON.stringify(data));
+        //log("Got value: " + JSON.stringify(data)) 
+        debug.add("http_json", data);
+        /*
+         Prepare and issue the external log
+         */
+        var msg = null;
+        if (hit) {
+            msg = `Cache Hit [HttpJson] - ${url_base}`;
+        }
+        else {
+            msg = `HttpJson - ${url_base}`;
+        }
+        ext_log(msg);
         return data;
     });
 }
 export function http(url_base, url_params, to_dom = true) {
     return __awaiter(this, void 0, void 0, function* () {
-        event_log("HTTP Request:");
-        event_log(url_base);
+        //ext_log("HTTP Request:")
+        //ext_log(url_base) 
         let url = get_url_with_params(url_base, url_params);
         let client = yield get_default_client();
         log(`Using url: ${url.toString()}`);
-        let data = yield client.call({ id: "sattsys.hyperloop.http", args: { url: url.toString() } });
+        let { hit, data } = yield client.call({ id: "sattsys.hyperloop.http", args: { url: url.toString() } });
         log("Done");
-        log("Got value: " + JSON.stringify(data));
+        //log("Got value: " + JSON.stringify(data)) 
+        debug.add("http", data);
+        /*
+          Prepare and issue the external log
+          */
+        var msg = null;
+        if (hit) {
+            msg = `Cache Hit [Http] - ${url_base}`;
+        }
+        else {
+            msg = `Http - ${url_base}`;
+        }
+        ext_log(msg);
         if (to_dom) {
             var el = document.createElement("html");
             el.innerHTML = data.result.value;
@@ -148,16 +136,28 @@ export function http(url_base, url_params, to_dom = true) {
         return data;
     });
 }
-export function post_json(url, msg) {
+export function post_json(url, post_msg) {
     return __awaiter(this, void 0, void 0, function* () {
-        event_log("POST Request:");
-        event_log(url);
+        //ext_log("POST Request:")
+        //ext_log(url) 
         let client = yield get_default_client();
         log("Request to post json");
-        let data = yield client.call({ id: "sattsys.hyperloop.post_json",
-            args: { url, msg } });
+        let { hit, data } = yield client.call({ id: "sattsys.hyperloop.post_json",
+            args: { url, msg: post_msg } });
         log("Done");
-        log("Got value: " + JSON.stringify(data));
+        //log("Got value: " + JSON.stringify(data))     
+        debug.add("post_json", data);
+        /*
+         Prepare and issue the external log
+         */
+        var msg = null;
+        if (hit) {
+            msg = `Cache Hit [PostJson] - ${url}`;
+        }
+        else {
+            msg = `PostJson - ${url}`;
+        }
+        ext_log(msg);
         return data;
     });
 }

@@ -30,6 +30,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as common from "../../common/util/index"; //common utilities  
 let log = common.Logger("hl_client");
 import * as wutil from "../util/index";
+import * as cache from "./client_cacher";
 export class Client {
     constructor(ops) {
         this.ops = ops;
@@ -226,12 +227,13 @@ export class Client {
     }
     /*
       Allows this client to asynchronously query the hyperloop for some function call
+      Does not perform any caching (this is a helper function used by async call() below
     */
-    call(ops) {
+    uncached_call(ops) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.await_registration(); //hmm ? lol this line solved an interesting bug 
             // when a react component was rendering to the screen and then immediately using 
-            // HL to retrieve data it was erroring that websocket was not connected yet haha
+            // HL to retrieve data it was erroring that websocket was not connected yet 
             //generate the call_identifier       
             let call_identifier = this.gen_call_id();
             //build the appropriate message to call a funciton on the server side  
@@ -258,6 +260,33 @@ export class Client {
             this.send(msg);
             //return the promise 
             return promise;
+        });
+    }
+    /*
+      Allows this client to asynchronously query the hyperloop for some function call
+      The caching is performed here, while raw request is in in uncached_call (see above)
+    */
+    call(ops) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //check the cache 
+            let { hit, value: cache_result, call_id } = yield cache.check_cache_for_call_ops(ops);
+            //return the cached value if there is a hit 
+            if (hit) {
+                log("Returning cached value");
+                return { hit, data: cache_result };
+            }
+            log("No result in cache :o -> will request it");
+            //if not we proceed to obtain the value 
+            let request_result = yield this.uncached_call(ops);
+            //and then we determine its ttl using the cache rules 
+            let ttl = cache.get_ttl(ops);
+            log(`Got result for call. TTL is -> ${ttl}`);
+            // set it with the ttl 
+            if (ttl) {
+                yield cache.set_with_ttl({ id: call_id, ttl_ms: ttl, value: request_result });
+                log("Set val + ttl in cache");
+            }
+            return { hit, data: request_result };
         });
     }
     await_registration() {
