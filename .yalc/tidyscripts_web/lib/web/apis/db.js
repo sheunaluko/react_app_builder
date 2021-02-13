@@ -95,36 +95,37 @@ export function set_cache_check_interval(n) {
     log("Updated cache check interval to " + n + " ms");
 }
 export var cache_check_interval_id = null;
+export function do_cache_check() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let all = yield TTL.keys();
+        let num = all.length;
+        let expired = all.filter((k) => k < date.ms_now());
+        let num_expired = expired.length;
+        let removed = [];
+        for (var id of expired) {
+            //log(id) 
+            let { db_id, del_id } = yield TTL.get(id);
+            //get the db handle 
+            let dbh = GET_DB(db_id, false);
+            //and then delete the entry 
+            yield dbh.del(del_id);
+            //and then delete the TTL entry as well 
+            yield TTL.del(id);
+            removed.push({ db_id, del_id });
+        }
+        log(`CacheCheck |> ${num_expired}/${num} expired:`);
+        if (num_expired > 0) {
+            log(removed);
+        }
+    });
+}
 export function START_CACHE_CHECK(interval) {
     if (cache_check_interval_id) {
         log("Already checking, will clear old interval.");
         STOP_CACHE_CHECK();
     }
     set_cache_check_interval(interval);
-    cache_check_interval_id = setInterval(function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            let all = yield TTL.keys();
-            let num = all.length;
-            let expired = all.filter((k) => k < date.ms_now());
-            let num_expired = expired.length;
-            let removed = [];
-            for (var id of expired) {
-                //log(id) 
-                let { db_id, del_id } = yield TTL.get(id);
-                //get the db handle 
-                let dbh = GET_DB(db_id, false);
-                //and then delete the entry 
-                yield dbh.del(del_id);
-                //and then delete the TTL entry as well 
-                yield TTL.del(id);
-                removed.push({ db_id, del_id });
-            }
-            log(`CacheCheck |> ${num_expired}/${num} expired:`);
-            if (num_expired > 0) {
-                log(removed);
-            }
-        });
-    }, CACHE_CHECK_INTERVAL);
+    cache_check_interval_id = setInterval(do_cache_check, CACHE_CHECK_INTERVAL);
 }
 export function STOP_CACHE_CHECK() {
     clearInterval(cache_check_interval_id);

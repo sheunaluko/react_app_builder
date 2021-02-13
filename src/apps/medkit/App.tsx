@@ -53,14 +53,15 @@ window.mk = mk
 
 const theme = createMuiTheme({
     palette : { 
-	primary: green
+	primary: blue 
     } 
 }) 
 
 var console_cnt = 0 
-let console_cntr = () => console_cnt++
+let console_cntr = () => console_cnt++ ;
 		       
-let init_component = "voice_panel" 		       
+//let init_component = "wikidata_entity_maker" 
+let init_component = "diagnoser2" 
 
 function App() {
     
@@ -102,6 +103,7 @@ function App() {
 	<ThemeProvider theme={theme}> 
 	    <div className="App" style={{display: "flex" , 
 					 flexDirection: "column", 
+					 height : "100%"
 	    }}>
 		
 		<AppBar position="static">

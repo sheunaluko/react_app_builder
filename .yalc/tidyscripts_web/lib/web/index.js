@@ -6,7 +6,8 @@ import * as wikidata from "./wikidata/index";
 import * as hyperloop from "./hyperloop/index";
 import * as apis from "./apis/index";
 import * as components from "./components/index";
-export { util, wikidata, hyperloop, components, apis, 
+import * as parameters from "./parameters";
+export { util, wikidata, hyperloop, components, apis, parameters, 
 //localforage, 
 //idbkv,
 cryptocurrency };

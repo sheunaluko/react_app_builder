@@ -15,6 +15,7 @@ export var default_client = null;
 import * as common from "../../common/util/index"; //common utilities  
 import * as wutil from "../util/index";
 import { ext_log } from "./ext_log"; //import the hyperloop external logger 
+import * as params from "../parameters";
 const log = common.Logger("hlm");
 let fp = common.fp;
 let debug = common.debug;
@@ -40,22 +41,21 @@ export function default_client_ready() {
         }
     });
 }
-var host = null;
-let default_ops = {
-    host: (host || "sattsys.com/api/hyperloop"),
-    port: 80,
-    secure: true,
-    id: "sattsys.hyperloop.client." + wutil.uuid(),
-};
 export function get_default_client(ops) {
     return __awaiter(this, void 0, void 0, function* () {
+        let default_ops = {
+            host: (yield params.aget("hyperloop.host")),
+            port: (yield params.aget("hyperloop.port")),
+            secure: (yield params.aget("hyperloop.wss")),
+            id: "sattsys.hyperloop.client." + wutil.uuid(),
+        };
         if (default_client) {
             return default_client;
         }
         else {
             default_client = new client.Client(ops || default_ops);
             try {
-                yield default_client.connect(ops ? ops.secure : true);
+                yield default_client.connect();
                 yield default_client_ready();
             }
             catch (error) {
@@ -159,6 +159,33 @@ export function post_json(url, post_msg) {
         }
         ext_log(msg);
         return data;
+    });
+}
+/*
+ Extra utils for development purposes
+ */
+//reconfigure hyperloop to connect to different host and port indefinitely 
+export function configure_endpoint(host, port, wss) {
+    return __awaiter(this, void 0, void 0, function* () {
+        params.setp("hyperloop.host", host);
+        params.setp("hyperloop.port", port);
+        params.setp("hyperloop.wss", wss);
+        log(`Reconfigured hyperloop endpoint to | ${host}:${port} (wss=${wss}) indefinitely`);
+    });
+}
+//reset host/port configuration 
+export function reset_endpoint() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield params.remove_from_db("hyperloop.host");
+        yield params.remove_from_db("hyperloop.port");
+        yield params.remove_from_db("hyperloop.wss");
+        log("Reset hyperloop endpoints to whatever the default was...");
+    });
+}
+//local dev 
+export function configure_local() {
+    return __awaiter(this, void 0, void 0, function* () {
+        configure_endpoint("localhost", 9500, false);
     });
 }
 //# sourceMappingURL=main.js.map

@@ -1,7 +1,3 @@
-
-
-
-
 /* 
 Wed Mar 18 23:58:08 2020 => Sat Aug  8 17:22:59 PDT 2020
 
@@ -32,6 +28,7 @@ let log = common.Logger("hl_client")
 import * as wutil from "../util/index" 
 import {ext_log} from "./ext_log"  //import the hyperloop external logger 
 import * as cache  from "./client_cacher"
+import * as params from "../parameters" 
 
 
 /* 
@@ -83,6 +80,7 @@ export class Client {
     ops : ClientOps 
     conn  : any 
     log: any 
+    secure : boolean 
 
     function_table : { [k:string ] : any} 
     lobby : { [k:string ] : any}     //for async call_identifiers
@@ -100,6 +98,7 @@ export class Client {
         this.lobby = {} 
         this.function_table = {} 
         this.conn = null 
+	this.secure = ops.secure 
 
         
         //registration promise will be set in connect and can be awaited for better async
@@ -113,10 +112,10 @@ export class Client {
 
 
 
-    async connect(secure : boolean = true) { 
+    async connect() {  //removed the secure option here because should just use class member 
 	
 	var url = null ; 
-	if (secure) { 
+	if (this.secure) { 
 	    url = `wss://${this.ops.host}:${this.ops.port}`
 	} else { 
             url = `ws://${this.ops.host}:${this.ops.port}`;	    
@@ -152,8 +151,10 @@ export class Client {
 	       
 	       
                let msg = JSON.parse(_msg) 
-               that.log("got message:") 
-               that.log(msg)
+	       if (! msg.silent) { 
+		   that.log("got message:") 
+		   that.log(msg)
+	       } 
                switch (msg.type) {
 		       
 		   case "call" : 
@@ -169,6 +170,12 @@ export class Client {
 		   case "return_value" : 
                        that.handle_return_value(msg) 
                        break 
+		       
+	   
+		   case "broadcast" : 
+		       that.handle_broadcast(msg) 
+		       break 		       
+		       
 		       
 		   default:
 		       that.log("Unrecognized message type:");
@@ -192,6 +199,11 @@ export class Client {
     }
     
 
+    handle_broadcast(msg : {data : any}) { 
+	let { data } = msg ; 
+	//this.log("Got broadcast") 
+	//this.log(data) 
+    } 
 
   async handle_call(msg: { args: any; call_identifier: string; id: string }) {
     this.log("Received call request");
@@ -456,3 +468,4 @@ export async function test_client() {
     
 } 
 				    
+

@@ -21,6 +21,7 @@ export declare class Client {
     ops: ClientOps;
     conn: any;
     log: any;
+    secure: boolean;
     function_table: {
         [k: string]: any;
     };
@@ -30,7 +31,10 @@ export declare class Client {
     registration_promise: Promise<string>;
     fullfill_registration: any;
     constructor(ops: ClientOps);
-    connect(secure?: boolean): Promise<string>;
+    connect(): Promise<string>;
+    handle_broadcast(msg: {
+        data: any;
+    }): void;
     handle_call(msg: {
         args: any;
         call_identifier: string;

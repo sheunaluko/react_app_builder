@@ -1,10 +1,13 @@
 interface WikiDataOps {
     action: string;
-    sites: string;
-    titles: string;
-    props: string;
-    languages: string;
-    format: string;
+    sites?: string;
+    titles?: string;
+    props?: string;
+    languages?: string;
+    language?: string;
+    format?: string;
+    search?: string;
+    limit?: number;
 }
 export declare function qwikidata(ops: WikiDataOps): Promise<any>;
 interface WikiEntitySearchOps {
@@ -12,7 +15,8 @@ interface WikiEntitySearchOps {
     props: string;
 }
 export declare function WikiEntities(ops: WikiEntitySearchOps): Promise<any>;
-export declare function wikidata_search_meshid(did: string): Promise<void>;
+export declare function WikidataSearch(strang: string): Promise<any>;
+export declare function WikidataSearchAsList(query: string): Promise<any>;
 export declare function wikidata_instances_of_id(id: string): Promise<any>;
 interface SparqlTemplateOps {
     template: string;
@@ -36,4 +40,6 @@ export declare function direct(): Promise<unknown>;
 export declare function x(): Promise<any>;
 export declare function default_props_for_ids(mesh_ids: string[]): Promise<any>;
 export declare function default_props_for_qids(qids: string[]): Promise<any>;
+export declare function get_csrf_token(): Promise<any>;
+export declare function create_wikidata_item(label: string): Promise<any>;
 export {};

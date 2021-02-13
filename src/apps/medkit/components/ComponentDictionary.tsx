@@ -9,12 +9,16 @@ import ProblemList from "./ProblemList"
 import MeshTreeAccordion from "./MeshTreeAccordion"
 import SparqlWidget from "./SparqlWidget"
 import Diagnoser from "./Diagnoser"
+import DiagnosisSupport2 from "./DiagnosisSupport2"
 import NccihBrowser from "./NccihBrowser"
 import EntityViewer from "./WikidataEntityViewer" 
 import Settings from "./Settings" 
 import Console from "./JSConsole"  
 import Html from "./Html" 
 
+
+import WikidataEditor from "./WikidataEditor" 
+import WikidataEntityMaker from "./WikidataEntityMaker" 
 import VoicePanel from "./VoicePanel" 
 
 //import_marker 
@@ -24,6 +28,7 @@ import VoicePanel from "./VoicePanel"
 
 export var MenuComponents : {[k:string] : any }  = { 
     "diagnoser" : <Diagnoser />, 
+    "diagnoser2" : <DiagnosisSupport2 /> , 
     "sparql" : <SparqlWidget /> , 
     "wiki_search" : <WikiDataSearch />, 
     "nccih_herbs" : <NccihBrowser /> ,    
@@ -34,7 +39,9 @@ export var MenuComponents : {[k:string] : any }  = {
     "html" : <Html /> , 
     "settings" : <Settings  /> , 	     
     "voice_panel" : <VoicePanel /> , 
-    
+    "wikidata_editor" : <WikidataEditor /> ,
+    "wikidata_entity_maker" : <WikidataEntityMaker/>, 
+					 
     //dictionary_marker
 } 
 

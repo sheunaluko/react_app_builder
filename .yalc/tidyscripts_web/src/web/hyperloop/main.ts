@@ -15,6 +15,7 @@ declare var window : any ;
 import * as common from "../../common/util/index" ; //common utilities  
 import * as wutil from "../util/index" 
 import {ext_log} from "./ext_log"  //import the hyperloop external logger 
+import * as params from  "../parameters" 
 
 
 const log = common.Logger("hlm") 
@@ -47,18 +48,14 @@ export async function default_client_ready(){
     }
 }
 
-var host = null 
-
-
-let default_ops = { 
-    host : (host || "sattsys.com/api/hyperloop" )  , 
-    port : 80 , 
-    secure : true, 
-    id : "sattsys.hyperloop.client." + wutil.uuid() ,
-} 
-
 export async function get_default_client(ops? : client.ClientOps) { 
-    
+
+    let default_ops = { 
+	host : (await params.aget("hyperloop.host")) ,  
+	port : (await params.aget("hyperloop.port")) , 
+	secure : (await params.aget("hyperloop.wss")) , 
+	id : "sattsys.hyperloop.client." + wutil.uuid() ,
+    }     
     
     if (default_client) {
 	
@@ -70,7 +67,7 @@ export async function get_default_client(ops? : client.ClientOps) {
 
 	try { 
 	    
-	    await default_client.connect(ops ? ops.secure : true)	    
+	    await default_client.connect()
 	    await default_client_ready() 	    
 
 	} catch(error) { 
@@ -204,4 +201,32 @@ export async function post_json(url : string, post_msg : object ) {
     ext_log(msg) 
     
     return data
+} 
+
+
+
+/* 
+ Extra utils for development purposes   
+ */ 
+
+
+//reconfigure hyperloop to connect to different host and port indefinitely 
+export async function configure_endpoint(host : string, port : number , wss : boolean) {
+    params.setp("hyperloop.host" , host) 
+    params.setp("hyperloop.port" , port) 
+    params.setp("hyperloop.wss" , wss) 
+    log(`Reconfigured hyperloop endpoint to | ${host}:${port} (wss=${wss}) indefinitely`) 
+} 
+
+//reset host/port configuration 
+export async function reset_endpoint() {
+    await params.remove_from_db("hyperloop.host")  
+    await params.remove_from_db("hyperloop.port")      
+    await params.remove_from_db("hyperloop.wss")
+    log("Reset hyperloop endpoints to whatever the default was...") 
+} 
+
+//local dev 
+export async function configure_local() {
+    configure_endpoint("localhost", 9500, false) 
 } 

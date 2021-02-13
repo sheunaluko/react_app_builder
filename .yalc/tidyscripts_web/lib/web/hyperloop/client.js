@@ -39,6 +39,7 @@ export class Client {
         this.lobby = {};
         this.function_table = {};
         this.conn = null;
+        this.secure = ops.secure;
         //registration promise will be set in connect and can be awaited for better async
         var fullfill_registration = null;
         this.registration_promise = new Promise((resolve, reject) => {
@@ -46,10 +47,10 @@ export class Client {
         });
         this.fullfill_registration = fullfill_registration; //get copy so we can resolve later
     }
-    connect(secure = true) {
+    connect() {
         return __awaiter(this, void 0, void 0, function* () {
             var url = null;
-            if (secure) {
+            if (this.secure) {
                 url = `wss://${this.ops.host}:${this.ops.port}`;
             }
             else {
@@ -71,8 +72,10 @@ export class Client {
             ws.addEventListener("message", function message(ev) {
                 let _msg = ev.data;
                 let msg = JSON.parse(_msg);
-                that.log("got message:");
-                that.log(msg);
+                if (!msg.silent) {
+                    that.log("got message:");
+                    that.log(msg);
+                }
                 switch (msg.type) {
                     case "call":
                         that.handle_call(msg);
@@ -83,6 +86,9 @@ export class Client {
                         break;
                     case "return_value":
                         that.handle_return_value(msg);
+                        break;
+                    case "broadcast":
+                        that.handle_broadcast(msg);
                         break;
                     default:
                         that.log("Unrecognized message type:");
@@ -95,6 +101,11 @@ export class Client {
             }.bind(that));
             return that.registration_promise;
         });
+    }
+    handle_broadcast(msg) {
+        let { data } = msg;
+        //this.log("Got broadcast") 
+        //this.log(data) 
     }
     handle_call(msg) {
         return __awaiter(this, void 0, void 0, function* () {

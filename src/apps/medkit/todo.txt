@@ -1,13 +1,25 @@
+[ ] WORKING on research project now  , need to finalize interface 
 
-[x] create MeSH Entity Selector  
+  - Allow visualizing selected items by tab (based on property they matched) 
+  - Show the results in TWO views 
+  
+    - 1) group by property match , then disease , then symptom 
+      - this way can watch it build it as you add symptoms 
+      	     - when a symptom is added we immediately retrieve ALL relevant properties for it and this gets cached 
+	     - as new symptoms are added the info is added and cache utilized 
+	     
+    - 2) can summarize results (either as they happen or on separate tab - though as they happen likely better!) 
+      	    - can divide the Results tab into upper 1/3 and lower 2/3 . the upper one shows 5 rows and like 4 or 5 columns of the current disease rankings 1-5 in rows 1-5, then 6-11, etc 
+	    - the bottom 2/3 consists of TABS? where the tab label gives info on how many current matches exist ... when you click on a tab you see the specific dta 
+	    - next to Results is a PROGRESS wheel that goes on when the underlying sparql query is running 
+	    
 
-[x] create problem list widget , which uses TABS to toggle between MESH Entity Selector and the DISPLAY 
-  - working on this currently  
-  - Finish problem list search tools, add another top level accordion 
-  - ACtually implement search which filters based on tree numbers 
-  - Add a limit selector to the serach tools 
-  - create profiles for the tree selection so I can quickly embed a MeSH searcher which 
-    - defaults to particular inclusions/ etc 
+[ ] 
+DONT FORGET ABOUT lab vallues 
+
+
+
+
     
 [ ] Create ability to show GitBook Docs directly in the app. 
      - send hyperloop http_get for the docs page (filter out the center content) 
@@ -26,11 +38,24 @@
     - the views should support being able to pass information to them, and they will only request it from the apis if it is missing 
 
 
-[ ] Add little info icon next to componenets that links to the gitbook documentation 
+
+[x] create MeSH Entity Selector  
+
+[x] create problem list widget , which uses TABS to toggle between MESH Entity Selector and the DISPLAY 
+  - working on this currently  
+  - Finish problem list search tools, add another top level accordion 
+  - ACtually implement search which filters based on tree numbers 
+  - Add a limit selector to the serach tools 
+  - create profiles for the tree selection so I can quickly embed a MeSH searcher which 
+    - defaults to particular inclusions/ etc 
+    
+
+
+[x] Add little info icon next to componenets that links to the gitbook documentation 
 
 [ ] Create a MetaWidget that allows addition/deletion/changeTo of any other MedKit widget  
 
-[ ] Update sattsys node to keep a log of all activity and RESTART the websocket server if it crashes ... 99% uptime will be very important 
+[x Update sattsys node to keep a log of all activity and RESTART the websocket server if it crashes ... 99% uptime will be very important 
   - when working on a team 
 
 [ ] create Wikidata Symptom Selector 

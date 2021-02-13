@@ -16,6 +16,7 @@ export declare function check_cache_for_call_ops(x: CallFunctionOps): Promise<{
     value: any;
     call_id: string;
 }>;
-export declare var http_json_rules: (number | RegExp)[][];
+export declare var http_json_rules: ((number | RegExp)[] | (RegExp | null)[])[];
+export declare var post_json_rules: (RegExp | null)[][];
 export declare var ttl_rules: any;
 export declare function get_ttl(x: CallFunctionOps): any;

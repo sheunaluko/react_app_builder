@@ -6,6 +6,13 @@ Next:
 [ ] Create voice/text interface for wikidata of step up 2 medicine info --> this will be challenging but fun! 
 
 
+-- Fix the caching issue (5 seconds) 
+-- Contnue work on the entity maker 
+   - just finished the csrf token request , now create interface for Label (data payload with label en) 
+[ ] LMAO -- got blocked from editing wikidata by HASLEY | https://www.wikidata.org/wiki/User_talk:Hasley 
+(IP 73.91.214.134) | expires on 22:23, 9 Jan 2021 - wtf... 
+TODO - fix the json post and create wiki entity | how to test editing wikidata without getting blocked! LMAO , need to get in contact with an admin 
+
 
 Future: 
 

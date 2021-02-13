@@ -31,15 +31,21 @@ export function WikiEntities(ops) {
         });
     });
 }
-//todo 
-//enable abve search with ids 
-// - 
-export function wikidata_search_meshid(did) {
+export function WikidataSearch(strang) {
     return __awaiter(this, void 0, void 0, function* () {
-        //will check if there exists an Q entity where meshid is in statement 
-        //(use sparql) 
-        //if not then return false 
-        //if yes then we retrive the properties of the Q entity and return them 
+        return qwikidata({
+            action: "wbsearchentities",
+            search: strang,
+            language: 'en',
+            format: 'json',
+            limit: 50,
+        });
+    });
+}
+export function WikidataSearchAsList(query) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let result = yield WikidataSearch(query);
+        return result.result.value.search; //lol 
     });
 }
 let instance_of_template = `
@@ -450,6 +456,27 @@ export function default_props_for_qids(qids) {
         return to_return;
         //*/
         //return bindings 
+    });
+}
+/*
+ EDITING UTILITIES
+ */
+export function get_csrf_token() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let res = yield hlm.http_json("https://www.wikidata.org/w/api.php", { action: "query", format: "json", meta: "tokens" });
+        return res.result.value.query.tokens.csrftoken; //access the returned token 
+    });
+}
+export function create_wikidata_item(label) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let tok = yield get_csrf_token();
+        let res = yield hlm.post_json("https://www.wikidata.org/w/api.php", { action: 'wbeditentity',
+            format: 'json',
+            new: 'item',
+            token: tok,
+            data: "{\"labels\":{\"en\":{\"language\":\"en\",\"value\":\"" + label + "\"}}}" });
+        debug.add("create_wiki_item", res);
+        return res;
     });
 }
 //# sourceMappingURL=wikidata.js.map

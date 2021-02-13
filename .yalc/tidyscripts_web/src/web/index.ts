@@ -15,11 +15,14 @@ import * as apis from "./apis/index"
 
 import * as components from "./components/index"
 
+import * as parameters from "./parameters" 
+
 export {util,
 	wikidata,
 	hyperloop, 
 	components, 
 	apis, 
+	parameters , 
 	//localforage, 
 	//idbkv,
 	cryptocurrency } 

@@ -71,6 +71,7 @@ import Card from '@material-ui/core/Card';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import CancelIcon from '@material-ui/icons/Cancel';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
@@ -99,6 +100,7 @@ export {
     List,
     ListItem, 
     ListItemIcon, 
+    CancelIcon,     
     ListItemText, 
     Divider, 
     BuildIcon,

@@ -131,7 +131,7 @@ export default function EntityViewer(props: any) {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Box>
+          <Box style={{width: "100%"}}>
             {fp.keys(state.wikidataInfo).map((k: string) => {
               let renderer = wdev.get_renderer(k);
 
