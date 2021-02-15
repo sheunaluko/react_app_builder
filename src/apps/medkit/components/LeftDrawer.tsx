@@ -1,7 +1,10 @@
 import React from 'react';
+import { useTheme } from "@material-ui/core/styles";
+
 
 import * as smgr from '../state_manager' 
 import * as mui from "./list";
+
 
 
 
@@ -50,6 +53,8 @@ declare var window : any ;
 
 export default function AppDrawer() {
 
+    const theme = useTheme() 
+    
     const [state, setState] = React.useState({
 	open : false  
     });
@@ -86,7 +91,9 @@ export default function AppDrawer() {
     const list_item = (k : string,display: string) => ( 
 	<React.Fragment key={k}> 
 	    <ListItem button key={k} onClick={select_menu_fn(k)}>
-		<ListItemIcon> <NavigateNextIcon/> </ListItemIcon>
+		<ListItemIcon >
+		    <NavigateNextIcon style={{color : theme.palette.secondary.dark}} /> 
+		</ListItemIcon>
 		<ListItemText primary={display} />
 	    </ListItem>
 	    <Divider />	      

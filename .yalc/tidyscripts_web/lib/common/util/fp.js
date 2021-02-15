@@ -57,7 +57,7 @@ export function update_at(o, path, fn) {
     }
     let lk = last(path);
     ref[lk] = fn(ref[lk]);
-    return clone(o);
+    return clone(o); //this could be unideal -- maybe should be cloning first? 
 }
 export function map_items(o) {
     let ks = keys(o);
@@ -65,12 +65,26 @@ export function map_items(o) {
     return zip2(ks, vs);
 }
 export var dict_to_list = map_items;
+export function map_over_dic_values(o, f) {
+    let vs = values(o);
+    let new_vs = map(vs, f);
+    return zip_map(keys(o), new_vs);
+}
 /* ARRAYS  */
 export function clone_array(o) {
     return JSON.parse(JSON.stringify(o));
 }
 export function first(arr) {
     return arr[0];
+}
+export function second(arr) {
+    return arr[1];
+}
+export function third(arr) {
+    return arr[2];
+}
+export function fourth(arr) {
+    return arr[3];
 }
 export function last(arr) {
     let len = arr.length;
@@ -210,7 +224,7 @@ export function zip2(a1, a2) {
 }
 export var zip = zip2;
 export function list_to_dict(kvs) {
-    let result = [];
+    let result = {};
     for (var [k, v] of kvs) {
         result[k] = v;
     }

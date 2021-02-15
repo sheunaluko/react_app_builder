@@ -25,9 +25,6 @@ import MeshTreeAccordion from "./components/MeshTreeAccordion"
 import { ThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 
-import purple from '@material-ui/core/colors/purple';
-import green from '@material-ui/core/colors/green';
-import blue from '@material-ui/core/colors/blue';
 
 import * as tsw from "tidyscripts_web" 
 import * as dev from  "./dev/index"
@@ -46,16 +43,57 @@ import {
 
 
 
+import purple from '@material-ui/core/colors/purple';
+import green from '@material-ui/core/colors/green';
+import grey from '@material-ui/core/colors/grey';
+import orange from '@material-ui/core/colors/grey';
+import brown from '@material-ui/core/colors/brown';
+import blue from '@material-ui/core/colors/blue';
+
+
 declare var window : any  ;  
 window.dev = dev 
 window.mk = mk 
 
 
-const theme = createMuiTheme({
-    palette : { 
-	primary: blue 
+//create some custom themes 
+const typography1 = { 
+    fontFamily: [
+	'"Helvetica Neue"',
+	'Arial',
+	'sans-serif',
+	'"Apple Color Emoji"',
+	'"Segoe UI Emoji"',
+	'"Segoe UI Symbol"',
+    ].join(','),
+} 
+
+const themes : any = { 
+    'default' : {} , 
+    'helvetica' : { 
+	typography : typography1
+    } , 
+    'stars' :  { 
+	typography : typography1 , 
+	palette : { 
+	    primary : {main  : "#212121" } , 
+	    secondary : {main  : "#f57c00" } , 
+	} 
+    } , 
+    'earth1' :  { 
+	typography : typography1 , 
+	palette : { 
+	    primary : brown, 
+	    secondary : green , 
+	} 
     } 
-}) 
+    
+} 
+
+
+
+const theme = createMuiTheme(themes.default) 
+
 
 var console_cnt = 0 
 let console_cntr = () => console_cnt++ ;

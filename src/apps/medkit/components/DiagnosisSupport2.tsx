@@ -101,6 +101,9 @@ export default function Component() {
     const PanelStyle = { 
 	backgroundColor: theme.palette.background.paper,
 	borderRadius: "7px", 
+	borderStyle : "solid" , 
+	borderWidth : "1px" , 
+	borderColor : theme.palette.primary.light , 
 	width : "45%" , 
 	padding : "2%" , 
 	overflow : "hidden" , 
@@ -167,10 +170,12 @@ export function ClinicalFeatures() {
     const PanelStyle = { 
 	backgroundColor: theme.palette.grey[50],
 	borderRadius: "2px", 
-	width : "45%" , 
-	padding : "1%" , 
+	width : "48%" , 
 	height : "100%", 
     } 
+    
+    //put left border on right one 
+    //fix bottom border :/ 
 
     
     return ( 
@@ -192,8 +197,6 @@ export function ClinicalFeatures() {
 			    <Box style={{flexGrow : 1 ,  overflow : "hidden" }}>
 				
 				<div style={{display : "flex" , 
-					     paddingLeft  : "2%" , 
-					     paddingRight  : "2%" , 				 
 					     height  : "100%" , 
 					     flexDirection : "row" , 
 					     justifyContent : "space-between"}}>		    
@@ -262,30 +265,46 @@ function SelectedItems() {
 	
 		return ( 
 		    
-		    <Box style={{height :"100%", display :"flex" , flexDirection : "column"}}>		    
-			<Box style={{flexGrow : 0}}> 
-			    <Typography variant="subtitle1">
-				Selected
-			    </Typography>
-			</Box>
+		    <Box
+			borderLeft={1}
+			style={{height :"100%", 
+				 boxSizing : "border-box", 
+				 padding : "3%", 
+				 borderWidth : "5px" , 				 
+				 borderColor : theme.palette.secondary.main , 				 
+				 display :"flex" , 
+				 flexDirection : "column"}}>		    
 			
-			<br/>
-			
-			<Box style={{flexGrow : 1 , overflow : "auto"  }}> 
-			    <Grid container spacing={3}>				
-				{
-				    state.selected.map( function(option :any) {
-					return ( 
-					    <Grid key={option.id} item xs={12} >
-						<SelectedCard option={option} key={option.concepturi} setState={setState} />						
-					    </Grid>
-					) 
-				    })
-				}
-			    </Grid>
-			</Box>
-			
-			
+			    
+			    <Box style={{flexGrow : 0}}> 
+				<Typography variant="subtitle1">
+				    Selected
+				</Typography>
+			    </Box>
+			    
+			    <br/>
+			    
+			    <Box style={{flexGrow : 1 , overflow : "auto"  }}> 
+				<Grid container spacing={3}>				
+				    {
+					state.selected.map( function(option :any) {
+					    return ( 
+						<Grid key={option.id} item xs={12} >
+						    <Box borderLeft={1}
+							style={{
+							    borderColor : theme.palette.primary.main
+							}}
+						    > 
+							<SelectedCard option={option} key={option.concepturi} setState={setState} />						
+						    </Box>
+						</Grid>
+					    ) 
+					})
+				    }
+				</Grid>
+			    </Box>
+			    
+			    
 		    </Box> 
 		    
 		)
@@ -363,16 +382,23 @@ function WikiSearch() {
 
 		    return ( 
 			
-			<Container style={{marginTop : "1%" , height: "100%" 
+			<Box style={{ height: "100%" , 
+				      width : "100%",  
 			    
 			}}>
 			    
-			    <div style={{ width : "100%" , 
-					  height : "100%" , 
-					  padding : "1%" , 
-					  borderRadius : "15px"  , 
-					  display : "flex" , 
-					  flexDirection : "column" 
+			    <div style={{ 
+				
+				width : "100%" , 
+				height : "100%" ,
+				boxSizing : "border-box", 
+				padding : "3%" , 
+				borderRadius : "7px"  , 
+				borderStyle : "solid" , 
+				borderWidth : "1px" , 
+				borderColor : theme.palette.primary.light , 
+				display : "flex" , 
+				flexDirection : "column" , 
 				
  			    }}>
 				
@@ -389,16 +415,16 @@ function WikiSearch() {
 					<FormControl fullWidth variant="outlined">
 					    <InputLabel htmlFor="outlined-adornment-amount">Wikidata</InputLabel>
 					    <OutlinedInput
-						id={wiki_search_id}
-						onChange={ function(e:any) {
-							
-							let val = e.target.value
+					    id={wiki_search_id}
+					    onChange={ function(e:any) {
+						    
+						    let val = e.target.value
 
-							WikiInputChanged([val])
-							
-						    }}
-						startAdornment={<InputAdornment position="start">></InputAdornment>}
-						labelWidth={60}
+						    WikiInputChanged([val])
+						    
+						}}
+					    startAdornment={<InputAdornment position="start">></InputAdornment>}
+					    labelWidth={60}
 					    />
 					</FormControl>
 				    </Box>
@@ -427,7 +453,7 @@ function WikiSearch() {
 				
 			    </div>  
 			    
-			</Container > 			
+			</Box > 			
 			
 			
 			
@@ -554,6 +580,7 @@ function SelectedCard(props : any) {
     
     return ( 
 	<Paper
+	    
 	    onMouseOver={()=> activate()}
 	    onMouseOut={()=> unactivate() }
 	    style={{padding: "2%" ,

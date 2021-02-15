@@ -5,6 +5,17 @@ import * as tsw from   "tidyscripts_web"  ;
 
 let fp = tsw.util.common.fp 
 let debug = tsw.util.common.debug 
+let wiki  = tsw.apis.wikidata 
+
+export async function do_it() {
+    
+    let props = ["P780"] 
+    let qids = ["181754"] 
+    
+    let results = await wiki.props_for_qids(qids,props) 
+    debug.add("dev.test1" , results) 
+    
+} 
 
 interface wdobj { 
     type : string , 
