@@ -97,7 +97,7 @@ export function single_element_renderer_to_key_renderer(ser : any) {
 			    let {key,Element} = ser(o) 
 			    
 			    return ( 
-				<Grid item xs={3} key={key}>
+				<Grid item xs={4} key={key}>
 				    {Element}
 				</Grid>
 			    ) 

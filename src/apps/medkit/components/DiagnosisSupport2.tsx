@@ -5,42 +5,43 @@ import { useTheme } from "@material-ui/core/styles";
 import * as tsw from "tidyscripts_web";
 import * as mui from "./list";
 import Context from "./DiagnosisSupport2_Context";
-//import WikiSearch from "./WikiDataSearch" ; 
 
-//import { ObjectInspector, TableInspector } from "react-inspector";
+import ScrollableTabs from "./ScrollableTabs" ;
+import * as cds from "../dev/cds" ; 
+import WikidataEntityViewer from "./WikidataEntityViewer" 
 
 let {
-  Container,
-  Grid,
-  Paper,
-  AddCircleOutlineIcon,
-  Link,
-  TextField,
-  Box,
-  FormControl,
-  FormHelperText,
-  Breadcrumbs,
-  Tabs,
-  Tab,
-  Chip,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  CircularProgress, 
-  ExpandMoreIcon,
-  CancelIcon, 
-  FaceIcon,
-  IconButton,
-  Icon,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  DoneIcon,
-  Avatar,
-  Button,
-  Visibility,
-  VisibilityOff,
-  Typography
+    Container,
+    Grid,
+    Paper,
+    AddCircleOutlineIcon,
+    Link,
+    TextField,
+    Box,
+    FormControl,
+    FormHelperText,
+    Breadcrumbs,
+    Tabs,
+    Tab,
+    Chip,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    CircularProgress, 
+    ExpandMoreIcon,
+    CancelIcon, 
+    FaceIcon,
+    IconButton,
+    Icon,
+    InputLabel,
+    OutlinedInput,
+    InputAdornment,
+    DoneIcon,
+    Avatar,
+    Button,
+    Visibility,
+    VisibilityOff,
+    Typography
 } = mui;
 
 let fp = tsw.util.common.fp;
@@ -52,18 +53,11 @@ const apis = tsw.apis
 
 declare var window: any;
 
-
+const ui_log = (s : string) => window.state_manager.addConsoleText(s) 
 
 /*
    COMPONENT STARTS HERE -- >
-   
-   Note that this template renders a widget which displays "Medkit Template Tool" , 
-   and then has two tabs, Tab1 and Tab2 
-   
-   This is just for demo purposes and should be modified 
-   
-   
-*/
+ */
 
 export default function Component() {
     
@@ -84,9 +78,12 @@ export default function Component() {
     } 
     
     let default_options : OptionObject[] =  []
-    let default_selected : SelectedObject[] = [] 
+    let default_selected : SelectedObject[] =  [] // tsw.apis.local_storage.get("test_selected")
 
     
+    /*
+       DEFINE THE GLOBAL STATE FOR THE DIAGNOSIS WIDGET (will be passed to Context.Provider) 
+     */
     const [state, setState] = React.useState<any>({
 	
 	wiki_search : { 
@@ -94,9 +91,97 @@ export default function Component() {
 	    progress : false , 
 	} , 
 	
-	selected : default_selected , 
+	selected : default_selected ,  //selected user queries 
+	
+	selected_diagnosis : null,  //when user looks at diagnostic info for given diagnosis 
+	
+	data_cache : { 
+	    //starts null but will be populated as elements are selected 
+	}  , 
+	
+	results_cache : {
+	    //will be computed 
+	} , 
+	
+	diagnosis_cache : {
+	    //will be computed 
+	} , 
+	
+	rank_cache : [
+	    // will be computed 
+	    // [ [ mk,  {total_score, qid_scores}]  , ... ]
+	]
+	
 	
     });
+    
+    /*
+       When state.selected changes we update the data_cache by requesting the data for new 
+       selections 
+     */
+    React.useEffect(  ()=>{
+	
+	(async function update_cache(){
+	    
+	    let selected = state.selected 
+	    log("selected was updated!")
+	    log(selected)
+	    let new_data_cache = fp.clone(state.data_cache)  
+	    
+	    //for any item that is NOT already in the data cache we 
+	    //will retrieve all properties for it and put them into the data cache 
+	    let ids = fp.keys(new_data_cache) 
+	    
+	    for (var s of selected ) {
+		//1. retrieve and update the data cache for each item thats NOT 
+		//already there 
+		let qid  = s.id
+		if (new_data_cache[qid]) { 
+		    // it exists already, so we do nothing for this id 
+		    log("Skipping existing id: " + qid)
+		}  else { 
+		    // does not exist yet, so we will retrieve the data 
+		    log("Requesting data for id: " + qid)		    
+		    ui_log("Retrieving data for item: " + s.label)
+		    new_data_cache[qid] = (await cds.get_diagnostic_properties_for_qid(qid,s.label))
+		} 
+	    } 
+	    
+	    setState( {...state,
+		       data_cache : new_data_cache }) 
+	    
+	})()
+	
+    }, [state.selected])
+
+    /*
+       When the data_cache is updated we recompute the results_cache, which is ultimately 
+       used to render the bottom right results pane 
+     */
+    React.useEffect( ()=>{
+	let dc = state.data_cache 
+	log("data cache was updated!")
+	log(dc)
+	// UPDATE THE results_cache and diagnosis_cache
+	// ||=-((^.^))-=||
+	let {results_cache, diagnosis_cache}  = cds.compute_diagnostic_data(dc, state.selected)
+	// and then we update the rank_cache 
+	let rank_cache = cds.diagnosis_cache_to_rankings(diagnosis_cache) 
+	
+	setState({...state,
+		  results_cache, 		  
+		  diagnosis_cache,
+		  rank_cache})
+	
+    }, [state.data_cache])
+    
+    //results cache
+    React.useEffect( ()=> {
+	log("Rank cache was updated") 
+	//log(state.results_cache) 
+	debug.add("cds.state" , state)	
+    }, [state.rank_cache])
+    
     
     const PanelStyle = { 
 	backgroundColor: theme.palette.background.paper,
@@ -106,7 +191,7 @@ export default function Component() {
 	borderColor : theme.palette.primary.light , 
 	width : "45%" , 
 	padding : "2%" , 
-	overflow : "hidden" , 
+	//overflow : "hidden" , 
     } 
 
     return (
@@ -127,14 +212,6 @@ export default function Component() {
 			     flexDirection : "column" , 
 			     height : "100%" , 
 		}}> 
-		    
-		    <div style={{flexGrow : 0}}> 
-			<Typography variant="h4">
-			    Diagnosis Support Tool
-			</Typography>
-		    </div>
-		    
-		    <br/> 
 		    
 		    <div style={{flexGrow : 1  , overflow : "hidden"  }}>
 			
@@ -223,26 +300,184 @@ export function ClinicalFeatures() {
     ) 
 } 
 
+
+
 export function Results() { 
+    
+    const theme = useTheme();    
+    
+    const PanelStyle = { 
+	backgroundColor: theme.palette.grey[50],
+	borderRadius: "2px", 
+	width : "100%" , 
+	//height : "100%", 
+    } 
+    
+    //put left border on right one 
+    //fix bottom border :/ 
+
+    
     return ( 
 	<Context.Consumer> 
 	    {
 		function({state,setState}) { 
 		    return ( 
-			<Box style={{height : "100%" ,display : "flex" , flexDirection  : "column" ,  }}> 
+			<Box style={{height : "100%" ,display : "flex" , flexDirection  : "column"}}> 
 			    
 			    <Box> 
 				<Typography variant="h4">
-				    Results 
+				    Results
 				</Typography>	
 			    </Box>
+			    <br/> 
+			    
+			    <Box style={{flexGrow : 1 ,  overflow : "hidden" }}>
+				
+				<div style={{display : "flex" , 
+					     height  : "100%" , 
+					     overflow : "hidden" , 
+					     flexDirection : "column" , 
+					     justifyContent : "space-between"}}>		    
+
+				    <Box style={{...PanelStyle , 
+						 padding : "3%", 
+						 boxSizing : "border-box" , 
+						 borderStyle : "solid" , 
+						 borderRadius : "5px" , 
+						 borderWidth : "1px", 
+						 borderColor : theme.palette.primary.light,   						 
+						 height : "44%"}}> 
+					
+					<DxList/> 
+					
+				    </Box>
+				    
+				    <Box borderTop={1}
+					 style={ {...PanelStyle , 
+						  flexGrow : 1 , 
+						  borderWidth : "5px" , 
+						  borderColor : theme.palette.secondary.light , 
+						  maxHeight  : "54%"}}>
+					<ScrollableTabs parentState={{state,setState}} />	
+				    </Box>
+				    
+				</div>
+				
+			    </Box>	
+
 			    
 			</Box>
-
+			
 		    ) 
-		}
-	    } 
+	    }
+	    }
 	</Context.Consumer> 
+    ) 
+} 
+
+/* 
+   type SelectedObject = { 
+   label : string , 
+   description  : string , 
+   concepturi  :string  , 
+   id : string, 
+   } 
+ */
+
+function DxList() {
+    return ( 
+	<Context.Consumer> 
+	    {
+	    function({state,setState}) {  
+	    
+	    let ranks = (state.rank_cache || [] )  //  [ [ mk,  {total_score, qid_scores}]  , ... ]	    
+	    
+	    return ( 
+	    <Box style={{ height  : "100%" ,
+		flexDirection : 'row' ,
+		display :'flex' ,   }}>  
+		<Box style={{ 
+		    width : "50%" , 
+		    overflow : 'auto' , 	
+		    boxSizing : "border-box",
+		    padding : "1%"
+		    }}> 
+		    <Grid container spacing={2}>
+			{
+			fp.enumerate(ranks.slice(0,40)).map( (e:any)=> {
+			let [ index, y ] = e 
+			let [mk, score_info] = y 
+			let {total_score} = score_info 			    
+			let [did ,dlabel ] = mk.split("<->")
+			return ( 
+			<Grid  key={index} item xs={12}>
+			    <Chip 
+			    onClick={function(){ 
+				    let selected_diagnosis = mk 
+				    log("Selected_dx: " + selected_diagnosis) 
+				    setState({...state, selected_diagnosis})
+				}}
+			    avatar={<Avatar>{index + 1}</Avatar>} 
+			    label={`${dlabel} [${total_score}]`}  />
+			</Grid>
+			) 
+
+			})
+			}
+		    </Grid>
+		</Box>
+		
+		<Box style={{
+		    width : "50%",
+		    boxSizing : "border-box",
+		    padding : "1%"
+		    }}> 
+		    <SelectedDiagnosisDisplay/>
+		</Box>
+	    </Box>	
+	    )
+		} 
+		}
+	    </Context.Consumer> 
+    )
+}
+	
+
+
+
+function SelectedDiagnosisDisplay() { 
+    
+    return ( 
+	<Context.Consumer> 
+	{
+	    function({state,setState}) {  
+		
+		let selected_diagnosis = state.selected_diagnosis 
+		if (!selected_diagnosis) {return null} 
+		
+		let [did,dlabel] = selected_diagnosis.split("<->")
+		let qid_labels  = fp.map_get(fp.values(state.diagnosis_cache[selected_diagnosis]), 'label').join(", ")
+		
+		
+		return (
+		    <Box style={{height : "100%" , display : 'flex' , flexDirection : 'column'}}> 
+			<Box>
+			    <Typography variant="h5"> 
+				{dlabel}
+			    </Typography>
+			    <Typography variant="subtitle1"> 
+				{`Matches: ${qid_labels}`}
+			    </Typography>
+			</Box>
+
+			<Box style={{overflow : "auto"}}>
+			    <WikidataEntityViewer qid={did} />
+			</Box>
+		    </Box>
+		)
+	    }
+	}
+	</Context.Consumer>
     ) 
 } 
 
@@ -259,22 +494,22 @@ function SelectedItems() {
     
     return ( 
 	<Context.Consumer> 
-	{
-	    function({state,setState}) {  
-		
-	
-		return ( 
+	    {
+		function({state,setState}) {  
 		    
-		    <Box
-			borderLeft={1}
-			style={{height :"100%", 
-				 boxSizing : "border-box", 
-				 padding : "3%", 
-				 borderWidth : "5px" , 				 
-				 borderColor : theme.palette.secondary.main , 				 
-				 display :"flex" , 
-				 flexDirection : "column"}}>		    
+		    
+		    return ( 
 			
+			<Box
+			    borderLeft={1}
+			    style={{height :"100%", 
+				    boxSizing : "border-box", 
+				    padding : "3%", 
+				    borderWidth : "5px" , 				 
+				    borderColor : theme.palette.secondary.light , 				 
+				    display :"flex" , 
+				    flexDirection : "column"}}>		    
+			    
 			    
 			    <Box style={{flexGrow : 0}}> 
 				<Typography variant="subtitle1">
@@ -292,7 +527,7 @@ function SelectedItems() {
 						<Grid key={option.id} item xs={12} >
 						    <Box borderLeft={1}
 							style={{
-							    borderColor : theme.palette.primary.main
+							    borderColor : theme.palette.primary.light
 							}}
 						    > 
 							<SelectedCard option={option} key={option.concepturi} setState={setState} />						
@@ -305,12 +540,12 @@ function SelectedItems() {
 			    </Box>
 			    
 			    
-		    </Box> 
-		    
-		)
+			</Box> 
+			
+		    )
 
+		}
 	    }
-	}
 	</Context.Consumer>
     )
 }
@@ -352,12 +587,24 @@ function WikiSearch() {
 				    wiki_search : fp.merge_dictionary( state.wiki_search , { options :  result , progress :false    }) }) 
 			
 		    }) 
+
 		    
 		    let setSelected = function(option :any) {
 			console.log(option) 
 			console.log(state)
-			setState( {...state, 
+			
+			let uris = fp.map_get(state.selected, "concepturi")
+			if (uris.includes(option.concepturi)){
+			    //has already been added 
+			    log("Already added!")
+			    ui_log("Already selected: " + option.label)
+			    return 
+			}
+			
+			
+			setState( {...state,
 				   selected : state.selected.concat(option)  }) 
+			
 			console.log(state)			
 		    }
 		    
@@ -368,7 +615,7 @@ function WikiSearch() {
 				state.wiki_search.options.map(function(option :any ){ 
 				    return ( 
 					<Grid key={option.id} item xs={12} >
-					    <SearchCard option={option} setSelected={setSelected}  /> 
+					    <SearchCard option={option} setSelected={setSelected}  />  
 					</Grid>
 				    ) 
 				    
@@ -384,7 +631,7 @@ function WikiSearch() {
 			
 			<Box style={{ height: "100%" , 
 				      width : "100%",  
-			    
+				      
 			}}>
 			    
 			    <div style={{ 

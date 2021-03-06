@@ -1,3 +1,24 @@
+Todo: 
+   Start incorporating pubmed 
+   - work with the database  (make sure to take the ssd!!) to produce bayesian info 
+   - modify medkit to include MESH terms for the symptoms and the diagnoses 
+       -- consider how to augment the ranking algorithm 
+   - ability to SAVE and load a set of symptoms for demonstration purposes (optionally can title them) -- add two icons in top right of the selected panel , use popups
+   - modify medkit to support collapsible "clinical features" panel and an expanding "Workups and Treatments" tab 
+       -- actually this tab could scroll in from the right side too ? 
+   - WORK on pop ups! can even get the image into the app :) 
+
+
+To discuss:
+   - how to improve the scoring system given the limitations (show get_score_for_qid in cds.ts) 
+
+
+Extras: 
+   - button for changing th theme 
+   - 
+
+
+
 [ ] WORKING on research project now  , need to finalize interface 
 
   - Allow visualizing selected items by tab (based on property they matched) 
@@ -14,8 +35,10 @@
 	    - next to Results is a PROGRESS wheel that goes on when the underlying sparql query is running 
 	    
 
-[ ] 
-DONT FORGET ABOUT lab vallues 
+[ ]  CAN add another column panel on the right which shows HIGH YIELD workup / treatments -- looks at the results and retrieves possible treatments/ work up and then aggregates by count and EXCLUDES those already provided in clinical features
+
+
+[ ] DONT FORGET ABOUT lab vallues 
 
 
 

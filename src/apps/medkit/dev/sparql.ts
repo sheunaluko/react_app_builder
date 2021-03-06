@@ -27,6 +27,8 @@ export async function do_it() {
      - use wiki_props.property_ids_of_type("diagnostic","forward")
   2) request the backward properties using the "reverse_props_for_qid"
      - use wiki_props.property_ids_of_type("diagnostic","backward")  
+     
+     TODO - update these to also get the MeSH ids (will need for linking to pubmed) 
  */
 
 
@@ -48,7 +50,6 @@ export async function get_diagnostic_properties_for_qid(qid : string) {
 } 
 
 /* 
-   TODO  
    1) Work on the interface so that as new qids are selected the diagnostic properties are reqd and the result obj is conjd onto the state 
     -- the UI is a pure function of this state and sorts the returned properties into tabs in the lower pane and disease ranking into upper pane 
        -- tablevel1 => property (top level indicates count of submatches as well as forward/reverse - could represent latter with color? or text?)

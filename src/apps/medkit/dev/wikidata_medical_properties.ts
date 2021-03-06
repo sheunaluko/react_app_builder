@@ -24,14 +24,12 @@ WHERE
 const diagnostic_properties =  { 
     'forward' : [
 	//these map from the symptom to the disease 
-	["P1542", "has effect"], 	
+	["P828", "has cause"],	
 	["P5132", "suggests the existence of"],
 	["P7500", "comorbidity"],
-
 	// lol .. 
 	["P1606" , "natural reservoir of"], 
 
-	
 	/* 
 	   some genetic properties below, will include these for now 
 	   if a user inputs a gene then these will pick up potential associations to diseases
@@ -43,13 +41,16 @@ const diagnostic_properties =  {
 	   upon selection the input would be paired with the desired property and this would 
 	   be reflected in the resulting sparql query for candidate matches 
 	*/
-	["P1910", "decreased expression"],
-	["P1911", "increased expression in"],
-	["P1912", "deletion association with"],
-	["P1913", "gene duplication association with"],
-	["P1914", "gene insertion association with"],
-	["P1915", "gene inversion association with"],
-	["P1916", "gene substitution association with"], 
+	
+	//["P1910", "decreased expression"],
+	//["P1911", "increased expression in"],
+	//["P1912", "deletion association with"],
+	//["P1913", "gene duplication association with"],
+	//["P1914", "gene insertion association with"],
+	//["P1915", "gene inversion association with"],
+	//["P1916", "gene substitution association with"], 
+	//[ - - ] - [ - - ] 
+	
 	["P3356", "positive diagnostic predictor" ], //several variations of this 
 	
     ], 
@@ -57,7 +58,7 @@ const diagnostic_properties =  {
 	//these map from the disease to the symptom 
 	["P780", "symptoms" ], 	
 	["P5131", "possible medical findings"],
-	["P828", "has cause"],
+	["P1542", "has effect"], 	
 	["P1605", "has natural reservoir"],
 	["P1909", "side effect"],
 	["P5642", "risk factor"],

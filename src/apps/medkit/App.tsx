@@ -41,15 +41,25 @@ import {
     Button, 
 } from "./components/list" 
 
-
-
 import purple from '@material-ui/core/colors/purple';
 import green from '@material-ui/core/colors/green';
 import grey from '@material-ui/core/colors/grey';
-import orange from '@material-ui/core/colors/grey';
+import orange from '@material-ui/core/colors/orange';
 import brown from '@material-ui/core/colors/brown';
 import blue from '@material-ui/core/colors/blue';
-
+import red from '@material-ui/core/colors/red';
+import pink from '@material-ui/core/colors/pink';
+import deep_purple from '@material-ui/core/colors/deepPurple';
+import indigo from '@material-ui/core/colors/indigo';
+import light_blue from '@material-ui/core/colors/lightBlue';
+import cyan from '@material-ui/core/colors/cyan';
+import teal from '@material-ui/core/colors/teal';
+import light_green from '@material-ui/core/colors/lightGreen';
+import lime from '@material-ui/core/colors/lime';
+import yellow from '@material-ui/core/colors/yellow';
+import amber from '@material-ui/core/colors/amber';
+import deep_orange from '@material-ui/core/colors/deepOrange';
+import blue_grey from '@material-ui/core/colors/blueGrey';
 
 declare var window : any  ;  
 window.dev = dev 
@@ -66,13 +76,68 @@ const typography1 = {
 	'"Segoe UI Emoji"',
 	'"Segoe UI Symbol"',
     ].join(','),
+    fontSize: 13,
 } 
 
+/*
+   import purple from '@material-ui/core/colors/purple';
+   import green from '@material-ui/core/colors/green';
+   import grey from '@material-ui/core/colors/grey';
+   import orange from '@material-ui/core/colors/orange';
+   import brown from '@material-ui/core/colors/brown';
+   import blue from '@material-ui/core/colors/blue';
+   import red from '@material-ui/core/colors/red';
+   import pink from '@material-ui/core/colors/pink';
+   import deep_purple from '@material-ui/core/colors/deepPurple';
+   import indigo from '@material-ui/core/colors/indigo';
+   import light_blue from '@material-ui/core/colors/lightBlue';
+   import cyan from '@material-ui/core/colors/cyan';
+   import teal from '@material-ui/core/colors/teal';
+   import light_green from '@material-ui/core/colors/lightGreen';
+   import lime from '@material-ui/core/colors/lime';
+   import yellow from '@material-ui/core/colors/yellow';
+   import amber from '@material-ui/core/colors/amber';
+   import deep_orange from '@material-ui/core/colors/deepOrange';
+   import blue_grey from '@material-ui/core/colors/blueGrey';
+
+   
+ */
+
 const themes : any = { 
-    'default' : {} , 
-    'helvetica' : { 
-	typography : typography1
-    } , 
+    'test' : { 
+	typography : typography1 , 
+	palette : { 
+	    primary : yellow, 
+	    secondary : teal, 
+	} 
+	
+    },     
+    'fireplace' : { 
+	typography : typography1 , 
+	palette : { 
+	    primary : brown, 
+	    secondary : deep_orange, 
+	} 
+	
+    }, 
+    
+    'default' : { 
+	typography : typography1 , 
+	palette : { 
+	    primary : indigo, 
+	    secondary : grey, 
+	} 
+	
+    }, 
+    'purple' : { 
+	typography : typography1 , 
+	palette : { 
+	    primary : deep_purple, 
+	    secondary : blue_grey , 
+	} 
+	
+    }, 
+    'none' : {} , 
     'stars' :  { 
 	typography : typography1 , 
 	palette : { 
@@ -80,16 +145,35 @@ const themes : any = {
 	    secondary : {main  : "#f57c00" } , 
 	} 
     } , 
-    'earth1' :  { 
+    'earth' :  { 
 	typography : typography1 , 
 	palette : { 
 	    primary : brown, 
-	    secondary : green , 
+	    secondary : blue , 
 	} 
-    } 
+    } ,
+    'stone' : { 
+	typography : typography1 , 
+	palette : { 
+	    primary : grey, 
+	    secondary : brown , 
+	} 
+	
+    } , 
+    'wood' : { 
+	typography : typography1 , 
+	palette : { 
+	    primary : brown, 
+	    secondary : grey , 
+	} 
+	
+    } ,
+   
+    
+    
+    
     
 } 
-
 
 
 const theme = createMuiTheme(themes.default) 
@@ -118,6 +202,9 @@ function App() {
     const [consoleState, setConsoleState] = React.useState(true)     
     const [console_text, setConsoleText] = React.useState(default_text)         
     
+    const [subheader, setSubheader] = React.useState(null)             
+    
+    smgr.register("set_subheader", setSubheader) 
     smgr.register("console_text" , console_text) 
     smgr.register("setConsoleText" , setConsoleText)     
     smgr.register("addConsoleText" , function(t:string) { 
@@ -149,9 +236,23 @@ function App() {
 			<IconButton edge="start" color="inherit" aria-label="menu" onClick={toggle} >
 			    <MenuIcon />
 			</IconButton>
-			<Typography variant="h6" style={{flexGrow : 1}} >
-			    MedKit
-			</Typography>
+			<Box style={{display:'flex',flexDirection :'row'}}>
+			    <Typography variant="h6" >
+				MedKit
+			    </Typography>
+			    { 
+				subheader ? 
+				(<Typography 
+				     variant="h6" 
+				     style={{
+					 color : theme.palette.secondary.dark,
+					 marginLeft : "5px"}} > 
+				    {"  >  " + subheader} 
+				</Typography> ) : 
+				null
+			    } 
+			</Box>
+			
 		    </Toolbar>
 		</AppBar> 
 		
@@ -192,7 +293,7 @@ function App() {
 		    <Button variant="outlined" 
 			    color="primary" 
 			    onClick={function(){setConsoleState(!consoleState)}} 
-			    //onMouseOver={function(){setConsoleState(!consoleState)}} 
+			//onMouseOver={function(){setConsoleState(!consoleState)}} 
 		    > > </Button>
 		</div>
 		

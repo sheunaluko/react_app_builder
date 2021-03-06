@@ -8,35 +8,36 @@ import { ObjectInspector, TableInspector } from "react-inspector";
 import * as wdev from "./WikidataEntityViews";
 
 let {
-  Container,
-  Grid,
-  Paper,
-  AddCircleOutlineIcon,
-  Link,
-  TextField,
-  Box,
-  FormControl,
-  FormHelperText,
-  Breadcrumbs,
-  Tabs,
-  Tab,
-  Chip,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  ExpandMoreIcon,
-  FaceIcon,
-  IconButton,
-  Icon,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  DoneIcon,
-  Avatar,
-  Button,
-  Visibility,
-  VisibilityOff,
-  Typography
+    Container,
+    Grid,
+    Paper,
+    AddCircleOutlineIcon,
+    CircularProgress   ,
+    Link,
+    TextField,
+    Box,
+    FormControl,
+    FormHelperText,
+    Breadcrumbs,
+    Tabs,
+    Tab,
+    Chip,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    ExpandMoreIcon,
+    FaceIcon,
+    IconButton,
+    Icon,
+    InputLabel,
+    OutlinedInput,
+    InputAdornment,
+    DoneIcon,
+    Avatar,
+    Button,
+    Visibility,
+    VisibilityOff,
+    Typography
 } = mui;
 
 let fp = tsw.util.common.fp;
@@ -65,24 +66,24 @@ export default function EntityViewer(props: any) {
 
   const theme = useTheme();
   const [state, setState] = React.useState<any>({
-    selected: 20,
-    qid: qid,
-    wikidataInfo: null
+    wikidataInfo: "waiting" , 
   });
 
   React.useEffect(() => {
-    /*
-        TODO -- add an async handler to check if the websocket is connected 
-	     -- after its connected then run the below function 
-       
+      /*
+         TODO -- add an async handler to check if the websocket is connected 
+	 -- after its connected then run the below function 
        */
-
-    get_data_for_qid(qid).then((qid_data: any) => {
-      debug.add("qid_data", qid_data);
-      debug.log("Saved retrieved 'qid_data'");
-      setState({ ...state, wikidataInfo: qid_data });
+      setState({...state,wikidataInfo: "waiting"}) ; 
+      
+      get_data_for_qid(qid).then((qid_data: any) => {
+	  debug.add("qid_data", qid_data);
+	  debug.log("Saved retrieved 'qid_data'");
+	  setTimeout( function(){
+	      setState({ ...state, wikidataInfo: (qid_data || "none")  });
+	  }, 20)
     });
-  }, []);
+  },[qid]); //wow had a bug here with the component not re-rendering!! because I had an []
 
   /* 
     Architecture: 
@@ -101,7 +102,7 @@ export default function EntityViewer(props: any) {
         <Typography variant="body1">
           <b>Label: </b>
           <Link
-            href={fp.format("https://www.wikidata.org/wiki/{}", [state.qid])}
+            href={fp.format("https://www.wikidata.org/wiki/{}", [qid])}
           >
             {state.wikidataInfo["itemLabel"]}
           </Link>
@@ -115,8 +116,8 @@ export default function EntityViewer(props: any) {
 
       <Typography style={{ flexGrow: 1 }} variant="body1">
         <b>Wikidata ID: </b>
-        <Link href={fp.format("https://www.wikidata.org/wiki/{}", [state.qid])}>
-          {state.qid}
+        <Link href={fp.format("https://www.wikidata.org/wiki/{}", [qid])}>
+          {qid}
         </Link>
       </Typography>
 
@@ -156,21 +157,33 @@ export default function EntityViewer(props: any) {
     </Box>
   );
 
-  let LoadingWidget = () => <Typography>Loading...</Typography>;
+  let UI = function() {
+      switch (state.wikidataInfo) {
+	  case 'waiting' : 
+	      return <Box style={{width:"100%" , display:"flex", flexDirection : "row" , justifyContent : "center" }}><CircularProgress/> </Box>
+	      case 'none' : 
+	      return (
+	      <Box>
+		  <Typography>No additional (medical) Wikidata properties found.</Typography>
+		  <Typography>This will be upgraded soon!</Typography>		  
+	      </Box>
+	      )
+	  default : 
+	      return <WikiWidget/>
+      } 
+  } 
 
-  return (
-    <Context.Provider value={{ state, setState }}>
-      <Container>
-        <div
-          style={{
-            backgroundColor: theme.palette.background.paper,
-            padding: "2%",
-            borderRadius: "15px"
-          }}
-        >
-          {state.wikidataInfo ? <WikiWidget /> : <LoadingWidget />}
-        </div>
-      </Container>
-    </Context.Provider>
-  );
+    return (
+	<Box >
+            <div
+		style={{
+		    backgroundColor: theme.palette.background.paper,
+		    padding: "2%",
+		    borderRadius: "15px"
+		}}
+            >
+		<UI/>
+            </div>
+	</Box>
+    );
 }

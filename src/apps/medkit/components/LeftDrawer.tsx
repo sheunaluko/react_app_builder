@@ -65,9 +65,10 @@ export default function AppDrawer() {
     
     
     //grab the selectedMenuSetter
-    let select_menu_fn = function(m : string) {
+    let select_menu_fn = function(m : string,d : string) {
 	return function() { 
 	    smgr.get("setAppSelectedMenu")(m) ;
+	    smgr.get('set_subheader')(d) ; 
 	}
     } 
     
@@ -90,7 +91,7 @@ export default function AppDrawer() {
     
     const list_item = (k : string,display: string) => ( 
 	<React.Fragment key={k}> 
-	    <ListItem button key={k} onClick={select_menu_fn(k)}>
+	    <ListItem button key={k} onClick={select_menu_fn(k,display)}>
 		<ListItemIcon >
 		    <NavigateNextIcon style={{color : theme.palette.secondary.dark}} /> 
 		</ListItemIcon>
