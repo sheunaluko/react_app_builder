@@ -91,6 +91,8 @@ export default function Component() {
 	    progress : false , 
 	} , 
 	
+	diagnosis_mode  : "wikidata_only" , 
+	
 	selected : default_selected ,  //selected user queries 
 	
 	selected_diagnosis : null,  //when user looks at diagnostic info for given diagnosis 
@@ -110,7 +112,11 @@ export default function Component() {
 	rank_cache : [
 	    // will be computed 
 	    // [ [ mk,  {total_score, qid_scores}]  , ... ]
-	]
+	] , 
+	
+	mesh_id_cache : { // will be filled at runtime -- this is an "in memory" cache, there is another indexeddb cache which is requested if data is missing here 
+	                  // if it is missing there too then the web request is made and it is stored in both caches 
+	}  
 	
 	
     });
@@ -118,6 +124,15 @@ export default function Component() {
     /*
        When state.selected changes we update the data_cache by requesting the data for new 
        selections 
+       
+       Note that the architecture here is a chain of react hooks 
+       state.selected => updates state.data_cache 
+       state.data_cache => updates  results,diagnosis,and mesh_id caches 
+       state.diagnosis_cache => calculates rankings (also listens to state.diagnosis_mode) 
+       
+       Theoretically, the diagnosis cache depends on the diagnosis_cache AND mesh_id caches however only 'listens' to changes in diagnosis cache 
+       This is because diagnosis and mesh_id caches are both updated atomically in the [state.data_cache] effect hook 
+       
      */
     React.useEffect(  ()=>{
 	
@@ -156,31 +171,74 @@ export default function Component() {
 
     /*
        When the data_cache is updated we recompute the results_cache, which is ultimately 
-       used to render the bottom right results pane 
+       used to render the bottom right results pane. We also compute the diagnosis cache which organizes information by possible diagnosis, 
+       and retrieve all available mesh ids 
      */
     React.useEffect( ()=>{
-	let dc = state.data_cache 
-	log("data cache was updated!")
-	log(dc)
-	// UPDATE THE results_cache and diagnosis_cache
-	// ||=-((^.^))-=||
-	let {results_cache, diagnosis_cache}  = cds.compute_diagnostic_data(dc, state.selected)
-	// and then we update the rank_cache 
-	let rank_cache = cds.diagnosis_cache_to_rankings(diagnosis_cache) 
 	
-	setState({...state,
-		  results_cache, 		  
-		  diagnosis_cache,
-		  rank_cache})
+	(async function compute_pre_rank(){
+	    
+	    let dc = state.data_cache 
+	    log("data cache was updated!")
+	    log(dc)
+	    // UPDATE THE results_cache and diagnosis_cache and rank_cache 
+	    // ||=-((^.^))-=||
+	    let {results_cache, diagnosis_cache}  = cds.compute_diagnostic_data(dc, state.selected)
+	    
+	    // now we want to get the mesh_ids for all of the user selected items and the ranked diagnoses as well 
+	    // to do this intelligently we first check the mesh_id_cache to see if its there, and only request those which are not... 
+	    let selected_ids = fp.map_get(state.selected,"id") 
+	    //get diagnosis ids from diagnosis_cache 
+	    let diagnosis_ids = fp.keys(diagnosis_cache).map( (x : string) => x.split("<->")[0] ) 
+	    let all_ids = fp.flat_once( [ selected_ids , diagnosis_ids] ) 
+	    
+	    let to_request : string[] = []  ; 
+	    
+	    all_ids.map((qid : string) => {
+		
+		if (state.mesh_id_cache[qid]) {
+		    //already have the id stored 
+		} else { 
+		    //will need to get it 
+		    to_request.push(qid) 
+		} 
+		
+	    }); 
+	    
+	    let retrieved_ids = await cds.retrieve_mesh_ids(to_request) ; 
+	    
+	    //and then we cache them here! 
+	    let mesh_id_cache = fp.merge_dictionary(state.mesh_id_cache, retrieved_ids)
+
+	    //and then update everything
+	    //note the following effect hook which will detect this update and then actually produce the rankings since all the data is loaded now 
+	    setState({...state,
+		      results_cache, 		  
+		      diagnosis_cache,
+		      mesh_id_cache})
+	    
+	})()
 	
     }, [state.data_cache])
     
-    //results cache
+    //COMPUTE RANKINGS BASED ON REFRESHED DATA 
     React.useEffect( ()=> {
-	log("Rank cache was updated") 
-	//log(state.results_cache) 
+	log("Diagnosis cache or diagnosis mode  was updated") 
+	
+	/* 
+	   ACTUALLY COMPUTE THE RANKINGS NOW 
+	*/ 
+	
+	// and then we update the rank_cache 
+	let rank_cache = cds.diagnosis_cache_to_rankings(state.diagnosis_cache) 
+	
+	setState({
+	    ...state, 
+	    rank_cache, 
+	})
 	debug.add("cds.state" , state)	
-    }, [state.rank_cache])
+	
+    }, [state.diagnosis_cache , state.diagnosis_mode]) //this will re-rendered based on changes to each of these
     
     
     const PanelStyle = { 

@@ -9,7 +9,7 @@ declare var window : any ;
 let LS = window.localStorage 
 
 // - 
-var storage_header = "tidyscri" 
+var storage_header = "tidyscripts" 
 export function set_storage_header(h:string){storage_header = h} 
 export function dot_join(a : string[]) { return a.join(".") }  
 export function full_name(n : string) { return dot_join([storage_header, n]) } 

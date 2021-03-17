@@ -28,7 +28,7 @@ const diagnostic_properties =  {
 	["P5132", "suggests the existence of"],
 	["P7500", "comorbidity"],
 	// lol .. 
-	["P1606" , "natural reservoir of"], 
+	//["P1606" , "natural reservoir of"], 
 
 	/* 
 	   some genetic properties below, will include these for now 

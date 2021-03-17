@@ -18,6 +18,7 @@ export declare function WikiEntities(ops: WikiEntitySearchOps): Promise<any>;
 export declare function WikidataSearch(strang: string): Promise<any>;
 export declare function WikidataSearchAsList(query: string): Promise<any>;
 export declare function wikidata_instances_of_id(id: string): Promise<any>;
+export declare function risk_factors_with_meshids(): Promise<any>;
 interface SparqlTemplateOps {
     template: string;
     replacers: string[][];

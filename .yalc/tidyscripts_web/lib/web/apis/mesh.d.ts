@@ -16,6 +16,11 @@ interface SparqlTemplateOps {
     param_key?: string;
 }
 export declare function sparql_template_fn(ops: SparqlTemplateOps): Promise<any>;
+export declare function descendants_of_tree_code(args: any): Promise<any>;
+export declare function all_sparql_results(fn: any, args: any): Promise<any[]>;
+export declare function all_descendants_of_tree_code(args: any): Promise<any[]>;
+export declare function all_mesh_diseases(): Promise<any[]>;
+export declare function all_mesh_conditions_signs_symptoms(): Promise<any[]>;
 interface MCSearch {
     search_term: string;
     limit: number;

@@ -1,3 +1,8 @@
+export declare const sec10: number;
+export declare const min1: number;
+export declare const hr1: number;
+export declare const DEFAULT_HL_CACHE_TIME: number;
+export declare const DEFAULT_HL_CACHE_CHECK_INTERVAL: number;
 declare const set_with_ttl: any;
 export { set_with_ttl, };
 interface CallFunctionOps {

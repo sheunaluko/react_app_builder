@@ -106,6 +106,7 @@ export default function ScrollableTabsButtonAuto(props : any) {
 function GetTabUi(state: any, value : any) {
     
     let results = state.results_cache 
+    let mesh_id_cache = state.mesh_id_cache 
     
     /* 
        Given that I added the diagnostic_cache ..  could consider refactoring this to make use of that! 
@@ -183,6 +184,9 @@ function GetTabUi(state: any, value : any) {
 				
 				if (num == 0 ) { return null } //dont display in this case 
 				
+				//also we can retrieve the cached meshid 
+				let mesh_id = mesh_id_cache[qid].value
+				
 				
 				return ( 
 				    
@@ -191,7 +195,9 @@ function GetTabUi(state: any, value : any) {
 					    <AccordionSummary
 						expandIcon={<ExpandMoreIcon />}
 					    >
-						<Typography variant="subtitle1"  >{`${label} (${num})`}</Typography>
+						<Box style={{display:"flex" ,flexDirection :"row" , justifyContent : "space-between"}}>
+						    <Typography variant="subtitle1"  >{`${label} (${num}) ${mesh_id ? (" [" +mesh_id+"]") : "" }`}</Typography>
+						</Box>
 					    </AccordionSummary>
 					    
 					    <AccordionDetails> 

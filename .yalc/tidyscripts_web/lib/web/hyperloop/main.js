@@ -16,6 +16,9 @@ import * as common from "../../common/util/index"; //common utilities
 import * as wutil from "../util/index";
 import { ext_log } from "./ext_log"; //import the hyperloop external logger 
 import * as params from "../parameters";
+export { ext_log }; //and export it too 
+import * as client_cacher from "./client_cacher";
+export { client_cacher };
 const log = common.Logger("hlm");
 let fp = common.fp;
 let debug = common.debug;
@@ -158,6 +161,17 @@ export function post_json(url, post_msg) {
             msg = `PostJson - ${url}`;
         }
         ext_log(msg);
+        return data;
+    });
+}
+export function write_file(args) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let client = yield get_default_client();
+        log("Request to write to path: " + args.path);
+        let { hit, data } = yield client.call({ id: "local.hyperloop.write_text",
+            args });
+        //should never return a cache 'hit' 
+        log(data);
         return data;
     });
 }

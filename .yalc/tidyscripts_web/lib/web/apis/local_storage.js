@@ -1,7 +1,7 @@
 import * as fp from "../../common/util/fp";
 let LS = window.localStorage;
 // - 
-var storage_header = "tidyscri";
+var storage_header = "tidyscripts";
 export function set_storage_header(h) { storage_header = h; }
 export function dot_join(a) { return a.join("."); }
 export function full_name(n) { return dot_join([storage_header, n]); }

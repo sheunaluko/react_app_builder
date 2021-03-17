@@ -3,9 +3,19 @@
 import * as tsw from   "tidyscripts_web"  ; 
 import * as wiki_props from "./wikidata_medical_properties" 
 
+
 let fp = tsw.util.common.fp 
 let debug = tsw.util.common.debug 
 let wiki  = tsw.apis.wikidata 
+let mesh  = tsw.apis.mesh 
+let hlm = tsw.hyperloop.main;
+
+
+let log = console.log
+
+declare var window : any ; 
+
+let smgr  = window.state_manager ; let ui_log = (t:string)=>smgr.addConsoleText(t) ;  
 
 export async function do_it() {
     
@@ -214,4 +224,119 @@ export function diagnosis_cache_to_rankings(diagnosis_cache : any){
     rank_cache.sort( (a:any,b:any) => (b[1].total_score - a[1].total_score))
     
     return rank_cache
+} 
+
+
+
+/* 
+   OK We need to retrieve and cache MeshIDs for all of the symptoms / diseases which have 
+   been pulled into the app 
+*/
+
+//get the db 
+var mesh_id_db = tsw.apis.db.GET_DB('mesh_ids')
+export {mesh_id_db} 
+// -- 
+export async function retrieve_mesh_ids(qids : string[]) {
+    
+    if (fp.is_empty(qids)) { return {} } 
+    
+    let results : { [k:string] : {[k:string]: (string | null)}  } = {} 
+    let not_cached : string[] = [] 
+    for (qid of qids) {
+	//first try the cache 
+	//can optimze this! (Promise.all) 
+	let mid = await mesh_id_db.get(qid)
+	if (mid) {
+	    results[qid] = mid 
+	} else { 
+	    not_cached.push(qid) 
+	}
+    } 
+    if (fp.is_empty(not_cached)) { 
+	ui_log("Retrieved all mesh ids from cache")
+	return results
+    } else { 
+	// need to request the ones that are not cached 
+	ui_log(`MeshID - Requesting and caching ${fp.len(not_cached)} identifier(s)`)
+	let tmp_results = await  wiki.props_for_qids(not_cached,["P486"])
+	// note that those that dont match wont have a key
+	
+	/* 
+	   CAN OPTIMIZE THIS FOR LOOP ! 
+	*/
+	for (var qid of not_cached) { 
+	    
+	    //get our caching parameters 
+	    let id = qid ; 
+	    let ttl_ms  = 1000*60*60*24*7 // 1 week 
+	    
+	    //try to access it 
+	    if (tmp_results[qid]) {
+		let mid = tmp_results[qid]['P486'][0].match_label
+		let value = { value : mid} 		
+		//store as object so receiver can distinguish null ids from missing		
+		results[qid] = value 
+		//and cache it NOw 
+		mesh_id_db.set_with_ttl({id,ttl_ms,value}) //DONT need to await this for better perf 
+	    } else {
+		//there is NO matching mesh id for this qid 
+		let value = { value : null } 
+		results[qid] = value 
+		//and cache the null value too (so we dont keep re-requesting) 
+		mesh_id_db.set_with_ttl({id,ttl_ms,value})  //DONT need to await this for better perf 		
+	    } 
+	} 
+	//ok were done I think
+	ui_log(`MeshID - Done`)
+    } 
+    return results 
+} 
+
+
+
+
+
+
+
+
+
+/* 
+   Retrieve mesh ids that will be used for association studies 
+*/    
+
+export async function get_mesh_ids_for_association_analysis(){
+    
+    //its all in the apis... 
+    //simultaneous async web requests  -- the power of async :) 
+    let [rf_ids,
+	 symptom_ids,
+	 disease_ids] = await Promise.all([ wiki.risk_factors_with_meshids(), 
+					    mesh.all_mesh_conditions_signs_symptoms(), 
+					    mesh.all_mesh_diseases() ]) 
+    
+    //collect into a json object 
+    let data = { 
+	rf_ids, 
+	symptom_ids, 
+	disease_ids 
+    } 
+    
+    //return it
+    return data 
+} 
+
+/* 
+     Export mesh ids that will be used for association studies 
+ */
+export async function export_mesh_ids_for_association_analysis(){
+    //get it -- 
+    let data_obj  = await get_mesh_ids_for_association_analysis() 
+    let data = JSON.stringify(data_obj)
+    //export it to disk using hyperloop 
+    let path = "all_mesh_ids.json"
+    let append = false 
+    let result = await hlm.write_file({data,path,append})
+    log("Mesh id Write result=")
+    log(result)
 } 

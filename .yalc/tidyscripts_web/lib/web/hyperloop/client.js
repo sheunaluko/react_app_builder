@@ -249,6 +249,7 @@ export class Client {
             let call_identifier = this.gen_call_id();
             //build the appropriate message to call a funciton on the server side  
             let { id, args } = ops;
+            args = (args || {}); //solved a bug where args was not passed and args.log errored 
             //check if args has a logger 
             if (!args.log) {
                 this.log("Setting logger of async handler");

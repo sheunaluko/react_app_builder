@@ -158,6 +158,13 @@ export default function Widget(args? : any) {
 					    > 
 						Descriptor Search 
 					    </Button> 
+					    
+					    <Button 
+						onClick={()=>activate_preset({...presets.mesh.tree_desc, state, setState})}
+					    > 
+						Descendants of TreeCode 'C' 
+					    </Button> 
+					    
 					</AccordionDetails>
 				    </Accordion>
 
@@ -202,12 +209,12 @@ export default function Widget(args? : any) {
 			    marginBottom : "10px",
 			}}
 		    
-			label="Endpoint"
+		    label="Endpoint"
 		        value={state.endpoint}
 		        onChange={function(e:any){ 
 				setState({...state, endpoint : e.target.value})
 			    }}
-			variant="outlined"	  /> 
+		    variant="outlined"	  /> 
 		    
 		    
 		    <Typography variant="subtitle1"> 
@@ -215,14 +222,14 @@ export default function Widget(args? : any) {
 		    </Typography>
 		    
 		    <AceEditor
-		    debounceChangePeriod={1000}
-		    width="100%"
-		    value={state.sparql_text}
-		    mode="mysql"
-		    theme="github"
-		    name="ace_editor_sparql"
-		    onChange={(sparql_text:string)=> setState({...state,sparql_text })}
-		    editorProps={{ $blockScrolling: true }}
+			debounceChangePeriod={1000}
+			width="100%"
+			value={state.sparql_text}
+			mode="mysql"
+			theme="github"
+			name="ace_editor_sparql"
+			onChange={(sparql_text:string)=> setState({...state,sparql_text })}
+			editorProps={{ $blockScrolling: true }}
 		    />		    
 		    
 		    
@@ -321,7 +328,31 @@ WHERE {
   FILTER(REGEX(?dName,?term,'i') || REGEX(?cName,?term,'i')) 
 } 
 ORDER BY ?d` 
+	} , 
+	'tree_desc' : {
+	    ep : mesh_ep, 
+	    query : `
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
+PREFIX mesh2020: <http://id.nlm.nih.gov/mesh/2020/>
+PREFIX mesh2019: <http://id.nlm.nih.gov/mesh/2019/>
+PREFIX mesh2018: <http://id.nlm.nih.gov/mesh/2018/>
+
+SELECT  ?meshD ?treeLabel
+FROM <http://id.nlm.nih.gov/mesh>
+WHERE { 
+  ?meshD meshv:treeNumber ?treeNode. 
+  ?treeNode rdfs:label ?treeLabel .            
+  FILTER( strStarts( ?treeLabel, "C" ) ) 
+}
+`	    
 	} 
+	
+	
     } , 
     
     'wikidata' : { 

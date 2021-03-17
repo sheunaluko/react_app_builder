@@ -67,6 +67,26 @@ export function wikidata_instances_of_id(id) {
         return value;
     });
 }
+export function risk_factors_with_meshids() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let query = ` 
+select ?meshID   (group_concat(?b) as ?diseases)
+where { 
+  ?b wdt:P5642 ?a . 
+  ?a wdt:P486 ?meshID .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+} 
+group by ?meshID
+`;
+        let url_params = {
+            query,
+            format: 'json',
+        };
+        let url_base = "https://query.wikidata.org/sparql";
+        let value = yield hlm.http_json(url_base, url_params);
+        return value.result.value.results.bindings;
+    });
+}
 export function sparql_template_fn(ops) {
     return __awaiter(this, void 0, void 0, function* () {
         let { template, replacers, url_base, url_params, param_key } = ops;

@@ -1,12 +1,21 @@
 Todo: 
-   Start incorporating pubmed 
-   - work with the database  (make sure to take the ssd!!) to produce bayesian info 
-   - modify medkit to include MESH terms for the symptoms and the diagnoses 
-       -- consider how to augment the ranking algorithm 
-   - ability to SAVE and load a set of symptoms for demonstration purposes (optionally can title them) -- add two icons in top right of the selected panel , use popups
-   - modify medkit to support collapsible "clinical features" panel and an expanding "Workups and Treatments" tab 
-       -- actually this tab could scroll in from the right side too ? 
-   - WORK on pop ups! can even get the image into the app :) 
+
+   - [ ] implement selection of diagnosis mode 
+   - [ ] fix wikidiagnosis mode 
+   - [ ] augment the ranking algorithm for different modes 
+   
+
+DONE 
+   - [x] Start incorporating pubmed 
+   - [x]work with the database  (make sure to take the ssd!!) to produce bayesian info 
+   - [x]modify medkit to include MESH terms for the symptoms and the diagnoses 
+
+       
+
+
+Tofix
+    -  [ ]fix the delay in mesh_id getting updated in the scrollable tabs interface (bottom right) 
+
 
 
 To discuss:
@@ -15,6 +24,12 @@ To discuss:
 
 Extras: 
    - button for changing th theme 
+
+   - ability to SAVE and load a set of symptoms for demonstration purposes (optionally can title them) -- add two icons in top right of the selected panel , use popups
+   - modify medkit to support collapsible "clinical features" panel and an expanding "Workups and Treatments" tab 
+       -- actually this tab could scroll in from the right side too ? 
+   - WORK on pop ups! can even get the image into the app :) 
+   
    - 
 
 

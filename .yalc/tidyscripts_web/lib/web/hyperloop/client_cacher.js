@@ -28,11 +28,11 @@ const date = common.Date;
 const log = common.Logger("hlc_cacher"); // get logger 
 const JSON = window.JSON;
 /* caching params */
-const sec10 = 1000 * 10;
-const min1 = 1000 * 60;
-const hr1 = 1000 * 60 * 60;
-const DEFAULT_HL_CACHE_TIME = hr1;
-const DEFAULT_HL_CACHE_CHECK_INTERVAL = min1;
+export const sec10 = 1000 * 10;
+export const min1 = 1000 * 60;
+export const hr1 = 1000 * 60 * 60;
+export const DEFAULT_HL_CACHE_TIME = hr1;
+export const DEFAULT_HL_CACHE_CHECK_INTERVAL = min1;
 // get handle on the db 
 const { store, set, get, del, keys, clear, set_with_ttl } = DB.GET_DB('HL_CLIENT');
 // start the cache checking (if already started this will just restart it with the specified interval)  
@@ -77,6 +77,7 @@ export var post_json_rules = [
     [new RegExp("wikidata.org/w/api.php\\?action=wbeditentity"), null],
 ];
 export var ttl_rules = {
+    //rules for http json requests 
     "sattsys.hyperloop.http_json": function (args) {
         let url = args.url;
         log("Finding ttl match for " + url);
@@ -124,7 +125,7 @@ export var ttl_rules = {
         }
         log("No match found... so return null");
         return null;
-    }
+    },
 };
 export function get_ttl(x) {
     let { id, args } = x;

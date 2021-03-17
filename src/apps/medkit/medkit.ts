@@ -14,6 +14,8 @@ let wikidata = tsw.apis.wikidata;
 let debug = tsw.util.common.debug;
 declare var window: any;
 
+window.apis = tsw.apis 
+window.hlm  = hlm 
 
 // --- 
 
@@ -74,11 +76,35 @@ export async function get_documentation(name : string) {
 
 
 export async function define(vname : string, f : any ) {
-    let result = await f  
+    let result = await f()  
     window[vname] = result 
     log("Defined: " + vname) 
 } 
 
+export  function definer(vname : string) { 
+    return function(res: any) { 
+	window[vname] = res ; 
+    log("Defined: " + vname) 
+    } 
+} 
+
+
+
+// configure the client cacher as well 
+/*
+  Example of how to modify the cache rules from outside of tsw
+ */
+let hr1 = hlm.client_cacher.hr1 
+let medline_ks = ["association_count" , "disease_counts" , "symptom_counts"]
+for (var mk of medline_ks) {
+    hlm.client_cacher.ttl_rules["medline." + mk] = ()=> hr1 
+} 
+
+
+
+
+
+/*
 export function create_iframe(id:string) {
     let i =  document.createElement('iframe') 
     return i 
@@ -89,3 +115,4 @@ export function set_html_of_iframe(fr : any, html : string) {
     fr.src = "data:text/html;charset=utf-8," + escape(html);  
     return fr 
 } 
+*/
