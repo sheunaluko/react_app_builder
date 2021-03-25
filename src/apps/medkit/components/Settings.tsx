@@ -33,6 +33,10 @@ let {
   Icon,
   InputLabel,
   OutlinedInput,
+    FormLabel, 
+    RadioGroup, 
+    FormControlLabel,
+    Radio, 
   InputAdornment,
   DoneIcon,
   Avatar,
@@ -49,6 +53,7 @@ let log = console.log;
 let debug = tsw.util.common.debug;
 declare var window: any;
 
+let smgr = window.state_manager  ; 
 
 
 /*
@@ -88,42 +93,83 @@ export default function Component() {
 
   return (
       <Context.Provider value={{ state, setState }}>
-	  <Container>
+	  <Container style={{height : "100%" }}>
               <div
 		  style={{
 		      backgroundColor: theme.palette.background.paper,
 		      padding: "2%",
-		      borderRadius: "15px"
+		      boxSizing : "border-box", 		      
+		      borderRadius: "15px" , 
+		      height : "98%" , 
 		  }}
               >
-		  <div style={{ display: "flex", flexDirection: "row" }}>
-		      <Typography style={{ flexGrow: 1 }} variant="h4">
-			  Settings Tool
-		      </Typography>
-		  </div>
-
-		  <Tabs
-		      //orientation="vertical"
-		      value={state.tabValue}
-		      onChange={(event: any, newValue: any) => {
-			      setState({ ...state, tabValue: newValue });
-		      }}
-		  >
-		      <Tab label="Tab1" />
-		      <Tab label="Tab2" />
-		  </Tabs>
-		  <TabPanel value={state.tabValue} index={0}>
-		      <Typography variant="h4">
-			  Tab1 
-		      </Typography>
-		  </TabPanel>
-		  <TabPanel value={state.tabValue} index={1}>
-		      <Typography variant="h4">
-			  Tab2
-		      </Typography>
-		  </TabPanel>
+		  
+		  <Accordion>
+		      <AccordionSummary
+			  expandIcon={<ExpandMoreIcon />}
+		      >  
+			  <Typography variant="subtitle1">
+			      Color Themes
+			  </Typography>
+			  
+		      </AccordionSummary>
+		      <AccordionDetails> 
+			  
+			  <Box>
+			      
+			      {
+				  <ThemeSelection /> 
+			      }
+			      
+			      
+			  </Box>
+			  
+		      </AccordionDetails>
+		      
+		  </Accordion>
+		  
+		  
+		  
+		  
               </div>
 	  </Container>
       </Context.Provider>
   );
 }
+
+
+
+function ThemeSelection() {
+
+    const [value, setValue] = React.useState(smgr.theme_str);
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	let val = (event.target as HTMLInputElement).value
+	setValue(val);
+	smgr.set_theme(val) 
+    };
+    
+    let theme_names = [ 
+	'Default' , 
+	'Fireplace' , 
+	'Purple' , 
+	'Stars' , 
+	'Earth' , 
+	'Stone' , 
+	'Wood' 
+    ] 
+
+    return (
+	<FormControl component="fieldset">
+	    <FormLabel component="legend">Select Theme</FormLabel>
+	    <RadioGroup  value={value} onChange={handleChange}>
+		{ 
+		    theme_names.map( (t:string) => (
+			<FormControlLabel value={t} control={<Radio />} label={t} />
+		    ))
+		} 
+	    </RadioGroup>
+	</FormControl>
+    );
+
+} 

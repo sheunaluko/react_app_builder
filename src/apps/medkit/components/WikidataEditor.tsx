@@ -75,7 +75,7 @@ export default function Component() {
               >
 		  <div style={{ display: "flex", flexDirection: "row" }}>
 		      <Typography style={{ flexGrow: 1 }} variant="h4">
-			  Wikidata Voice Editor 
+			  Entity Editor 
 		      </Typography>
 		  </div>
 		  

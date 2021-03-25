@@ -87,7 +87,7 @@ export default function PL() {
     const theme = useTheme();
     const [state, setState] = React.useState<any>({
 	tabValue: 1,
-	selected: load_selected() , 
+	selected: [] , //load_selected() 
 	elevations: {}
   });
 

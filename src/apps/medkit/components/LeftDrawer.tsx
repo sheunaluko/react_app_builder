@@ -108,11 +108,10 @@ export default function AppDrawer() {
 	["sparql", "SPARQL"] , 
 	["mesh_search", "MESH Search"], 
 	["entity_view", "Entity Viewer"], 
+	["entity_editor", "Entity Editor"], 
 	["wiki_search", "Wiki Search"], 	
 	["nccih_herbs", "NCCIH Herb Info"],
-	["problem_list", "Problem List"], 
-	["wikidata_editor"  , "Wikidata Editor"], 
-	["wikidata_entity_maker"  , "Wikidata Entity Creator"], 	
+	["visualizations"  , "MeSH Visualizations"], 		
 	["voice_panel", "Voice Panel"],
 	["settings", "Settings"] 
 

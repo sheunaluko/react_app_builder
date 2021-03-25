@@ -9,11 +9,8 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
-
 import LeftDrawer from "./components/LeftDrawer" 
 import RightDrawer from "./components/RightDrawer" 
-
-
 
 import WikiDataSearch from "./components/WikiDataSearch"  
 import MeshSearch from "./components/MeshSearch2"  
@@ -21,10 +18,8 @@ import TestComponent from "./components/TestComponent"
 import ProblemList from "./components/ProblemList"
 import MeshTreeAccordion from "./components/MeshTreeAccordion"
 
-
 import { ThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
-
 
 import * as tsw from "tidyscripts_web" 
 import * as dev from  "./dev/index"
@@ -36,10 +31,7 @@ import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import * as mk from "./medkit" 
 
 import { MenuComponents } from "./components/ComponentDictionary" 
-
-import {
-    Button, 
-} from "./components/list" 
+import Console from "./ConsoleElement" 
 
 import purple from '@material-ui/core/colors/purple';
 import green from '@material-ui/core/colors/green';
@@ -64,7 +56,6 @@ import blue_grey from '@material-ui/core/colors/blueGrey';
 declare var window : any  ;  
 window.dev = dev 
 window.mk = mk 
-
 
 //create some custom themes 
 const typography1 = { 
@@ -99,12 +90,10 @@ const typography1 = {
    import amber from '@material-ui/core/colors/amber';
    import deep_orange from '@material-ui/core/colors/deepOrange';
    import blue_grey from '@material-ui/core/colors/blueGrey';
-
-   
- */
+*/
 
 const themes : any = { 
-    'test' : { 
+    'Test' : { 
 	typography : typography1 , 
 	palette : { 
 	    primary : yellow, 
@@ -112,7 +101,7 @@ const themes : any = {
 	} 
 	
     },     
-    'fireplace' : { 
+    'Fireplace' : { 
 	typography : typography1 , 
 	palette : { 
 	    primary : brown, 
@@ -121,7 +110,7 @@ const themes : any = {
 	
     }, 
     
-    'default' : { 
+    'Default' : { 
 	typography : typography1 , 
 	palette : { 
 	    primary : indigo, 
@@ -129,7 +118,7 @@ const themes : any = {
 	} 
 	
     }, 
-    'purple' : { 
+    'Purple' : { 
 	typography : typography1 , 
 	palette : { 
 	    primary : deep_purple, 
@@ -137,22 +126,22 @@ const themes : any = {
 	} 
 	
     }, 
-    'none' : {} , 
-    'stars' :  { 
+    'None' : {} , 
+    'Stars' :  { 
 	typography : typography1 , 
 	palette : { 
 	    primary : {main  : "#212121" } , 
 	    secondary : {main  : "#f57c00" } , 
 	} 
     } , 
-    'earth' :  { 
+    'Earth' :  { 
 	typography : typography1 , 
 	palette : { 
 	    primary : brown, 
-	    secondary : blue , 
+	    secondary : green , 
 	} 
     } ,
-    'stone' : { 
+    'Stone' : { 
 	typography : typography1 , 
 	palette : { 
 	    primary : grey, 
@@ -160,7 +149,7 @@ const themes : any = {
 	} 
 	
     } , 
-    'wood' : { 
+    'Wood' : { 
 	typography : typography1 , 
 	palette : { 
 	    primary : brown, 
@@ -168,52 +157,27 @@ const themes : any = {
 	} 
 	
     } ,
-   
-    
-    
-    
-    
 } 
 
-
-const theme = createMuiTheme(themes.default) 
-
-
-var console_cnt = 0 
-let console_cntr = () => console_cnt++ ;
 		       
 //let init_component = "wikidata_entity_maker" 
-let init_component = "diagnoser2" 
+let init_component = "entity_editor" 
 
 function App() {
     
-    let default_text = [
-
-	" - - - ",
-	" - - - ",
-	String(new Date()).split(" ").slice(0,5).join(" ")  , 	
-	"Welcome to the MedKit UI Console!", 
-	"Helpful information will be displayed here.", 
-	"Use the button in the bottom right to toggle this window." , 
-	" - - - ", 
-    ]
-    
     const [state, setState] = React.useState(init_component) 
-    const [consoleState, setConsoleState] = React.useState(true)     
-    const [console_text, setConsoleText] = React.useState(default_text)         
+
+
+    
+    const [theme_str,setTheme] = React.useState('Default') 
+    
+    const theme = createMuiTheme(themes[theme_str])         
     
     const [subheader, setSubheader] = React.useState(null)             
     
     smgr.register("set_subheader", setSubheader) 
-    smgr.register("console_text" , console_text) 
-    smgr.register("setConsoleText" , setConsoleText)     
-    smgr.register("addConsoleText" , function(t:string) { 
-	
-	let new_lines = console_text.slice(1,console_text.length)
-	new_lines.push(t)
-	setConsoleText( new_lines) 
-	
-    })
+    smgr.register("set_theme", setTheme)     
+    smgr.register("theme_str", theme_str)         
     
     let selectedSetter = function(s : string) {
 	//then change the UI 
@@ -264,40 +228,9 @@ function App() {
 		    MenuComponents[state]
 		} 
 		
-		
-		<div style={{
-		    position: 'fixed',
-		    bottom: "60px",
-		    right: "30px",
-		    borderRadius : "10px" ,
-		    fontSize : "15px" , 
-		    color : "black" ,
-		    padding : "8px" , 
-		    backgroundColor : "white", 
-		    opacity : "0.6", 
-		    visibility : consoleState ? "visible" : "hidden"  , 
-		    width : "40%" , 
-		}}>  
-		    {console_text.map( (t:string)=> (<div key={console_cntr()}> {t} </div>)  ) } 
-		</div>
-		
-		
-		<div style={{
-		    position: 'fixed',
-		    bottom: "10px",
-		    right: "30px",
-		    fontSize : "30px" , 
-		    //width : "10%" , 
-		    //height : "10%" , 
-		}}> 
-		    <Button variant="outlined" 
-			    color="primary" 
-			    onClick={function(){setConsoleState(!consoleState)}} 
-			//onMouseOver={function(){setConsoleState(!consoleState)}} 
-		    > > </Button>
-		</div>
-		
-
+		{
+		    <Console /> 
+		}
 		
 
 	    </div>

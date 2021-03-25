@@ -99,7 +99,7 @@ export default function UI() {
 		  {
 		      state.herb_data.map( function(d:any){
 			  return ( 
-			      <Grid key={d['name']} item xs={4}> 
+			      <Grid key={d['name']} item xs={6}> 
 				  <HerbCard {...d} /> 
 			      </Grid>
 			  ) 

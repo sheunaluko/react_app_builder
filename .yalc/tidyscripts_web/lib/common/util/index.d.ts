@@ -7,4 +7,6 @@ import * as dsp from "./dsp";
 import * as perf from "./performance";
 import * as channel from "./channel";
 import * as debug from "./debug";
-export { Logger, Date, fp, types, asnc, dsp, perf, channel, debug };
+import * as stdio from "./stdio";
+import * as std_fns from "./std_fns";
+export { Logger, Date, fp, types, asnc, dsp, perf, channel, debug, stdio, std_fns };

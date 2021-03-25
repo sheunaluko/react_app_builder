@@ -9,6 +9,7 @@ import Context from "./DiagnosisSupport2_Context";
 import ScrollableTabs from "./ScrollableTabs" ;
 import * as cds from "../dev/cds" ; 
 import WikidataEntityViewer from "./WikidataEntityViewer" 
+import DiagnosisModeSelection from "./DiagnosisModeSelection" 
 
 let {
     Container,
@@ -91,7 +92,7 @@ export default function Component() {
 	    progress : false , 
 	} , 
 	
-	diagnosis_mode  : "wikidata_only" , 
+	diagnosis_mode  : "Use Wikidata Only" , 
 	
 	selected : default_selected ,  //selected user queries 
 	
@@ -230,7 +231,7 @@ export default function Component() {
 	*/ 
 	
 	// and then we update the rank_cache 
-	let rank_cache = cds.diagnosis_cache_to_rankings(state.diagnosis_cache) 
+	let rank_cache = cds.diagnosis_cache_to_rankings(state)  
 	
 	setState({
 	    ...state, 
@@ -379,13 +380,30 @@ export function Results() {
 	<Context.Consumer> 
 	    {
 		function({state,setState}) { 
+	    
+	            let setDiagnosisMode = function(m : string) {
+	                setState({
+	                   ...state , diagnosis_mode : m 
+	                })
+	            } 
+	             
+	    
+	    
 		    return ( 
 			<Box style={{height : "100%" ,display : "flex" , flexDirection  : "column"}}> 
 			    
-			    <Box> 
-				<Typography variant="h4">
-				    Results
-				</Typography>	
+			    <Box style={{ display :"flex", 
+					  justifyContent :"space-between", 
+					  flexDirection: "row"}} > 
+				<Box >
+				    <Typography variant="h4" >
+					Results
+				    </Typography>	
+				</Box>
+				<Box> 
+				    <DiagnosisModeSelection setDiagnosisMode={setDiagnosisMode} /> 
+				</Box>
+				
 			    </Box>
 			    <br/> 
 			    
@@ -448,7 +466,7 @@ function DxList() {
 	    {
 	    function({state,setState}) {  
 	    
-	    let ranks = (state.rank_cache || [] )  //  [ [ mk,  {total_score, qid_scores}]  , ... ]	    
+	    let ranks = (state.rank_cache || [] )  //  [ [ mk,  {total_score, qid_scores, ?metadata}]  , ... ]	    
 	    
 	    return ( 
 	    <Box style={{ height  : "100%" ,
@@ -471,8 +489,11 @@ function DxList() {
 			<Grid  key={index} item xs={12}>
 			    <Chip 
 			    onClick={function(){ 
-				    let selected_diagnosis = mk 
-				    log("Selected_dx: " + selected_diagnosis) 
+				    let selected_diagnosis = {
+					mk , 
+					score_info 
+				    }
+				    log("Selected_dx: " + mk) 
 				    setState({...state, selected_diagnosis})
 				}}
 			    avatar={<Avatar>{index + 1}</Avatar>} 
@@ -507,34 +528,45 @@ function SelectedDiagnosisDisplay() {
     
     return ( 
 	<Context.Consumer> 
-	{
-	    function({state,setState}) {  
-		
-		let selected_diagnosis = state.selected_diagnosis 
-		if (!selected_diagnosis) {return null} 
-		
-		let [did,dlabel] = selected_diagnosis.split("<->")
-		let qid_labels  = fp.map_get(fp.values(state.diagnosis_cache[selected_diagnosis]), 'label').join(", ")
-		
-		
-		return (
-		    <Box style={{height : "100%" , display : 'flex' , flexDirection : 'column'}}> 
-			<Box>
-			    <Typography variant="h5"> 
-				{dlabel}
-			    </Typography>
-			    <Typography variant="subtitle1"> 
-				{`Matches: ${qid_labels}`}
-			    </Typography>
-			</Box>
+	    {
+		function({state,setState}) {  
+		    
+		    let selected_diagnosis = state.selected_diagnosis 
+		    if (!selected_diagnosis) {return null} 
+		    
+		    let {mk,score_info} = selected_diagnosis
+		    
+		    let [did,dlabel] = mk.split("<->")
+		    let qid_labels  = fp.map_get(fp.values(state.diagnosis_cache[mk]), 'label').join(", ")
+		    
+		    
+		    return (
+			<Box style={{height : "100%" , display : 'flex' , flexDirection : 'column'}}> 
+			    <Box>
+				<Typography variant="h5"> 
+				    {dlabel}
+				</Typography>
+				<Typography variant="subtitle1"> 
+				    {`Matches: ${qid_labels}`}
+				</Typography>
+				
+				{ 
+				    (state.diagnosis_mode != "Use Wikidata Only") ? (
+					<Typography variant="subtitle1"> 
+					    {`${score_info.metadata.msg}`}
+					</Typography>
+				    ) : null 
+				} 
+				
+			    </Box>
 
-			<Box style={{overflow : "auto"}}>
-			    <WikidataEntityViewer qid={did} />
+			    <Box style={{overflow : "auto"}}>
+				<WikidataEntityViewer qid={did} />
+			    </Box>
 			</Box>
-		    </Box>
-		)
+		    )
+		}
 	    }
-	}
 	</Context.Consumer>
     ) 
 } 

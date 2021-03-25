@@ -1,0 +1,11 @@
+import type { IOProcess } from "./stdio";
+import { IOChannel } from "./stdio";
+export declare var debug: boolean;
+export declare function set_debug(b: boolean): void;
+export declare var log: (m: any) => void;
+export declare var split: (sep: string) => IOProcess;
+export declare var index: (num: number) => IOProcess;
+export declare var to_number: () => IOProcess;
+export declare var inc: (num: number) => IOProcess;
+export declare function logger_stdout(tag: string): IOChannel;
+export declare function string_producer(text: string, sep: string): IOProcess;

@@ -1,7 +1,11 @@
 Todo: 
 
-   - [ ] implement selection of diagnosis mode 
-   - [ ] fix wikidiagnosis mode 
+   - [x] implement selection of diagnosis mode 
+   - [ ] simple PRIOR to boost  .... 1pt if it exists and then some kind of asymptotically increasing , like sigmoid or root(x) , have to play with the tunings
+         -- then quanitify strenth of existing links 
+	 -- then consider new links ? 
+   - n2have - plotly viz of mesh freqs
+   - [ ] fix wikidiagnosis mode (double counting) 
    - [ ] augment the ranking algorithm for different modes 
    
 
@@ -14,8 +18,11 @@ DONE
 
 
 Tofix
-    -  [ ]fix the delay in mesh_id getting updated in the scrollable tabs interface (bottom right) 
-
+   -  wikidata diagnosis -- symptoms that are more specific for particlar disease should give those disease MORE points . One way is to define the pts per disease as a function of number of disease,
+      good start would be linear inverse pts = 1/N 
+   - [ ]fix the delay in mesh_id getting updated in the scrollable tabs interface (bottom right) 
+   - [ ] SHOULD NOT CACHE when theere is NO an error un the result ofundefined or something 
+   - diagnoser v1 mesh selection not working 
 
 
 To discuss:

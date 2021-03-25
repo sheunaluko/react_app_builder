@@ -443,9 +443,10 @@ WHERE
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
 }
 `;
-// EDIT BELOW TO BETTER PARSE THE ABOVE -- maybe think about a more generic solution ? The reason i've been resisting this 
-// is because of the uniqueness of parsing the returned bindings each time ... though it basically looks like 
-// each of the items in the select clause appears as a key in each obect in the returned array [{},{},...] 
+// ---- 
+/*
+   Note... if a result has no bidnings then there will be NO entry for it in the keys
+ */
 export function props_for_qids(qids, props) {
     return __awaiter(this, void 0, void 0, function* () {
         let prop_ids = props.map((id) => "wdt:" + id);

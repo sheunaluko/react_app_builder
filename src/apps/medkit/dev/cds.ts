@@ -2,7 +2,7 @@
 
 import * as tsw from   "tidyscripts_web"  ; 
 import * as wiki_props from "./wikidata_medical_properties" 
-
+import * as medline from "./medline" 
 
 let fp = tsw.util.common.fp 
 let debug = tsw.util.common.debug 
@@ -144,7 +144,7 @@ export function compute_diagnostic_data(data_cache : any, selected : any[]) {
   note when computing the diagnosis score -- some entries will have multiple matches! (has effect backward, has cause - forward) ... and thus the algo should NOT double count 
   ALSO! -- need to get the mesh metadata into the match item (optionally) 
 */ 
-export function get_diagnosis_score(mk : string,  entry  : any) { 
+export function get_diagnosis_score(mk : string,  entry  : any , mode : string, state :any) { 
     /* 
        mk is of the form: Q1472<->Crohn's disease
        and entry is: {
@@ -169,7 +169,7 @@ export function get_diagnosis_score(mk : string,  entry  : any) {
 	fp.keys(entry) , 
 	(qid : string) => {
 	    let {label,matches} = entry[qid] 
-	    let score = get_score_for_qid(matches)
+	    let score = get_score_for_qid({matches, mode , state} )
 	    return [qid, score]
 	}
     ) 
@@ -179,18 +179,159 @@ export function get_diagnosis_score(mk : string,  entry  : any) {
 	qid_scores, 
 	(e :any) => e[1].score
     ).reduce(fp.add,0)
+    
     // -- 
-    return {total_score, qid_scores } 
+    // -- now.. we may need to add a boost to the score based on pubmed disease prior
+    if (mode != 'Use Wikidata Only') { 
+	let {boost, num_articles, msg} = get_prior_boost(did,state) 
+	total_score += boost  
+	total_score = Number(total_score.toFixed(3))
+	let metadata = {boost,num_articles, msg} 
+	return {total_score, qid_scores, metadata } 
+    } else { 
+	total_score = Number(total_score.toFixed(3))	
+	return {total_score, qid_scores } 
+    } 
+	
+
     
 } 
 
 
-export function get_score_for_qid(matches : any[]){
+/* 
+   defined separate scorers for each diagnosis mode
+*/
+
+
+interface Match { 
+    item_id : string, 
+    match_id : string, 
+    prop_id : string, 
+    match_label : string,     
+}
+
+interface ScoreOps { 
+    matches : Match[] , 
+    state : any , 
+    mode : string,  
+} 
+
+interface ScoreResult {
+    score : number, 
+    metadata : (object  | null) 
+} 
+
+/* mechanism for removing double counting */ 
+function intersection(props : Set<string> , group  : string[]) { 
+    let is_same = fp.map(group,
+			 (prop :string) => ( props.has(prop) ? 1 : 0 ) ) 
+    return is_same.reduce(fp.add) 
+} 
+
+export function qid_score_wikidata_only(ops : ScoreOps) {  
+    let {matches} = ops 
+    let prop_ids = new Set(fp.map_get(matches,'prop_id'))
+    
+    let base_score  = matches.length 
+    
+    let group1 = ["P828","P1542","P780"] 
+    
+    let num_same = intersection(prop_ids,group1) 
+    
+    let score = base_score - (num_same - 1) 
+    
+    return { 
+	score , 
+	metadata : null 
+    }             
+} 
+
+
+export function qid_score_with_priors(ops : ScoreOps) {
+    return qid_score_wikidata_only(ops) //when using priors we dont augmet the score for each qid... the prior is accounted for in get_diagnosis_score(..) 
+} 
+
+
+function prior_score_function(num : number, max_score : number) {
+    let disease_max = medline.mesh_id_counts.diseases.max 
+    return Number((max_score*(num/disease_max)).toFixed(3))
+}
+
+export function get_prior_boost(disease_qid : string, state : any) {
     /* 
-       
+       Params 
+     */
+    let scoring_params = { 
+	has_mesh : 0.05, 
+	max_prior_boost  : 100, 
+    } 
+    
+    let boost  = 0 
+    
+    // we will boost the score depending on how prevalent the 
+    // diagnosis is
+    // no need to loop through the matches for this because we only do this ONCE 
+
+    let disease_mesh_id = state.mesh_id_cache[disease_qid].value 
+    ///- 
+    var msg;  
+    var num_articles ; 
+    
+    if (disease_mesh_id) { 
+	boost += scoring_params.has_mesh 	
+	let num = medline.mesh_id_counts.diseases.dictionary[disease_mesh_id]
+	if (num) {
+	    //has mesh id AND has articles 
+	   let prior_boost = prior_score_function(num,scoring_params.max_prior_boost)
+	    boost += prior_boost 
+	    msg = `PriorBoost=${prior_boost}, Articles=${num}, MeshID Boost=${scoring_params.has_mesh}`	    
+	    num_articles = num 
+	} else {
+	    //has mesh id BUT no articles 
+	    msg = `MeshID Boost=${scoring_params.has_mesh}`
+	} 
+    } else { 
+	//has NO mesh id (and thus no articles) 
+	msg = `No mesh id found (no score boost)` 
+    } 
+    
+    return { 
+	boost, 
+	msg , 
+	num_articles, 
+    } 
+
+} 
+
+export function qid_score_with_priors_and_likelihoods(ops : ScoreOps) {
+    let {matches, state} = ops         
+    
+    for ( var match of matches ) {
+	let {match_id,  //should be the same for every match 
+	     match_label, //should be the same for every match 
+	     item_id, //will vary 
+	     prop_id //will vary 
+	}  = match 
+	
+	
+    } 
+    
+    return qid_score_with_priors(ops)     
+    
+} 
+
+// bundle them into a dict based on the ui selection key 
+export var mode_text_to_function : {[k:string] : (o:ScoreOps) => ScoreResult   } = { 
+    'Use Wikidata Only' : qid_score_wikidata_only , 
+    'Use Wikidata with PubMed Priors' : qid_score_with_priors , 
+    'Use Wikidata with PubMed Priors and Likelihoods' : qid_score_with_priors_and_likelihoods
+} 
+
+
+
+export function get_score_for_qid(ops : ScoreOps){
+    /* 
        Needs upgrading 
-       Will start with proof of concept 
-       
        Upgrades
        => how to aggregate / NOT double count matches 
        => how to apply weighting to different matches 
@@ -200,16 +341,15 @@ export function get_score_for_qid(matches : any[]){
        For now - will just COUNT the number of each 
        
      */
-    
-    return { 
-	score : matches.length ,  // LOL
-	metadata : null 
-    } 
-    
+    return mode_text_to_function[ops.mode](ops) 
     
 } 
 
-export function diagnosis_cache_to_rankings(diagnosis_cache : any){ 
+export function diagnosis_cache_to_rankings(state : any){ 
+    
+    if ( fp.len(state.selected)) { ui_log("CDS - Computing Rankings") } 
+    
+    let {diagnosis_cache,diagnosis_mode} = state  ; 
     /* 
        This can be optimized by: 
        1. keeping track of which qid was just added by the user 
@@ -217,8 +357,8 @@ export function diagnosis_cache_to_rankings(diagnosis_cache : any){
 	  - only updating those diagnoses 
     */
     let rank_cache = fp.keys(diagnosis_cache).map( (k:string) => {
-        return [k , get_diagnosis_score(k,diagnosis_cache[k])]
-    }) //  [ [ mk,  {total_score, qid_scores}]  , ... ]
+        return [k , get_diagnosis_score(k,diagnosis_cache[k], diagnosis_mode, state )]
+    }) //  [ [ mk,  {total_score, qid_scores, metadata?}]  , ... ]
 
     // -  sort by 'total_score' 
     rank_cache.sort( (a:any,b:any) => (b[1].total_score - a[1].total_score))

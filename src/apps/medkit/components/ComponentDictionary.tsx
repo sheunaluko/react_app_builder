@@ -17,9 +17,9 @@ import Console from "./JSConsole"
 import Html from "./Html" 
 
 
-import WikidataEditor from "./WikidataEditor" 
-import WikidataEntityMaker from "./WikidataEntityMaker" 
+import EntityEditor from "./EntityEditor" 
 import VoicePanel from "./VoicePanel" 
+import Visualizations from "./Visualizations" 
 
 //import_marker 
 //let VoicePanel = tsw.components.material_ui.VoicePanel
@@ -35,13 +35,11 @@ export var MenuComponents : {[k:string] : any }  = {
     "mesh_search" : <MeshSearch /> , 
     "console" : <Console />, 
     "entity_view" : <EntityViewer /> , 
-    "problem_list" : <ProblemList  /> , 	 
+    "entity_editor" : <EntityEditor /> ,     
     "html" : <Html /> , 
     "settings" : <Settings  /> , 	     
     "voice_panel" : <VoicePanel /> , 
-    "wikidata_editor" : <WikidataEditor /> ,
-    "wikidata_entity_maker" : <WikidataEntityMaker/>, 
-					 
+    "visualizations" : <Visualizations />,
     //dictionary_marker
 } 
 
