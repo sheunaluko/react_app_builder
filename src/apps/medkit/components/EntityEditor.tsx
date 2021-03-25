@@ -49,7 +49,7 @@ let {
 let fp = tsw.util.common.fp;
 let mesh = tsw.apis.mesh;
 let wikidata = tsw.apis.wikidata;
-let log = console.log;
+let log = tsw.util.common.Logger("entity_editor") 
 let debug = tsw.util.common.debug;
 declare var window: any;
 
@@ -120,7 +120,8 @@ export default function Component() {
 	displayName : "unkown" , 
 	userInput : null , 
 	active_field : "Entity" ,
-	entity_init_input : false
+	entity_original_input : false , 
+	entity_input_reset : 0 , 
     });
     
     let setActive = function( i  : string) {
@@ -148,14 +149,21 @@ export default function Component() {
     
     let title = EntityActive ? active_title : default_title ; 
     
+    let cnt = 0 
+    let entity_reset = function(){
+	cnt = cnt + 1 ; 
+	return cnt 
+    }
+    
     React.useEffect( ()=> {
 	if (EntityActive) { 
-	    console.log("Rerouted gp") 
+	    log("Rerouted gp") 
 	    global_input_processor = function(t:string){
+		log("Processing new input: " + t) 
 		setState({
 		    ...state, 
-		    entity_init_input : t , 
-		    
+		    entity_original_input : t , 
+		    entity_input_reset : entity_reset()
 		})
 	    } 
 	} 
@@ -188,7 +196,10 @@ export default function Component() {
 	&nbsp;&nbsp;
 	
 	<Box> 
-	    <ResolvableInput   /> 
+	    <ResolvableInput 
+	        original_input={state.entity_original_input}
+	        original_input_reset={state.entity_input_reset}	    
+	    /> 
 	</Box>
 			</Box>
 			
@@ -196,10 +207,10 @@ export default function Component() {
 			
 			<Box>
 			    {
-			    EditableFields.slice(1).map( (x:string) => ( 
-			    
-			    <EditableField key={x} title={x} active={ state.active_field == x } /> 
-			    ) ) 
+				EditableFields.slice(1).map( (x:string) => ( 
+				    
+				    <EditableField key={x} title={x} active={ state.active_field == x } /> 
+				) ) 
 			    } 
 			</Box>
 			
@@ -280,22 +291,3 @@ function EditableField(props :any ) {
 
 
 
-
-
-export function automate_input(id : string, q : string) { 
-    
-    /* 
-       Interesting discussion here about programmatically triggering onChange for react input elements 
-       https://hustle.bizongo.in/simulate-react-on-change-on-controlled-components-baa336920e04
-     */ 
-    let input = (document.getElementById(id) as any) 
-    if (input) { 
-	var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-	nativeInputValueSetter.call(input, q);
-	var inputEvent = new Event('input', { bubbles: true});
-	input.dispatchEvent(inputEvent);
-    } 
-    
-} 
-
-debug.add("automate_input" ,automate_input) 

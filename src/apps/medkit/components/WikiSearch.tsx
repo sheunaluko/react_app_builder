@@ -45,7 +45,7 @@ let {
 
 export default function WikiSearch(props : any) {
     
-    let {set_selected, current_input, search_id , should_select_first}  =  props ; 
+    let {set_selected, search_term, search_id , should_select_first}  =  props ; 
 
     const theme = useTheme() 
     
@@ -58,11 +58,13 @@ export default function WikiSearch(props : any) {
        When we render we check some things 
     */
     React.useEffect( ()=> {
-	if (current_input) {
+	if (search_term) {
 	    //if active current input then we auto search for it 
-	    log("Detected current input=" + current_input)
+	    log("Detected search term=" + search_term)
 	    log("Automating query") 
-	    automate_input(search_id, current_input) 
+	    automate_input(search_id, search_term) 
+	}  else { 
+	    log("No search term to retrieve automatically")
 	} 
     }, [])
 
@@ -93,9 +95,9 @@ export default function WikiSearch(props : any) {
 	    log("selecting first result") 
 	    let sel = result[0]
 	    if (!sel) {
-		log(`current_input=${current_input} -> No results!`); 
+		log(`search_term=${search_term} -> No results!`); 
 	    } else { 
-	    log(`current_input=${current_input} -> Selecting first (${sel.label}`)
+	    log(`search_term=${search_term} -> Selecting first (${sel.label}`)
 	    log(sel) 
 	    setTimeout( ()=> {
 		set_selected(sel)

@@ -109,10 +109,10 @@ function PoppableSelection() {
     };
     
     //create the ops that we pass to the wiki search element here... 
-    let { current_input, search_id, should_select_first } = state
+    let { current_input, search_id, should_select_first, original_input } = state
     
     let WikiSearchOps = { 
-	current_input, 
+	search_term : (current_input || original_input) , 
 	search_id , 
 	should_select_first , 
 	set_selected : function(op:any) {
@@ -171,7 +171,12 @@ function PoppableSelection() {
 */ 
 
 
-export default function Component() {
+export default function Component(props : any) {
+    
+    let { 
+	original_input, 
+	original_input_reset , 
+    } = props ; 
     
     const theme = useTheme();
     
@@ -186,19 +191,19 @@ export default function Component() {
 	// -- the wikisearch id (for automatic filling) 
 	search_id : tsw.util.uuid() , 
 	// -- tracking the original and current inputs 
-	original_input : false , 
+	original_input : (original_input || false) , 
 	current_input  : false , 
 	// -- whether or not the first retrieved result should be autoselected
 	should_select_first : false, 
-	    
-	
     });
     
-    function stateSetter(state :any) {
-	setState(state) 
-	log("New state=>")
-	log(state) 
-    }
+    React.useEffect( ()=> {
+	//there is an edge case where the current input changes, then when user resets 
+	//original input its not detected because it hasnt changed 
+	if (props.original_input) { 
+	    update_patterns['new_original_input'](state,setState,original_input)
+	} 
+    }, [props.original_input_reset])   
     
     let ResolvedUIComponent = <ResolvedUI/> 
     let PoppableUIComponent = <PoppableSelection/> 
@@ -271,6 +276,32 @@ var update_patterns =  {
 	let is_resolved = false //no longer resolved 
 	let resolved_option = false //erase the resolved option 
 	let original_input = false
+	let current_input = false 
+	let new_state = { 
+	    ...state, 
+	    search_open, 
+	    should_select_first, 
+	    is_resolved, 
+	    resolved_option ,
+	    search_auto_open, 
+	    original_input, 
+	    current_input
+	}
+	state_set(new_state,setState)		
+    }  , 	  
+    
+
+    'new_original_input' : function(state :any,setState:any, oi: string) {
+	/* 
+	   Externally a new original input has been supplied
+	 */		
+	log("State change => new original input") 
+	let search_open  = state.is_resolved ? false :  true
+	let search_auto_open = true
+	let should_select_first = true //
+	let is_resolved = false //no longer resolved 
+	let resolved_option = false //erase the resolved option 
+	let original_input = oi
 	let current_input = false 
 	let new_state = { 
 	    ...state, 
