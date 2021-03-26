@@ -183,6 +183,17 @@ export default function Component(props : any) {
 	original_input_reset , 
     } = props ; 
     
+    /* 
+       Sometimes the component will get initialized with special input with header
+       ###ignore### ... in which case we will reset original_input to false 
+    */ 
+    
+    if (original_input && original_input.includes("###ignore###")){
+	original_input = false 
+	log("Set original input to false!") 
+    }
+    
+    
     const theme = useTheme();
     
     const [state, setState] = React.useState<any>({

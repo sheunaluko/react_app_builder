@@ -33,9 +33,9 @@ let vi = tsw.util.voice_interface
    
    [ ] move the voice panel compoenent into TSW lib 
    
-   [ ] disable power update when componenet not mounted  ? 
+   [x] disable power update when componenet not mounted  ? 
    
-   [ [ initialize enabled / disabled state by reading tsw instead of defaulting to disabled ? 
+   [x[ initialize enabled / disabled state by reading tsw instead of defaulting to disabled ? 
 
 
  */ 
@@ -51,43 +51,56 @@ export default function Component() {
     
     const theme = useTheme();    
     
+    let vi_enabled = () => (vi.recognition_state == "LISTENING" || vi.recognition_state == "PAUSED" )
+    
+    
     const [micState, setMicState] = useState(0) 
     const [txtState, setTxtState] = useState("...")     
-    const [enabledState, setEnabledState] = useState(false) 
+    const [enabledState, setEnabledState] = useState(vi_enabled()) 
     const [speechState, setSpeechState] = useState(false) 
     const [voicesState, setVoicesState] = useState([]) 
+    const [micInterval ,setMicInterval ] = useState(null) 
     
     
+    let voice_result_handler =  async function(e :any) {
+	console.log("Got recognition result!") 
+	let text = e.detail.trim().toLowerCase()
+	console.log(text) 
+	setTxtState(text) 
+	setSpeechState(false)
+    }
     
     useEffect( () => { 
-	window.addEventListener('tidyscripts_web_speech_recognition_result' , async function(e :any) {
-	    console.log("Got recognition result!") 
-	    let text = e.detail.trim().toLowerCase()
-	    console.log(text) 
-	    setTxtState(text) 
-	    setSpeechState(false)
-	}) 
+	window.addEventListener('tidyscripts_web_speech_recognition_result' , voice_result_handler) 
+	return function result_cleanup() {
+	    window.removeEventListener('tidyscripts_web_speech_recognition_result' , voice_result_handler) 
+	} 
     }, [])
 
     
     var mic_max = 0  ; 
     
+    let mic_handler =  async function(e :any) {
+	let power = e.detail
+	mic_max = Math.max(mic_max,power)
+	let val = 100*(power/mic_max) 
+	setMicState(val)
+    }
+    
     useEffect( () => { 
-	window.addEventListener('tidyscripts_web_mic' , async function(e :any) {
-	    let power = e.detail
-	    mic_max = Math.max(mic_max,power)
-	    
-	    let val = 100*(power/mic_max) 
-	    setMicState(val)
-	})
-	
-	setInterval(
+	window.addEventListener('tidyscripts_web_mic' , mic_handler) 
+	let i  = setInterval(
 	    function() {
 		mic_max = 0 
 	    } , 
 	    10*1000
-	) 
-
+	)
+	setMicInterval(i) 
+	//cleanup on unmount
+	return function cleanup(){
+	    window.removeEventListener("tidyscripts_web_mic" , mic_handler) 
+	    clearInterval(micInterval) 
+	} 
     }, []);     
     
     useEffect( () => { 
@@ -99,118 +112,118 @@ export default function Component() {
     return ( 
 	
 	<Container> 
-	<div style={{ 
-	    backgroundColor : theme.palette.background.paper , 
-	    padding : "2%",  
-	    borderRadius : "15px",
-	    
- 	}}> 
-	
-	<h3> Voice Interface Panel </h3>
-	
-	<Divider />
-	
-	<br/>		
-	
-	<Grid container spacing={2} > 
+	    <div style={{ 
+		backgroundColor : theme.palette.background.paper , 
+		padding : "2%",  
+		borderRadius : "15px",
+		
+ 	    }}> 
+		
+		<h3> Voice Interface Panel </h3>
+		
+		<Divider />
+		
+		<br/>		
+		
+		<Grid container spacing={2} > 
 
-	    <Grid item xs={12} sm={6}>
-		<div style={{display: "flex", flexDirection :"row"}}> 
-		    <p> Speech Recognition   </p>
-		    <Button variant="outlined" size="small" color="primary" style={{margin: "8px"}} onClick={
-			function(){
-			    
-			    
-			    if (vi.recognition_state == "LISTENING" || vi.recognition_state == "PAUSED" ) {
-				console.log("Stopping recog") 
-				vi.stop_recognition() 
-				setMicState(0) 
-				setEnabledState(false) 
-				setSpeechState(false) 
-			    } else { 
-				
-				let onSpeechStart = function () {
-				    setSpeechState(true)
+		    <Grid item xs={12} sm={6}>
+			<div style={{display: "flex", flexDirection :"row"}}> 
+			    <p> Speech Recognition   </p>
+			    <Button variant="outlined" size="small" color="primary" style={{margin: "8px"}} onClick={
+				function(){
+				    
+				    
+				    if (vi_enabled()) {
+					console.log("Stopping recog") 
+					vi.stop_recognition() 
+					setMicState(0) 
+					setEnabledState(false) 
+					setSpeechState(false) 
+				    } else { 
+					
+					let onSpeechStart = function () {
+					    setSpeechState(true)
+					}
+					
+					vi.initialize_recognition({onSpeechStart})
+					setEnabledState(true)
+				    } 
+
 				}
-				
-				vi.initialize_recognition({onSpeechStart})
-				setEnabledState(true)
-			    } 
-
-			}
-		    }>
-			{ 
-			    enabledState ? "Disable" : "Enable" 
-			} 
-		    </Button>
-		</div>
-		<br/>			
-		<div style={{width : "90%" }}>
-		    <LinearProgress variant="determinate" value={micState} />
-		</div>
-		<br/>
-		
-		{ 
-		    
-		    speechState ?  <CircularProgress variant="indeterminate"/>  : (<div>You said: {txtState} </div>) 
-		} 
-		
-	    </Grid>
-
-	    <Grid item xs={12} sm={6}>
-		<div style={{display: "flex", flexDirection :"row"}}> 
-		    <p> Text to Speech (TTS)    </p>
-		</div>
-		
-		
-		<div style={{display : "flex" , flexDirection : "row" , justifyContent : "space-around" }}> 
-		    <Button variant="outlined" color="primary" onClick={()=> vi.speak( (document.getElementById(tts_test_input_id)! as any).value) }> 
-			Test 
-		    </Button>
-		    
-		    <TextField  id={tts_test_input_id} label="test text" defaultValue="voice panel test" />		
-		</div>
-		
-		<br /> 
-		<br /> 			
-		
-		<Accordion> 
-		    
-		    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-			Select TTS Voice  
-		    </AccordionSummary>
-
-		    <AccordionDetails> 
-			
-			<div style={{maxHeight : "250px", marginTop: "2px", overflow : "scroll"}}> 
-			    
-
-			    <List> 
+			    }>
 				{ 
-				    voicesState.map( function(v : any) { 
-					return ( 
-					    <ListItem key={v.voiceURI}> 
-						<VoiceItem v={v}/>
-					    </ListItem>
-					)})
+				    vi_enabled()  ? "Disable" : "Enable" 
 				} 
-			    </List>
+			    </Button>
+			</div>
+			<br/>			
+			<div style={{width : "90%" }}>
+			    <LinearProgress variant="determinate" value={micState} />
+			</div>
+			<br/>
+			
+			{ 
 			    
+			    speechState ?  <CircularProgress variant="indeterminate"/>  : (<div>You said: {txtState} </div>) 
+			} 
+			
+		    </Grid>
+
+		    <Grid item xs={12} sm={6}>
+			<div style={{display: "flex", flexDirection :"row"}}> 
+			    <p> Text to Speech (TTS)    </p>
 			</div>
 			
-		    </AccordionDetails>
-		</Accordion>
+			
+			<div style={{display : "flex" , flexDirection : "row" , justifyContent : "space-around" }}> 
+			    <Button variant="outlined" color="primary" onClick={()=> vi.speak( (document.getElementById(tts_test_input_id)! as any).value) }> 
+				Test 
+			    </Button>
+			    
+			    <TextField  id={tts_test_input_id} label="test text" defaultValue="voice panel test" />		
+			</div>
+			
+			<br /> 
+			<br /> 			
+			
+			<Accordion> 
+			    
+			    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+				Select TTS Voice  
+			    </AccordionSummary>
+
+			    <AccordionDetails> 
+				
+				<div style={{maxHeight : "250px", marginTop: "2px", overflow : "scroll"}}> 
+				    
+
+				    <List> 
+					{ 
+					    voicesState.map( function(v : any) { 
+						return ( 
+						    <ListItem key={v.voiceURI}> 
+							<VoiceItem v={v}/>
+						    </ListItem>
+						)})
+					} 
+				    </List>
+				    
+				</div>
+				
+			    </AccordionDetails>
+			</Accordion>
+			
+			
+		    </Grid>	    
+		    
+		    
+		    
+		</Grid>
 		
 		
-	    </Grid>	    
+	    </div> 
 	    
-	    
-	    
-	    </Grid>
-	    
-	    
-	</div> 
-	
 	</Container> 
     )
 

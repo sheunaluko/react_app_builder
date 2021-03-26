@@ -56,6 +56,7 @@ const diagnostic_properties =  {
     ], 
     'backward' : [
 	//these map from the disease to the symptom 
+	["P828", "has cause"],	//note this is repeated (see 'mechanical ventilation') 
 	["P780", "symptoms" ], 	
 	["P5131", "possible medical findings"],
 	["P1542", "has effect"], 	
