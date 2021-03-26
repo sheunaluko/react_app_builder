@@ -5,7 +5,7 @@ import { useTheme } from "@material-ui/core/styles";
 import * as tsw from "tidyscripts_web";
 import * as mui from "./list";
 import Context from "./Settings_Context";
-
+import * as smgr from "../state_manager" 
 
 
 //import { ObjectInspector, TableInspector } from "react-inspector";
@@ -53,7 +53,6 @@ let log = console.log;
 let debug = tsw.util.common.debug;
 declare var window: any;
 
-let smgr = window.state_manager  ; 
 
 
 /*
@@ -141,12 +140,12 @@ export default function Component() {
 
 function ThemeSelection() {
 
-    const [value, setValue] = React.useState(smgr.theme_str);
+    const [value, setValue] = React.useState(smgr.get("theme_str"));
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 	let val = (event.target as HTMLInputElement).value
 	setValue(val);
-	smgr.set_theme(val) 
+	smgr.get("set_theme")(val) 
     };
     
     let theme_names = [ 

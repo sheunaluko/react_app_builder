@@ -17,7 +17,7 @@ import Console from "./JSConsole"
 import Html from "./Html" 
 
 
-import EntityEditor from "./EntityEditor" 
+import EntityEditor from "./EntityEditor2" 
 import VoicePanel from "./VoicePanel" 
 import Visualizations from "./Visualizations" 
 

@@ -89,25 +89,18 @@ export default function SearchCard(props : any) {
 	    } 
 
 	> 
-	    <div style={{display: "flex" ,
-			 flexDirection : "row" }} > 
+		<Link href={option.concepturi} > 
+		    {option.label} 
+		</Link>		
 		
-		<Typography style={{flexGrow: 1}} variant="h6" >
-		    {option.label}
-		</Typography>
-		
-	    </div>
 	    
-	    <Typography variant="subtitle1"> 
+	    <Typography > 
 		{ option.description  }  
 	    </Typography>
 	    
 	    
-	    <br/>
 
-	    <Link href={option.concepturi} > 
-		{option.concepturi} 
-	    </Link>		
+
 	    
 	</Paper>
 	

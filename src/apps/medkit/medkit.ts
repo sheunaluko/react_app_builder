@@ -1,6 +1,6 @@
 import * as tsw from "tidyscripts_web";
 import  * as _smgr from "./state_manager" 
-
+import * as entity_editor from "./entity_editor" 
 
 //probably a slightly better way to do these exports 
 export var  smgr  = _smgr 
@@ -16,10 +16,13 @@ declare var window: any;
 
 window.apis = tsw.apis 
 window.hlm  = hlm 
+window.smgr  = smgr 
+window.entity_editor = entity_editor 
 
 // --- 
 
 export function log(msg : string) { 
+    
     console.log("[mk]:: " + msg) 
 } 
 

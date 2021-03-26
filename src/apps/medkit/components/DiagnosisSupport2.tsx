@@ -10,6 +10,8 @@ import ScrollableTabs from "./ScrollableTabs" ;
 import * as cds from "../dev/cds" ; 
 import WikidataEntityViewer from "./WikidataEntityViewer" 
 import DiagnosisModeSelection from "./DiagnosisModeSelection" 
+import * as smgr from "../state_manager" 
+
 
 let {
     Container,
@@ -54,7 +56,7 @@ const apis = tsw.apis
 
 declare var window: any;
 
-const ui_log = (s : string) => window.state_manager.addConsoleText(s) 
+const ui_log = (s : string) => smgr.get("addConsoleText")(s) 
 
 /*
    COMPONENT STARTS HERE -- >

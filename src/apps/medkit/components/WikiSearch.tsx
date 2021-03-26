@@ -66,7 +66,7 @@ export default function WikiSearch(props : any) {
 	}  else { 
 	    log("No search term to retrieve automatically")
 	} 
-    }, [])
+    }, [search_term])
 
     let WikiInputChanged = fp.make_debouncer(500, async function(args : any[]) {
 	// --  

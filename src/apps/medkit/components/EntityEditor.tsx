@@ -5,7 +5,7 @@ import { useTheme } from "@material-ui/core/styles";
 import * as tsw from "tidyscripts_web";
 import * as mui from "./list";
 import Context from "./EntityEditor_Context";
-import * as smgr from './state_manager' 
+import * as smgr from "../state_manager" 
 import ResolvableInput from "./WikiResolvableInput" 
 
 
@@ -58,7 +58,9 @@ var res_db = tsw.apis.db.GET_DB("input_resolution")
 
 /* 
    
-   UTILS 
+   UTILS  
+   
+   REMAKE INTO CONTEXT BASED ARCH 
    
  */
 
@@ -70,68 +72,119 @@ let EditableFields = [
     "Risk Factors" , 
     "Diagnosis" , 
     "Treatments" ,
-    
 ] 
-
-
-
-var global_input_processor = function(i  : string) { 
-    console.log("Default input processor: " + i ) 
-} 
-
-var keyword_input_processor = function(i : string) { 
-    
-    EditableFields.map( (f : string) => { 
-	let fl = f.toLowerCase() ; 
-	
-	if (i == `select ${fl}`) {
-	    //match 
-	    smgr.get('setActiveField')(f) 
-	} else {
-	    //pass 
-	} 
-    })
-    
-} 
-
-export function process_input(i : string) {
-    i = i.toLowerCase() 
-    if (i.split(" ")[0] == "select" ) { 
-	keyword_input_processor(i)
-    } else { 
-	global_input_processor(i) 
-    } 
-} 
-
-window.entity_process_input = process_input 
-
 
 /*
    COMPONENT STARTS HERE -- >
    
  */
 
-
-
-export default function Component() {
-    
+function Component() {
+     
     const theme = useTheme();
-    const [state, setState] = React.useState<any>({
-	displayName : "unkown" , 
-	userInput : null , 
-	active_field : "Entity" ,
+    
+    const [state, setState] = React.useState({
 	entity_original_input : false , 
 	entity_input_reset : 0 , 
+	active_field : "Entity" , 
+	field_states : {    } , 
     });
     
-    let setActive = function( i  : string) {
+    
+    let setField  = function( k : string, val : any) {
+	let fs  = fp.clone(state.field_states)
+	fs[k] = val 
+	setState({ ...state , 
+		   field_states : fs }) 
+    } 
+    
+    let addToField = function( k : string , vals : string[]) {
+	let val = {} 
+	vals.map((s:string)=> val[s] = {original_input  : s , k : s } ) 
+	setField(k,val) 
+    } 
+    
+    
+    let setActive = function( a : string) { 
 	setState({ 
-	    ...state, 
-	    active_field : i 
+	    ...state , 
+	    active_field : a 
 	})
     } 
     
-    smgr.register("setActiveField" , setActive) 
+    let getActive = function() {
+	return state.active_field ; 
+    } 
+    
+    let cnt = 0 
+    let entity_reset = function(){
+	cnt = cnt + 1 ; 
+	return cnt 
+    }
+    
+    let entity_parse = function(i : string) {
+	log("Processing entity input: " + i) 
+	setState({
+	    ...state, 
+	    entity_original_input : i , 
+	    entity_input_reset : entity_reset()
+	})
+    }    
+    
+    
+    let generic_processor = function(t : string) {
+	
+	t = t.toLowerCase() 
+	if (t.split(" ")[0] == "select" ) { 
+	    log("Parsing select") 
+	    EditableFields.map( (f : string) => { 
+		let fl = f.toLowerCase() ; 
+		if (t == `select ${fl}`) {
+		    //match 
+		    setActive(f) 
+		} else {
+		    //pass 
+		} 
+	    })
+	    return 
+	} 
+	
+	log("Getting active") 
+	let active = getActive() 
+	log(active) 
+	
+	if (active == "Entity") { 
+	    entity_parse(t) 
+	    return 
+	} 
+	
+	log("Processing new input: " + t) 
+	let terms = t.split(" and ").map( (x:string)=> x.trim()) 
+	let to_add = terms.map( (term:string) => ({ 
+	    original_input : term , 
+	    k  : term , 
+	}))
+	log("Items to add: ") 
+	log(to_add) 
+
+	log("Getting active fields info")
+	let existing = fp.clone(state.field_states[active])
+	log(existing) 
+	for (var i of to_add) {
+	    log("Adding key: " + i.k)
+	    existing[i.k] = i 
+	} 
+	log("new items:")
+	log(existing) 
+	setField( active  ,  existing) 
+	log("Done") 
+    } 
+    
+    smgr.register("setFieldData", setField) 
+    smgr.register("addToField" , addToField)     
+    smgr.register("setActive" , setActive) 
+    smgr.register("getActive" , getActive)     
+    smgr.register("entity_generic_processor" , generic_processor )         
     
     let active_title = 	(
 	<Typography  variant="h5" color="primary" > 
@@ -145,29 +198,12 @@ export default function Component() {
 	</Typography>
     ) 
     
-    let EntityActive = (state.active_field == "Entity" )
+    let EntityActive = (getActive() == "Entity" )
     
     let title = EntityActive ? active_title : default_title ; 
     
-    let cnt = 0 
-    let entity_reset = function(){
-	cnt = cnt + 1 ; 
-	return cnt 
-    }
+   
     
-    React.useEffect( ()=> {
-	if (EntityActive) { 
-	    log("Rerouted gp") 
-	    global_input_processor = function(t:string){
-		log("Processing new input: " + t) 
-		setState({
-		    ...state, 
-		    entity_original_input : t , 
-		    entity_input_reset : entity_reset()
-		})
-	    } 
-	} 
-    },[state.active_field])
     
 
     return (
@@ -209,7 +245,9 @@ export default function Component() {
 			    {
 				EditableFields.slice(1).map( (x:string) => ( 
 				    
-				    <EditableField key={x} title={x} active={ state.active_field == x } /> 
+				    <Box key={x} onClick={()=> setActive(x) }> 
+					<EditableField  field_states={state.field_states} title={x} active={ getActive() == x } /> 
+				    </Box>
 				) ) 
 			    } 
 			</Box>
@@ -228,9 +266,12 @@ export default function Component() {
 
 function EditableField(props :any ) { 
     
-    let {active} = props 
+    let {active,field_states} = props 
+    
+    let items = field_states[props.title] || {} 
     
     const theme = useTheme();
+    
     
     let active_title = 	(
 	<Typography  variant="h5" color="primary" > 
@@ -244,6 +285,8 @@ function EditableField(props :any ) {
 	</Typography>
     ) 
     
+   
+
     return ( 
 	<Container style={{ 
 	    boxSizing : "border-box" , 
@@ -263,7 +306,7 @@ function EditableField(props :any ) {
 		} 
 		
 		
-		<IconButton> 
+		<IconButton onClick={()=> null } > 
 		    <AddCircle /> 
 		</IconButton>
 		
@@ -275,10 +318,25 @@ function EditableField(props :any ) {
 		borderRadius : "5px" , 
 		borderColor : active ? theme.palette.primary.dark  : theme.palette.secondary.dark  , 
 		borderWidth : "2px" , 
-		minHeight : "5vh", 			  
+		minHeight : "5vh", 		
+		boxSizing : "borderBox" , 
+		padding :  "2%" , 
+		maxHeight : "15vh" , 
+		overflow : "auto" , 
 	    }}> 
 		
-		
+		<Grid container spacing={2}>
+		    {
+			fp.keys(items).map( (k:any) => { 
+			    let i = items[k]
+			    return ( 
+				<Grid item xs={4} key={i.k} >    
+				    <ResolvableInput original_input={i.original_input} /> 
+				</Grid>
+			    ) 
+			})
+		    }
+		</Grid>
 		
 		
 		
@@ -291,3 +349,5 @@ function EditableField(props :any ) {
 
 
 
+
+export default Component ; 
