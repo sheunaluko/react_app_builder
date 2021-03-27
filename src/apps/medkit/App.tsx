@@ -31,7 +31,9 @@ import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import * as mk from "./medkit" 
 
 import { MenuComponents } from "./components/ComponentDictionary" 
+
 import Console from "./ConsoleElement" 
+import SnackBar from "./components/SnackBar" 
 
 import purple from '@material-ui/core/colors/purple';
 import green from '@material-ui/core/colors/green';
@@ -234,6 +236,7 @@ function App() {
 		
 
 	    </div>
+	    <SnackBar/> 
 	</ThemeProvider > 
     );
 }

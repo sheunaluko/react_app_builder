@@ -52,6 +52,7 @@ export default function WikiSearch(props : any) {
     const [state, setState] = React.useState<any>({
 	options : [] , 
 	progress :false, 
+	should_select_first : should_select_first , 
     });
     
     /*
@@ -64,7 +65,12 @@ export default function WikiSearch(props : any) {
 	    log("Automating query") 
 	    automate_input(search_id, search_term) 
 	}  else { 
-	    log("No search term to retrieve automatically")
+	    log("No search term to retrieve automatically...disable select first")
+	    setState({
+		...state, 
+		should_select_first : false 
+	    }) 
+	    
 	} 
     }, [search_term])
 
@@ -85,13 +91,24 @@ export default function WikiSearch(props : any) {
 		  progress : true})
 	let result = await apis.wikidata.WikidataSearchAsList(args[0]) //cached request 
 	debug.add("wiki_query" , result) 
+	
+	
+	//also will add a default option 
+	let default_op = { 
+	    label : args[0], 
+	    concepturi : null ,
+	    id : args[0] + "_linked" , 
+	    description : "[unlinked]"
+	} 
+	
+	
 	setState( { ...state, 
-		    options :  result , 
+		    options :  fp.concat([default_op],result) , 
 		    progress :false    })
         /* 
 	   Determine if we should auto return 1st result
 	*/
-	if (should_select_first) {
+	if (state.should_select_first) {
 	    log("selecting first result") 
 	    let sel = result[0]
 	    if (!sel) {
@@ -106,6 +123,7 @@ export default function WikiSearch(props : any) {
 	} else { 
 	    log("Not selecting 1st result") 
 	} 
+	
     }) 
 
     let SearchResults = () => ( 
