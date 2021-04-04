@@ -59,7 +59,7 @@ export default function Component() {
     
     const theme = useTheme();
     const [state, setState] = React.useState<any>({
-	tabValue: 1,
+
 	elevations: {}
   });
 

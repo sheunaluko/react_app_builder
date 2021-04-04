@@ -146,6 +146,7 @@ export function all_true(arr : boolean[]) : boolean {
 }
 
 export function any_true(arr : boolean[]) : boolean {
+    if (is_empty(arr)) {return false}  ; 
     return arr.reduce( (a,b)=> (a || b) )
 }
 

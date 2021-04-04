@@ -10,8 +10,8 @@ import * as tsw from 'tidyscripts_web'
  */ 
 
 //import App from './apps/binance_listener/App';
-//import App from './apps/dream_catcher/App';
-import App from './apps/medkit/App';
+import App from './apps/dream_catcher/App';
+//import App from './apps/medkit/App';
 //import App from './apps/tidyscripts/App';
 //import App from './apps/musicapp/App';
 

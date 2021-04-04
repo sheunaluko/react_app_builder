@@ -36,6 +36,7 @@ let VC = VM.VoiceChannel //get the voice channel
 declare var window : any ; 
 
 window.voice = VoiceModule 
+window.smgr = smgr ; 
 
 
 const MenuComponents : {[k:string] : any }  = { 
@@ -58,7 +59,9 @@ function App() {
 	//first flush the voice channel 
 	VM.reset() 
 	//then change the UI 
+	console.log("Setting UI state to: " + s) 
 	setState(s) 
+	
     } 
     
     smgr.register("setAppSelectedMenu", selectedSetter) 

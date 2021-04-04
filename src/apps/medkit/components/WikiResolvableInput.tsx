@@ -152,7 +152,7 @@ function PoppableSelection() {
 		search_open : true , 
 	    })
 	} 
-    },[])
+    },[state.search_open, state.search_auto_open])
     
     return (
 	<div>

@@ -290,7 +290,7 @@ get_user_dreams()
 
 
 export function any_encrypted()  { 
-    if ( ! user_dreams ) { 
+    if ( ! user_dreams || (user_dreams == {} ) ) { 
 	return undefined 
     } else { 
 	return fp.any_true(fp.map(fp.values(user_dreams),

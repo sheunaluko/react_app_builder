@@ -103,6 +103,10 @@ export function all_true(arr) {
     return arr.reduce((a, b) => (a && b));
 }
 export function any_true(arr) {
+    if (is_empty(arr)) {
+        return false;
+    }
+    ;
     return arr.reduce((a, b) => (a || b));
 }
 export function all_false(arr) {

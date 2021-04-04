@@ -15,7 +15,7 @@ export var log = function (m) {
         console.log(m);
     }
 };
-function PT2IOProcess(packet_transformer) {
+export function PT2IOProcess(packet_transformer) {
     return function (args) {
         return __awaiter(this, void 0, void 0, function* () {
             log("Running IO process... with args: ");
@@ -43,7 +43,7 @@ function PT2IOProcess(packet_transformer) {
         });
     };
 }
-function DT2IOProcess(data_transformer) {
+export function DT2IOProcess(data_transformer) {
     let packet_transformer = function (p) {
         log("Data transformer: ");
         log(p);

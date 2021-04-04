@@ -50,10 +50,14 @@ export default function AppDrawer() {
     let select_menu_fn = function(m : string) {
 	
 	return function() { 
+	    
+	    console.log("User clicked menu!: " + m ) 
+	    
 	    if (( m == "input" || m == "review" || m == "settings" ) && !Firebase.getUser() ) {
 		console.log(window.state) 
 		smgr.get("snackbarInfo")("You must be logged in to use this functionality.")
 	    } 
+	    
 	    smgr.get("setAppSelectedMenu")(m) ;
 	}
     } 
@@ -135,7 +139,7 @@ export default function AppDrawer() {
 		    <ListItemIcon> <ImportContactsIcon /> </ListItemIcon>
 		    <ListItemText primary={"Review Dreams"} />
 		</ListItem>
-		<ListItem button key="analytics"  onClick={coming_soon}>
+		<ListItem button key="analytics"  onClick={select_menu_fn("analytics")}>
 		    <ListItemIcon> <TimelineIcon/> </ListItemIcon>
 		    <ListItemText primary={"Analytics"} />
 		</ListItem>

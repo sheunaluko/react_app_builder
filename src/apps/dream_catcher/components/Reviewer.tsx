@@ -146,16 +146,11 @@ function Reviewer() {
     })
     smgr.register("dreamRevNum" , dreamRevNum) 
     
-    
     const width = useWidth() 
-    
     
     React.useEffect( function(){
 	console.log("Rendered with width: " + width) 
     } , [width]) 
-    
-
-    
     
     React.useEffect( function(){
 	//watches for changes on the dreamRevNum and recalculates
@@ -229,7 +224,11 @@ function Reviewer() {
 		
 		setLoading(false)		
 		window.state.snackbarInfo("Succesfully Retrieved Your dreams") 		
-		setSelectedDream(will_be_sorted[0].uuid)
+		if (will_be_sorted.length) { 
+		    //had a bug here when the user did not have any dreams yet :) 
+		    //gotta start somewhere right !? 
+		    setSelectedDream(will_be_sorted[0].uuid)
+		} 
 	    }
 	})
 
@@ -365,7 +364,6 @@ function Reviewer() {
 			 flexDirection :"column" , 
 			 paddingTop : "3%" , 
 			 height : "100%"}}> 
-		
 		<Grid container > 
 		    <Grid item xs={4} >
 		    </Grid>
@@ -380,16 +378,19 @@ function Reviewer() {
 			    Search
 			</Button>
 		    </Grid>
-		    
-		    
 		</Grid>
 		
-		<ReviewingCard /> 
-		<LoadingStatus /> 
+		{ 
+		    (userDecryptedDreams.length < 1) ? <NoDreamsUI/>  : (<React.Fragment> 
+			<ReviewingCard /> 
+			<LoadingStatus /> 
+		    </React.Fragment>)
+		} 
+		    
+		    
 
-		
+		    
 	    </Box>
-	    
 	    
 	    <div >
 		<Drawer anchor='right' open={drawer.open} onClose={()=>setDrawer({open: false })}>
@@ -407,10 +408,10 @@ function Reviewer() {
 				     justifyContent : "center"}} >
 
 			    <TextField 
-			    style={{width : "80%"}} 
-			    id="searchField" 
+				style={{width : "80%"}} 
+				id="searchField" 
 			        onChange={onTextChange}
-			    label="Search..." />
+				label="Search..." />
 			    <IconButton onClick={()=>handleSearch()}>
 				<SearchIcon />			    
 			    </IconButton>
@@ -427,9 +428,9 @@ function Reviewer() {
 						  flexDirection : "row" , 
 					  }}
 					  onClick={ ()=>{
-					      setSelectedDream(d.uuid);
-					      setDrawer({open:false})
-					      console.log(d.uuid)
+						  setSelectedDream(d.uuid);
+						  setDrawer({open:false})
+						  console.log(d.uuid)
 					  }}>
 					  <DreamMiniView  {...d} /> 
 				      </ListItem>				      
@@ -442,7 +443,7 @@ function Reviewer() {
 	    </div>
 
 	</div>
-    );
+		    );
 }
 
 
@@ -504,5 +505,63 @@ function DreamMiniView(props : any){
 	
     ) 
 } 
+
+
+
+
+
+
+function NoDreamsUI(){ 
+    let title_size = "20px" 
+    let description_size = "20px" 
+    let date_size = "20px" 
+    
+    var box_widths :any = { 
+	'xs' : "50%"  , 'sm' : "30%" , 'md' : "30%" , 'lg' : "20%"  
+    } 
+    
+    let box_width = "100%"  // box_widths[(sz as string)]  || '30%' 
+    
+    let dte = new Date()
+    let time_str = dte.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: 'numeric' })
+    let dte_string = `${dte.toDateString()}, ${time_str}`    
+    
+    let title = "Welcome to Dream Catcher!" 
+    let description = `After you record some dreams they will be accessible here. If you have not already checked out the "Get Started" and "Voice Tutorial" tabs in the menu on the left I highly recommend that! DreamCatcher is quite sophisticated and powerful if you learn how to use it correctly - I developed it over several years specifically to be able to record my dreams during the night without even moving, or opening my eyes! An "oneironaut" is one who explores the dream world -- welcome to the club and sweet lucid dreams ;)`
+    
+    return ( 
+	
+	
+	<Box style={{display :"flex" , 
+		     justifyContent : "center" , 
+		     marginTop : "10%" , 
+		     padding : "4%" , 
+		     flexDirection : "row"}}> 
+	<Card variant="outlined">
+	<CardContent style={{justifyContent : "center" , 
+			     alignItems  : "center"}}> 
+	
+	<Typography variant="h3" component="h2"> 
+	{title }
+		    </Typography>
+		    <Typography >
+			{dte_string}
+		    </Typography>		    
+
+		    <Typography color="textSecondary"  style={{whiteSpace : 'pre-line'}}> 
+			{description}
+		    </Typography>
+
+		</CardContent>
+		
+	    </Card > 
+	    
+
+	    
+	</Box> 	
+    )
+} 
+
+
 
 

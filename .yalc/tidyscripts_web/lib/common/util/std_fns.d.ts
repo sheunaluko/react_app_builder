@@ -1,11 +1,16 @@
-import type { IOProcess } from "./stdio";
+import type { IOProcess, IOPacket, IOData, IODataPacket } from "./stdio";
 import { IOChannel } from "./stdio";
+declare type PacketTransformer = (p: IODataPacket) => IOPacket;
+declare type DataTransformer = (d: IOData) => IOData;
 export declare var debug: boolean;
 export declare function set_debug(b: boolean): void;
 export declare var log: (m: any) => void;
+export declare function PT2IOProcess(packet_transformer: PacketTransformer): IOProcess;
+export declare function DT2IOProcess(data_transformer: DataTransformer): IOProcess;
 export declare var split: (sep: string) => IOProcess;
 export declare var index: (num: number) => IOProcess;
 export declare var to_number: () => IOProcess;
 export declare var inc: (num: number) => IOProcess;
 export declare function logger_stdout(tag: string): IOChannel;
 export declare function string_producer(text: string, sep: string): IOProcess;
+export {};

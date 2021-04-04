@@ -90,7 +90,6 @@ function Component() {
 	field_states : {    } , 
     });
     
-    
     let setField  = function( k : string, val : any) {
 	let fs  = fp.clone(state.field_states)
 	fs[k] = val 

@@ -234,6 +234,12 @@ function TagAdder() {
 } 
 
 
+
+let old_key_text = "Current settings indicate that you would like to encrypt your dreams prior to storage in the cloud so that no one but you can ever read them. Current settings also indicate that you would like to store the encryption key in your web browser. However, you are either using a new device or have not yet chosen a key. Please input your encryption key now and it will be saved for future use. If you would NOT like to encrypt your dreams or if you would like to manually enter your key each time, click out of this dialog and go to the settings menu to update your preferences."
+
+let key_text = "Please re-enter or create your password so that you and only you can read your dreams. If you forget your password your stored dreams will be unreadable, so choose something you will not forget (it doesn't have to be super complicated and will be saved directly in your device)! If desired, you can disable password-based encryption in the settings menu on the left and retry." 
+
+
 async function dream_saver(uid : string) {  
     
     console.log("REQUEST TO SAVE: ") 
@@ -251,6 +257,8 @@ async function dream_saver(uid : string) {
 	return 
     } 
     
+    
+    
     var encryption = false 
     var ekey = null 
     // so the settings are there -- lets check them 
@@ -261,11 +269,11 @@ async function dream_saver(uid : string) {
 	    if (!localStorage["encryption_key"] ) {
 		//but the encryption password is missing 
 		console.log("Opening async dialog...") 
-		ekey =  await window.state.asyncTextQueryDialog({ title : "Enter encryption key",
-								  text : "Current settings indicate that you would like to encrypt your dreams prior to storage in the cloud so that no one but you can ever read them. Current settings also indicate that you would like to store the encryption key in your web browser. However, you are either using a new device or have not yet chosen a key. Please input your encryption key now and it will be saved for future use. If you would NOT like to encrypt your dreams or if you would like to manually enter your key each time, click out of this dialog and go to the settings menu to update your preferences.", 
+		ekey =  await window.state.asyncTextQueryDialog({ title : "Enter password",
+								  text : key_text, 
 								  confirm : true, 
 								  hide  :  true , 
-								  label : "Encryption Key" }) 
+								  label : "Password" }) 
 		
 		console.log("Got ekey: "+ ekey) 
 		if (!ekey ) { 
@@ -283,8 +291,8 @@ async function dream_saver(uid : string) {
 	    //user has indicated they do NOT want ep stored 
 	    //so we must prompt them for it 
 	    console.log("Opening async dialog...") 
-	    ekey =  await window.state.asyncTextQueryDialog({title : "Enter encryption key", 
-							     text : "Current settings indicate that you would like to encrypt your dreams prior to storage in the cloud, so that no one but you can ever read them. Current settings also indicate that you would NOT like to store the encryption key in your web browser. Please input your encryption key now. It is extremely important that you either elect to store your encryption key in the browser (in the settings menu) OR you use the EXACT same key each time, or else some of your dreams will be unrecoverable for ever!", 
+	    ekey =  await window.state.asyncTextQueryDialog({title : "Enter password", 
+							     text : key_text, 
 							     hide : true, 
 							     confirm : true, 
 							     label :"EncryptionKey"}) 

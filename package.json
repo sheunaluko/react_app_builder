@@ -30,6 +30,7 @@
     "react-inspector": "^5.0.1",
     "react-plotly.js": "^2.5.1",
     "react-scripts": "4.0.0",
+    "react-wordcloud": "^1.2.7",
     "typescript": "~3.7.2",
     "uuid": "^8.2.0"
   },
