@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import Box from '@material-ui/core/Box';
 import MenuIcon from '@material-ui/icons/Menu';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -16,6 +17,8 @@ import * as mfb from "./Firebase"
 
 import AnalyticsDrawer from "./AnalyticsDrawer" ; 
 import * as AU from "./AnalyticsUtils" ; 
+
+import * as tsw from "tidyscripts_web" ; 
 
 let log = console.log ; 
 declare var window :any  ; 
@@ -45,15 +48,22 @@ async function get_word_cloud_stats() {
     //tokenize
     let tokens = all_des.split(new RegExp("[ \n]")).map(x=>x.toLowerCase().trim()).filter( x=> !fp.is_empty(x)) 
     
-    //filter the "Simple" words 
+    //apply filters
     if (true) {
 	
-
-	//tokens = await filter_with_name(tokens, "Pronouns")
-	tokens = await filter_with_name(tokens, "User")	
-	tokens = tokens.filter( w => !AU.pronouns.includes(w) )    	
-	tokens = tokens.filter( w => !AU.aux_filter.includes(w) )    		
+	//default filter 
+	let to_filter = tsw.apis.local_storage.get("Default")
+	if (to_filter) {
+	    console.log("Detected default filter and using it")
+	    tokens = tokens.filter( w => !to_filter.includes(w) )    	    
+	} else { 
+	    console.log("No stored default filter so using original")	    
+	    tokens = tokens.filter( w => !AU.default_filter.includes(w) )    	    	    
+	} 
 	
+	//user filter
+	tokens = await filter_with_name(tokens, "User")	
+
     } 
     
     let stats = {} 
@@ -111,7 +121,7 @@ function Analytics() {
 	
 	
 	
-    }, []) 
+    }, [refresh_id]) 
     
     let toggle = ()=> smgr.get("AdrawerToggle")()     
     let refresh = () => set_refresh_id( id => id + 1 ) 
@@ -154,7 +164,12 @@ export default Analytics ;
 //TODO 
 // BAR CHART of the words and their frequencies  (there are over 1000 and not all showing obviously) 
 // For word cloud can try subtracting out some items 
+
+
 // create user settings option for words that will be filtered from analyses 
-// bar chart of dream times 
+
+
+// Temporal analyses -- can return the STATS object at different time resolutions 
+// modularize the retrieval pipeline 
 
 // trajectory of certain words 

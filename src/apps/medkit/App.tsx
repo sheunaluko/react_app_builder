@@ -161,9 +161,10 @@ const themes : any = {
     } ,
 } 
 
-		       
+
 //let init_component = "wikidata_entity_maker" 
-let init_component = "entity_editor" 
+//let init_component = "entity_editor" 
+let init_component = "abx" 
 
 function App() {
     

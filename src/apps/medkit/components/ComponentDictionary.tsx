@@ -15,6 +15,7 @@ import EntityViewer from "./WikidataEntityViewer"
 import Settings from "./Settings" 
 import Console from "./JSConsole"  
 import Html from "./Html" 
+import Antibiotics from "./Antibiotics" 
 
 
 import EntityEditor from "./EntityEditor2" 
@@ -40,6 +41,7 @@ export var MenuComponents : {[k:string] : any }  = {
     "settings" : <Settings  /> , 	     
     "voice_panel" : <VoicePanel /> , 
     "visualizations" : <Visualizations />,
+    "abx"  : <Antibiotics /> , 
     //dictionary_marker
 } 
 

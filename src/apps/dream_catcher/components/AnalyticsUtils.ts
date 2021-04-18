@@ -1,5 +1,9 @@
 
 
+import * as tsw from "tidyscripts_web" 
+
+let fp = tsw.util.common.fp 
+
 
 
 export async function load_word_set(name : string) {
@@ -36,6 +40,13 @@ export var aux_filter = [
     "of" ,"the", "that", "then", "an" , "but", 
     "on" ,"with" ,"from", "or", "back" , "were", 
     "did" ,"wasn't" ,"that's" , "for" , "is" , "not","would" ,
-   
 ]
 
+export var default_filter = ([articles,pronouns,aux_filter]).reduce( fp.concat, [])
+default_filter.sort()
+
+
+declare var window : any;
+window.au = {
+    articles, pronouns, aux_filter, default_filter 
+} 

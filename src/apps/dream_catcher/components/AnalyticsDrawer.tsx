@@ -17,8 +17,14 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import HeadsetMicIcon from '@material-ui/icons/HeadsetMic';
 import ContactSupportIcon from '@material-ui/icons/ContactSupport';
 
+import IconButton from '@material-ui/core/IconButton';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+
 import TimelineIcon from '@material-ui/icons/Timeline';
 import InfoIcon from '@material-ui/icons/Info';
+import CancelIcon from '@material-ui/icons/Cancel';
+import CloseIcon from '@material-ui/icons/Close';
 import HotelIcon from '@material-ui/icons/Hotel';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
@@ -78,7 +84,8 @@ export default function AppDrawer() {
 
 		  
 		  
-		  <WordFilter name="User"/> 
+		  <WordFilter name="Default"/> 
+		  <WordFilter name="User"/> 		  
 		  
 
 	      </Box>
@@ -99,7 +106,33 @@ function WordFilter(props : any) {
     
     let {name } = props ; 
     
-    let [words,setWords] = React.useState(null) 
+    /* 
+       let to_filter = tsw.apis.local_storage.get("Default")
+       if (to_filter) {
+       console.log("Detected default filter and using it")
+       tokens = tokens.filter( w => !to_filter.includes(w) )    	    
+       } else { 
+       console.log("No stored default filter so using original")	    
+       tokens = tokens.filter( w => !AU.default_filter.includes(w) )    	    	    
+       } 
+       
+     */ 
+    
+    var to_filter; 
+    if (name == "Default" ) {
+	to_filter = tsw.apis.local_storage.get("Default")
+	if (to_filter) {
+	    console.log("Detected default filter and using it")
+	} else { 
+	    console.log("No stored default filter so using original")	    
+	    to_filter = AU.default_filter.map( w => (
+		{ word : w , id : tsw.util.uuid() , hidden : false }
+	    ))
+	    
+	} 	
+    } 
+    
+    let [words,setWords] = React.useState(to_filter) 
     
     React.useEffect( ()=> {
 	AU.load_word_set(name).then( retrieved_words => setWords(retrieved_words) )
@@ -151,6 +184,22 @@ function EditableWordList(props :any) {
 	
     }
     
+    let delete_items = function(items : any[]) {
+	
+	console.log("Deleting items: ") ; console.log(items) 
+	let words_to_delete = fp.map_get(items,'word')
+	
+	setItems( old_items => {
+	    
+	    let new_items = old_items.filter( i=> !words_to_delete.includes(i.word))
+	    //propagate the change 
+	    on_change(new_items) 
+	    //and set 
+	    return new_items 
+	})
+	
+    }    
+    
     let input_id = tsw.util.uuid() 
     let get_input_values = () => (document.getElementById(input_id) as any).value.split(",").filter(x=>!fp.is_empty(x)).map(x=>x.trim())
     
@@ -186,7 +235,7 @@ function EditableWordList(props :any) {
 		    { 
 			items.map( i => (
 			    <React.Fragment key={i.id}>
-				<EditableWordItem {...i} />
+				<EditableWordItem item={i} deleteItems={delete_items} />
 				<Divider />	      	      
 			    </React.Fragment>		    
 			))
@@ -201,13 +250,57 @@ function EditableWordList(props :any) {
 
 function EditableWordItem(props: any) {
     
-    let  {id , hidden, word } = props ; 
+    let  {item, deleteItems } = props ; 
+    let {id , hidden, word   } = item 
+    
+    let deleteMe = function() {
+	console.log("deleting") ; console.log(item) 
+	deleteItems( [item]) 
+    } 
     
     return (
-	<ListItem> 
-	    {props.word} 
-	</ListItem>
-    ) 
-    
-    
-} 
+	<Box style={{  
+	    display : "flex" ,
+	    flexDirection: "row" , 
+	}} > 
+	    <ListItem> 
+		{item.word} 
+	    </ListItem>
+	    
+	    <Box style={{flexGrow : 1}} /> 
+	    
+	    <IconButton size="small" edge="start" color="default" aria-label="menu" onClick={deleteMe } >
+		<CloseIcon size="small" />
+	    </IconButton>
+	</Box> 
+    )
+}
+
+
+
+
+/* 
+
+   TODO: 
+   
+   Something is wrong with the filter -- 
+   AND is not going away. (when delete) 
+   Also when it refreshes it should RELOAD from local storage. But MAY not be happen? 
+   
+   Next put the filters in accordion 
+   
+   Thats IT for word cloud 
+   
+   THen 
+   1) Histogram of word frequencies 
+   2) Multiseries line plot of word usage over time (user can use the EditableList component 
+      to select which words show up on the plot) 
+   
+   
+   
+   
+ */
+
+
+
+
