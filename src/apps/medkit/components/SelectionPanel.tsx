@@ -55,12 +55,12 @@ declare var window: any;
 
 export default function C(props : any){
     
-    let {init_classes, all_classes, on_change, title} = props; 
+    let {init_classes, all_classes, on_change, title, init_mode} = props; 
     
     const [state, setState] = React.useState<any>({
 	classes : init_classes, 
     });
-    const [curr_mode,set_mode] = React.useState<any>("And")        
+    const [curr_mode,set_mode] = React.useState<any>(init_mode || "And")        
     let handler = function(c :string) { 
 	return function() {
 	    console.log("Clicked:" + c) 

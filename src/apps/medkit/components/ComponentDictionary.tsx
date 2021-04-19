@@ -15,7 +15,7 @@ import EntityViewer from "./WikidataEntityViewer"
 import Settings from "./Settings" 
 import Console from "./JSConsole"  
 import Html from "./Html" 
-import Antibiotics from "./Antibiotics" 
+import Antibiotics from "./Antibiotics2" 
 
 
 import EntityEditor from "./EntityEditor2" 
