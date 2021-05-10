@@ -3,7 +3,10 @@ export declare const min1: number;
 export declare const hr1: number;
 export declare const DEFAULT_HL_CACHE_TIME: number;
 export declare const DEFAULT_HL_CACHE_CHECK_INTERVAL: number;
+export declare const db_name = "HL_CLIENT";
+export declare var db: any;
 declare const set_with_ttl: any;
+export declare function delete_db(): any;
 export { set_with_ttl, };
 interface CallFunctionOps {
     id: string;

@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import * as common from "../../common/util/index"; //common utilities  
 export { common };
 import * as tts from "./tts";
@@ -33,4 +42,23 @@ export function uuid() {
     });
 }
 ;
+export function define(promise, id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        window[id] = yield promise;
+        log(`Defined ${id} on the window object :)`);
+    });
+}
+export function automate_input(id, q) {
+    /*
+       Interesting discussion here about programmatically triggering onChange for react input elements
+       https://hustle.bizongo.in/simulate-react-on-change-on-controlled-components-baa336920e04
+     */
+    let input = document.getElementById(id);
+    if (input) {
+        var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+        nativeInputValueSetter.call(input, q);
+        var inputEvent = new Event('input', { bubbles: true });
+        input.dispatchEvent(inputEvent);
+    }
+}
 //# sourceMappingURL=index.js.map

@@ -11,6 +11,7 @@ let mesh  = tsw.apis.mesh
 let hlm = tsw.hyperloop.main;
 
 
+
 let log = console.log
 
 declare var window : any ; 
@@ -55,6 +56,25 @@ export async function get_diagnostic_properties_for_qid(qid : string, label?  : 
     let result = { forward : forward[qid] || {} , backward : backward[qid] || {}  , label : (label || null) }
     // -- 
     debug.add("dprops"  , result)
+    // -- 
+    return result 
+} 
+
+/* the below function shows you the optimal set of inputs that will led to this diagnosis -- used for analytics purposes */ 
+export async function trace_properties_for_diagnosis(qid : string, label?  : string) {
+    // -- \_(^o^)_/ -- -- \_(^o^)_/ -- -- \_(^o^)_/ -- -- \_(^o^)_/ -- 
+    let fprops = wiki_props.property_ids_of_type("diagnostic","forward")
+    let bprops = wiki_props.property_ids_of_type("diagnostic","backward")    
+    // -- fyi - f(orward) means |qid pred val| and b(ackward) means |val pred qid| 
+    // HAD TO SWITCH THINGS AROUND HERE TO MAKE IT WORK ... 
+    let bresults = wiki.props_for_qids([qid],bprops)  
+    let fresults = wiki.reverse_props_for_qids([qid],fprops)         //the forward in reverse...
+    // -- dont want to await them in series - should do parallel network req 
+    let [forward,backward] = await Promise.all([fresults, bresults])
+    // --
+    let result = { forward : forward[qid] || {} , backward : backward[qid] || {}  , label : (label || null) }
+    // -- 
+    debug.add("tdprops"  , result)
     // -- 
     return result 
 } 
@@ -182,12 +202,18 @@ export function get_diagnosis_score(mk : string,  entry  : any , mode : string, 
     
     // -- 
     // -- now.. we may need to add a boost to the score based on pubmed disease prior
+    
+    log(`In diagnosis score: mode=${mode}`)
+    
     if (mode != 'Use Wikidata Only') { 
+	
 	let {boost, num_articles, msg} = get_prior_boost(did,state) 
 	total_score += boost  
 	total_score = Number(total_score.toFixed(3))
 	let metadata = {boost,num_articles, msg} 
 	return {total_score, qid_scores, metadata } 
+	
+	
     } else { 
 	total_score = Number(total_score.toFixed(3))	
 	return {total_score, qid_scores } 
@@ -261,10 +287,8 @@ export function get_prior_boost(disease_qid : string, state : any) {
     /* 
        Params 
      */
-    let scoring_params = { 
-	has_mesh : 0.05, 
-	max_prior_boost  : 100, 
-    } 
+    let scoring_params =  ( state.scoring_params || { has_mesh : 0.05, max_prior_boost  : 100 } ) 
+    
     
     let boost  = 0 
     
@@ -295,11 +319,16 @@ export function get_prior_boost(disease_qid : string, state : any) {
 	msg = `No mesh id found (no score boost)` 
     } 
     
-    return { 
+    let ret = { 
 	boost, 
 	msg , 
 	num_articles, 
     } 
+    
+    log(`In get prior boost: ${JSON.stringify(ret)}`)
+    
+    
+    return ret
 
 } 
 
@@ -349,6 +378,11 @@ export function diagnosis_cache_to_rankings(state : any){
     
     if ( fp.len(state.selected)) { ui_log("CDS - Computing Rankings") } 
     
+
+    console.log(JSON.stringify([state.diagnosis_mode, state.scoring_params]))
+    window.alert("pre_rank!")
+
+    
     let {diagnosis_cache,diagnosis_mode} = state  ; 
     /* 
        This can be optimized by: 
@@ -373,11 +407,18 @@ export function diagnosis_cache_to_rankings(state : any){
    been pulled into the app 
 */
 
+
+export async function retrieve_mesh_ids(qids : string[]) {
+    log("RETRIEVING MESH IDS")
+    return await tsw.apis.db_fns.cached_mesh_id_request(qids) 
+} 
+
+
 //get the db 
 var mesh_id_db = tsw.apis.db.GET_DB('mesh_ids')
 export {mesh_id_db} 
 // -- 
-export async function retrieve_mesh_ids(qids : string[]) {
+export async function retrieve_mesh_ids_OLD(qids : string[]) {
     
     if (fp.is_empty(qids)) { return {} } 
     

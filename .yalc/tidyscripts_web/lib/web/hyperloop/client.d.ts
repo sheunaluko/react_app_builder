@@ -1,3 +1,4 @@
+export declare function clear_db(): void;
 export interface ClientOps {
     host: string;
     port: string | number;

@@ -1,6 +1,7 @@
 declare type dic = {
     [k: string]: any;
 };
+export declare function shallow_copy(o: any): any;
 export declare function clone(o: dic): dic;
 export declare function keys(a: dic): string[];
 export declare function values(a: dic): any[];

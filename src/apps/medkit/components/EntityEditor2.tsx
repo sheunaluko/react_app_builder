@@ -55,6 +55,7 @@ declare var window: any;
 
 var res_db = tsw.apis.db.GET_DB("wiki_resolution")
 var entity_db = tsw.apis.db.GET_DB("entity_info")
+var entity_meta_db = tsw.apis.db.GET_DB("entity_meta")
 
 let vi = tsw.util.voice_interface 
 let vi_enabled = () => (vi.recognition_state == "LISTENING" || vi.recognition_state == "PAUSED" )
@@ -69,73 +70,64 @@ let EditableFields = [
     "Entity" , 
     "Symptoms" , 
     "Clinical Features",     
-    "Risk Factors" , 
+    "Risk Factors",
+    "Causes" , 
+    "Labs" , 
     "Diagnosis" , 
     "Treatments" ,
 ] 
 
-/*
-   COMPONENT STARTS HERE -- >
-   
-   Learned LOTS of stuff about react  CODING THIS STATEFUL COMPONENT 
-   NAMELY -- the cleanest way to update state in react is to pass a callback function that takes the current state 
-   ALSO -- when using my state_manager pattern it is best to set the bindings INSIDE a useEFFECT hook!! or else some of the bindings will not be initialized... basically i am enforcing control 
-   about the context that my bindings are being run in 
-   
-   
-   [x] delete/removing resolvable input (onDeleted) 
-   [x] top toast
-   [x] autotracking resolution (onResolved)    
-   [x] unresolved selection (AS is ) - defer resolution  
 
-   [x] saving state for entity 
-   [x] loading state for entity  
-   [ ] switch entity in one command 
-   [ ] turn off voice with command 
-   [ ] delete items (x icon -- maaaybe voice) 
-   [ ] create wiki item 
-   [ ] db state backup ? 
-   
- */
+/* build init states from above */ 
+var build_init_field_states = () => fp.zip_map( fp.clone_array(EditableFields) , fp.repeat( [], fp.len(EditableFields) ) ) 
+var build_init_resolved_states   = () => fp.zip_map( fp.clone_array(EditableFields) , fp.repeat( {}, fp.len(EditableFields) ) ) 
 
 
+    /*
+       COMPONENT STARTS HERE -- >
+       Learned LOTS of stuff about react  CODING THIS STATEFUL COMPONENT 
+       NAMELY -- the cleanest way to update state in react is to pass a callback function that takes the current state 
+       ALSO -- when using my state_manager pattern it is best to set the bindings INSIDE a useEFFECT hook!! or else some of the bindings will not be initialized... basically i am enforcing control 
+       about the context that my bindings are being run in 
+       [x] delete/removing resolvable input (onDeleted) 
+       [x] top toast
+       [x] autotracking resolution (onResolved)    
+       [x] unresolved selection (AS is ) - defer resolution  
+
+       [x] saving state for entity 
+       [x] loading state for entity  
+       [ ] switch entity in one command 
+       [ ] turn off voice with command 
+       [ ] delete items (x icon -- maaaybe voice) 
+       [ ] create wiki item 
+       [ ] db state backup ? 
+       
+     */
 
 
-function Component() {
+    function Component() {
     
     const theme = useTheme();
     let [original_input , set_original_input] = React.useState(null) 
     let [original_input_reset, set_original_input_reset] = React.useState(0) 
+	
+	
     let set_entity = function(t : string) {
 	log("Setting entity fn")
+	//first we want to set the field states 
 	set_original_input(t) ; 
 	set_original_input_reset( (x:number)=> x+1 ) ; //the resolvable input listens to this change and re-renders even if original input is same as prior 
     } 
     
     let [active_field, set_active_field] = React.useState('Entity') 
     
-    let empty_field_states = {
-        'Entity' : [] , 
-	'Symptoms' : [] , 
-	'Clinical Features' : [] , 
-	'Risk Factors' : [] , 
-	'Diagnosis' : [], 
-	'Treatments' : [], 
-    }
-    
-    let [field_states , set_field_states] = React.useState(empty_field_states)
+
+    let [field_states , set_field_states] = React.useState(build_init_field_states())
     
     let [current_entity , set_current_entity] = React.useState(null) 
     
     //tracks the resolved values for each state 
-    let [resolved_state , set_resolved_state ] = React.useState({
-        'Entity' : {} , 
-	'Symptoms' : {} , 
-	'Clinical Features' : {} , 
-	'Risk Factors' : {} , 
-	'Diagnosis' : {} , 
-	'Treatments' : {} , 
-    })
+    let [resolved_state , set_resolved_state ] = React.useState(build_init_resolved_states())
     
     let should_ignore = (s : any) => ( !s || s.includes("###ignore###")  )
     
@@ -239,11 +231,36 @@ function Component() {
 	
 	log("Processing input... " + i) 
 	
-	if (i == "save entity") {
+	if (i == "save" || i == "saved" || i == "saves") {
 	    log("Detected request to save") 
+	    vi.speak("saving") 
 	    on_save() 
 	    return 
 	} 
+	
+	if (i.includes("change entity to")) {
+	    let e = i.replace("change entity to ","")
+	    log("Parsing entity switch: " + e) 
+	    log("routing to: " + e) 
+	    set_entity(e)	    
+	    return 
+	} 	
+	
+	if (i.includes("switch entity to")) {
+	    let e = i.replace("entity entity to ","")
+	    log("Parsing entity switch: " + e) 
+	    log("routing to: " + e) 
+	    set_entity(e)	    
+	    return 
+	} 		
+	
+	if (i.startsWith("entity")) {
+	    let e = i.replace("entity ","")
+	    log("Parsing entity switch: " + e) 
+	    log("routing to: " + e) 
+	    set_entity(e)	    
+	    return 
+	} 	
 	
 	
 	if (i.split(" ")[0] == "select") { 
@@ -251,13 +268,21 @@ function Component() {
 	    let selection = i.split(" ").slice(1).join(" ").toLowerCase()
 	    EditableFields.map( (ef : string) => {
 		if (selection == ef.toLowerCase() ) {
+		    
 		    log("Setting selection: " + ef)
+		    vi.speak(ef) 
 		    set_active_field(ef)
 		    return 
 		} 
 	    })
 	    log("Selection unrecognized: " + selection)
 	    
+	} else if (i.includes("set tag to")) {
+	    let tag = i.replace("set tag to ","")
+	    log("Parsing tag: " + tag) 
+	    tsw.util.automate_input("meta_tag", tag) 
+	    smgr.get("snack_time")(`Set tag: ${tag}`) 	    
+
 	} else { 
 	    /* 
 	       check the active field
@@ -289,20 +314,39 @@ function Component() {
 	
 	set_current_entity( (current_entity :any) => {
 	    
-	    log("On save:: current entity is ->") ; log(current_entity) ; 
+	    set_resolved_state( (resolved_state : any) => {
 	    
-	    (async function on_save_2() {
-		let current_option = current_entity.resolved_option 
-		/* 
-		   now we need a reference to the entire current state 
-		   fortunately, that is stored in 'resolved_state' :
-		 */
-		await entity_db.set(current_option.id ,  fp.clone(resolved_state) ) 
-		let save_msg = `Saved current properties for: ${current_option.label}` ; 
-		smgr.get("snack_time")(save_msg) 
-	    })() 
-	    
-	    return current_entity //return same (hack to access it) 
+		log("On save:: current entity is ->") ; log(current_entity) ; 
+		let save_tag = document.getElementById("meta_tag").value
+		log("On save:: tag is -> " +  save_tag) ; 
+		
+		(async function on_save_2() {
+		    let current_option = current_entity.resolved_option 
+		    /* 
+		       now we need a reference to the entire current state 
+		       fortunately, that is stored in 'resolved_state' :
+		     */
+		    
+		    log("on_save -- resolved_state is::")
+		    log(resolved_state) 
+		    await entity_db.set(current_option.id ,  fp.clone(resolved_state) )   
+
+		    /* update meta db */ 
+		    let new_meta = ( await entity_meta_db.get(save_tag) || {} ) 
+		    new_meta[current_option.id] = true 
+		    await entity_meta_db.set(save_tag , new_meta )
+		    console.log("New tag info for " + save_tag ) 
+		    console.log(new_meta) 
+		    
+		    let save_msg = `Saved current properties for: ${current_option.label} with tag ${save_tag}` ; 		
+
+		    smgr.get("snack_time")(save_msg) 
+		})() 
+		
+		return resolved_state
+	    })
+		
+	    return current_entity 
 	})
 	
     }
@@ -367,16 +411,32 @@ function Component() {
 		    state_to_set[k] = new_vals
 		    
 		} 
+		//ensure all keys are there 
+		for (var k of EditableFields) {
+		    if (!state_to_set[k]) { 
+			state_to_set[k] = [] ; 
+			log("Initialized field state for: " + k)			
+		    } 
+		} 
 		//set the state 
 		log("Setting field states with: ")
 		log(state_to_set) 
 		set_field_states(state_to_set)
 		
+
+		
 	    } else { 
 		log("No data found for: " + current_option.label)
 		//set empty state 
-		set_field_states(empty_field_states) 
+		set_field_states(build_init_field_states())
 	    } 
+	    
+	    /* 
+	       WHOA!! had a bug here Sun 25 Apr 2021 17:55:00 PDT
+	       was not re-setting the RESOLVED state so it would carry over to a new entity and then SAVE with that entity lmao (even though it wasnt being displayed..) 
+	    */ 
+	    log("Setting resolved states to:")
+	    set_resolved_state(build_init_resolved_states())
 		
 	})()
     },[current_entity])
@@ -472,6 +532,9 @@ function Component() {
 
 	<Box style={{flexGrow : 1}} /> 
 	
+	
+	<TextField id="meta_tag" label="Save Tag" > 
+	</TextField>
 	
 	<IconButton onClick={()=>{ 
 		on_save() 

@@ -147,6 +147,13 @@ function Component() {
 	    })
 	    return 
 	} 
+
+	if (t.split(" ")[0] == "tag" ) { 
+	    let tag = t.split(" ").slice(1).join(" ")
+	    log("Parsing tag: " + tag) 
+	    return 
+	} 
+	
 	
 	log("Getting active") 
 	let active = getActive() 
@@ -350,3 +357,4 @@ function EditableField(props :any ) {
 
 
 export default Component ; 
+

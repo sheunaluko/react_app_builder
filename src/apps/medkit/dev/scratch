@@ -1,0 +1,35 @@
+
+export async function ALL_NEPH_TESTS() {
+    let ys = await resolve_entries_for_id("nephrology") 
+    let successes = [] 
+    let fails = [] 
+    for ( var i =0;i<fp.len(ys);i++ ){ 
+	
+	tsw.util.common.params.suppress_log()//log off
+	
+	let y = ys[i]
+	let test_case = convert_entry_to_test_case(y)	
+	let results = await test(test_case) 
+	
+	let traced_props = await cds.trace_properties_for_diagnosis(test_case.diagnosis)
+	let tp_empty = ( fp.is_empty(traced_props.forward) && fp.is_empty(traced_props.backward))
+	
+	tsw.util.common.params.enable_log()//log on 
+	log(`Diagnosis (${i}/${fp.len(ys)}) ${test_case.diagnosis}, [e=${tp_empty}]...`)
+	//window.alert("proceed")
+	if (results.wiki_stats.match || results.pubmed_stats.match ) {
+	    log("S")
+	    successes.push([test_case, results,tp_empty,traced_props])
+	} else {
+	    fails.push([test_case,results,tp_empty, traced_props]) 
+	    log("F")	    
+	} 
+    } 
+    
+    log("Saving results to db")
+    let all_results = {successes, fails}
+    debug.add("neph_results", all_results)
+    await results_db.set("neph_results", all_results) 
+    return all_results 
+} 
+

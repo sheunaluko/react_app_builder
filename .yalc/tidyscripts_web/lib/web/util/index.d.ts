@@ -13,3 +13,5 @@ export declare function alert(s: string): void;
 export declare function is_chrome(): boolean;
 export declare function is_mobile(): boolean;
 export declare function uuid(): string;
+export declare function define(promise: Promise<any>, id: string): Promise<void>;
+export declare function automate_input(id: string, q: string): void;

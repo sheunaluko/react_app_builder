@@ -1,6 +1,6 @@
 {
   "name": "tidyscripts_web",
-  "version": "0.0.3+e1863abe",
+  "version": "0.0.3+76fe576e",
   "description": "Tidy collection of typescript libraries for the web",
   "main": "./lib/web/index.js",
   "repository": "https://github.com/sheunaluko/tidyscripts",
@@ -13,5 +13,5 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
-  "yalcSig": "e1863abee96e118f3e6d21d71ef5e0cd"
+  "yalcSig": "76fe576eb06bca05d529dd1d6b4c3aea"
 }

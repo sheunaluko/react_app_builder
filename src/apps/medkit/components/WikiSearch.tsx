@@ -97,7 +97,7 @@ export default function WikiSearch(props : any) {
 	let default_op = { 
 	    label : args[0], 
 	    concepturi : null ,
-	    id : args[0] + "_linked" , 
+	    id : args[0] + "_unlinked" , 
 	    description : "[unlinked]"
 	} 
 	

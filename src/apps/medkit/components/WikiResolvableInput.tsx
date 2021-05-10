@@ -57,12 +57,7 @@ declare var window: any;
    HAD SPAGHETTI CODE BEFORE 
    Now its more like tasty udon noodles ;) 
    Wed 24 Mar 2021 20:27:54 PDT
-   
-   Notes: 
-   [ ] Will need to upgrade the original_input selection so that all the work is saved prior to reset 
-   
-
- */
+*/
 
 
 

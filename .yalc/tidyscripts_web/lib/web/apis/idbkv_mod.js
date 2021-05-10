@@ -3,10 +3,17 @@ const log = Logger("idbmod");
 export class Store {
     constructor(dbName = 'keyval-store', storeName = 'keyval') {
         this.storeName = storeName;
+        this._db = null;
+        // -- 
         this._dbp = new Promise((resolve, reject) => {
+            //ref 
+            let that = this; //because of callback contexts 
             const openreq = indexedDB.open(dbName, 1);
             openreq.onerror = () => reject(openreq.error);
-            openreq.onsuccess = () => resolve(openreq.result);
+            openreq.onsuccess = function () {
+                resolve(openreq.result);
+                that._db = openreq.result;
+            };
             // First time setup: create an empty object store
             openreq.onupgradeneeded = () => {
                 log(`creating store: ${dbName},  ${storeName}`);
@@ -24,6 +31,9 @@ export class Store {
             transaction.onabort = transaction.onerror = () => reject(transaction.error);
             callback(transaction.objectStore(this.storeName));
         }));
+    }
+    get_db() {
+        return this._db;
     }
 }
 let store;

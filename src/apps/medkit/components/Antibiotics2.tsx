@@ -511,20 +511,23 @@ function SELECT_BLOCK(abx : string, i :string) {
 		    }) 
 		    
 		 } 
-		 
-		 
-		 return ( 
-		 <Box style={{  
-		     height : sizes.row_height , 
-		     minHeight : sizes.row_height , 	    
-		     display :'flex', 
-		     flexDirection : 'column', 
-		     justifyContent : 'center', 
-		     boxSizing : "border-box", 
-		     padding : "12px",  		       
-		     alignItems : 'center'  }} > 
-		     { 
-			 state.block_states[id] ?   (<button onMouseOver={()=>select_click} onClick={select_click} style={{width : "100%", height : "100%" , backgroundColor : color_map[state.block_states[id]]  }} type="button">  { state.block_states[id] } </button>)  :  (<button onMouseOver={select_click} onClick={select_click} style={{width : "100%", height : "100%"}} type="button"> - </button>)  
+	    
+	    //let mouse_over = select_click
+	    let mouse_over = ()=>null ; 	    
+	    
+	    
+	    return ( 
+		<Box style={{  
+		    height : sizes.row_height , 
+		    minHeight : sizes.row_height , 	    
+		    display :'flex', 
+		    flexDirection : 'column', 
+		    justifyContent : 'center', 
+		    boxSizing : "border-box", 
+		    padding : "12px",  		       
+		    alignItems : 'center'  }} > 
+		{ 
+			 state.block_states[id] ?   (<button onMouseOver={mouse_over} onClick={select_click} style={{width : "100%", height : "100%" , backgroundColor : color_map[state.block_states[id]]  }} type="button">  { state.block_states[id] } </button>)  :  (<button onMouseOver={mouse_over} onClick={select_click} style={{width : "100%", height : "100%"}} type="button"> - </button>)  
 		     } 
 
 		</Box>

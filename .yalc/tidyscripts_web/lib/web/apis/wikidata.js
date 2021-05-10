@@ -31,6 +31,18 @@ export function WikiEntities(ops) {
         });
     });
 }
+export function QidLabels(qids) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return qwikidata({
+            action: "wbgetentities",
+            sites: "enwiki",
+            ids: qids.join("|"),
+            props: "labels",
+            languages: 'en',
+        });
+        //https://www.wikidata.org/w/api.php?action=wbgetentities&ids=Q42&props=labels&languages=en
+    });
+}
 export function WikidataSearch(strang) {
     return __awaiter(this, void 0, void 0, function* () {
         return qwikidata({
@@ -98,7 +110,7 @@ export function sparql_template_fn(ops) {
         }
         //return sparql 
         log("sparql template fn using:");
-        console.log(sparql);
+        log(sparql);
         //prep url params 
         url_params[param_key || 'query'] = sparql;
         let value = yield hlm.http_json(url_base, url_params);
@@ -305,7 +317,7 @@ export function default_props_for_ids(mesh_ids) {
             }
             catch (e) {
                 log("Error reading item description");
-                console.log(binding);
+                log(binding);
                 qDescription = description;
             }
             let mesh_id = mesh.value;
@@ -390,7 +402,7 @@ export function default_props_for_qids(qids) {
             }
             catch (e) {
                 log("Error reading item description");
-                console.log(binding);
+                log(binding);
                 qDescription = description;
             }
             let mesh_id = mesh.value;

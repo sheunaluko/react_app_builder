@@ -20,6 +20,8 @@ import * as ws from "./ws"
 import * as http from "./base_http" 
 import {ExternalLogger}  from "./ext_log" 
 
+declare var window : any ; 
+
 export {tts, 
 	ws , 
 	ExternalLogger, 
@@ -60,3 +62,27 @@ export function uuid() {
 };
 
 
+
+
+export async function define(promise : Promise<any>, id : string ) { 
+    window[id] = await promise ; 
+    log(`Defined ${id} on the window object :)`)
+} 
+
+
+
+export function automate_input(id : string, q : string) { 
+    
+    /* 
+       Interesting discussion here about programmatically triggering onChange for react input elements 
+       https://hustle.bizongo.in/simulate-react-on-change-on-controlled-components-baa336920e04
+     */ 
+    let input = (document.getElementById(id) as any) 
+    if (input) { 
+	var nativeInputValueSetter = (Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value") as any).set;
+	nativeInputValueSetter.call(input, q);
+	var inputEvent = new Event('input', { bubbles: true});
+	input.dispatchEvent(inputEvent);
+    } 
+    
+} 

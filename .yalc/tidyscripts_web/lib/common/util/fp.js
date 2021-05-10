@@ -1,3 +1,13 @@
+// need to implement deep copy 
+export function shallow_copy(o) {
+    if (is_array(o)) {
+        return clone_array(o);
+    }
+    if (is_map(o)) {
+        return clone(o);
+    }
+    return o;
+}
 /* MAPS  */
 export function clone(o) {
     let cpy = Object.assign({}, o);
@@ -116,7 +126,11 @@ export function any_false(arr) {
     return !all_true(arr);
 }
 export function repeat(thing, num) {
-    return Array(num).fill(thing);
+    let arr = [];
+    for (var i of range(num)) {
+        arr.push(shallow_copy(thing));
+    }
+    return arr;
 }
 export function range(n, end = null) {
     if (end) {

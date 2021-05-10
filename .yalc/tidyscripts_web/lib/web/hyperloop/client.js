@@ -31,6 +31,10 @@ import * as common from "../../common/util/index"; //common utilities
 let log = common.Logger("hl_client");
 import * as wutil from "../util/index";
 import * as cache from "./client_cacher";
+export function clear_db() {
+    cache.delete_db();
+    log("Cleared db");
+}
 export class Client {
     constructor(ops) {
         this.ops = ops;

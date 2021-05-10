@@ -9,4 +9,5 @@ import * as channel from "./channel";
 import * as debug from "./debug";
 import * as stdio from "./stdio";
 import * as std_fns from "./std_fns";
-export { Logger, Date, fp, types, asnc, dsp, perf, channel, debug, stdio, std_fns };
+import * as params from "./params";
+export { Logger, Date, fp, types, asnc, dsp, perf, channel, debug, stdio, std_fns, params };

@@ -14,21 +14,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as idbkv from "./idbkv_mod";
 import * as common from "../../common/util/index"; //common utilities  
-/*
-   Main API DB api inspired by (https://github.com/jakearchibald/idb-keyval)
-
-   The main interface is
-   test_db = GET_DB("test")
-   let {
-     set_with_ttl,
-     get ,
-     keys,
-   } = test_db
-   
-   Note that any client which uses this api, MUST call START_CACHE_CHECK(interval) in order to get
-   automatic TTL functionality
-   
-*/
 export const log = common.Logger("db"); // get logger 
 const date = common.Date;
 export const LOCAL_DB_HANDLE_CACHE = {};
@@ -44,7 +29,6 @@ export const default_db_header = "TIDYSCRIPTS_WEB_";
  will use.
  
  option 2 : could keep track existing databases / object stores and dynamically update them to get new handle  -- wil figure this out
- 
  
  option 3 [x] ill implement --- simply create new database for each ONE!
     new idbkv.Store('TIDYSCRIPTSWEB_' + name , 'main_store' )
@@ -65,6 +49,7 @@ export function GET_DB(name, verbose = true) {
     function del(key) { return idbkv.del(key, store); }
     function keys() { return idbkv.keys(store); }
     function clear() { return idbkv.clear(store); }
+    function get_db_store() { return store; }
     /* will this recursive stuff work ? */
     function set_with_ttl(ops) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -77,7 +62,7 @@ export function GET_DB(name, verbose = true) {
         });
     }
     let result = {
-        store, set, get, del, keys, clear, set_with_ttl
+        store, set, get, del, keys, clear, set_with_ttl, get_db_store,
     };
     //cache it then return it 
     LOCAL_DB_HANDLE_CACHE[name] = result;
@@ -130,5 +115,8 @@ export function START_CACHE_CHECK(interval) {
 export function STOP_CACHE_CHECK() {
     clearInterval(cache_check_interval_id);
     log("Stopped cache check");
+}
+export function deleteDB(name) {
+    return window.indexedDB.deleteDatabase(default_db_header + name);
 }
 //# sourceMappingURL=db.js.map
