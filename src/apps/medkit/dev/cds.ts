@@ -203,7 +203,7 @@ export function get_diagnosis_score(mk : string,  entry  : any , mode : string, 
     // -- 
     // -- now.. we may need to add a boost to the score based on pubmed disease prior
     
-    log(`In diagnosis score: mode=${mode}`)
+    //log(`In diagnosis score: mode=${mode}`)
     
     if (mode != 'Use Wikidata Only') { 
 	
@@ -325,7 +325,7 @@ export function get_prior_boost(disease_qid : string, state : any) {
 	num_articles, 
     } 
     
-    log(`In get prior boost: ${JSON.stringify(ret)}`)
+    //log(`In get prior boost: ${JSON.stringify(ret)}`)
     
     
     return ret
@@ -379,8 +379,8 @@ export function diagnosis_cache_to_rankings(state : any){
     if ( fp.len(state.selected)) { ui_log("CDS - Computing Rankings") } 
     
 
-    console.log(JSON.stringify([state.diagnosis_mode, state.scoring_params]))
-    window.alert("pre_rank!")
+    //console.log(JSON.stringify([state.diagnosis_mode, state.scoring_params]))
+    //window.alert("pre_rank!")
 
     
     let {diagnosis_cache,diagnosis_mode} = state  ; 

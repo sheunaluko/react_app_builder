@@ -14,6 +14,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as idbkv from "./idbkv_mod";
 import * as common from "../../common/util/index"; //common utilities  
+import * as dbio from "./dbio";
 export const log = common.Logger("db"); // get logger 
 const date = common.Date;
 export const LOCAL_DB_HANDLE_CACHE = {};
@@ -50,6 +51,7 @@ export function GET_DB(name, verbose = true) {
     function keys() { return idbkv.keys(store); }
     function clear() { return idbkv.clear(store); }
     function get_db_store() { return store; }
+    function ready() { return store._dbp; }
     /* will this recursive stuff work ? */
     function set_with_ttl(ops) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -62,7 +64,7 @@ export function GET_DB(name, verbose = true) {
         });
     }
     let result = {
-        store, set, get, del, keys, clear, set_with_ttl, get_db_store,
+        store, set, get, del, keys, clear, set_with_ttl, get_db_store, ready
     };
     //cache it then return it 
     LOCAL_DB_HANDLE_CACHE[name] = result;
@@ -118,5 +120,22 @@ export function STOP_CACHE_CHECK() {
 }
 export function deleteDB(name) {
     return window.indexedDB.deleteDatabase(default_db_header + name);
+}
+export function exportDBString(name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let dta = GET_DB(name);
+        let idb = dta.get_db_store()._db;
+        //
+        return yield dbio.exportToJson(idb);
+    });
+}
+export function importFromJson(name, jsn) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let dta = GET_DB(name);
+        yield dta.ready(); // be patient computer! 
+        let idb = dta.get_db_store()._db;
+        //
+        return yield dbio.importFromJson(idb, jsn);
+    });
 }
 //# sourceMappingURL=db.js.map

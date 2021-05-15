@@ -101,7 +101,7 @@ export function qid_retrieval_function(ids) {
 export function cached_qid_request(ids) {
     return __awaiter(this, void 0, void 0, function* () {
         let ops = {
-            db_id: "mesh_ids",
+            db_id: "qid_labels",
             ttl_ms: 1000 * 60 * 60 * 24 * 7,
             retrieval_fn: qid_retrieval_function,
             ids

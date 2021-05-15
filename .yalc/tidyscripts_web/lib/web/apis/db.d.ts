@@ -11,3 +11,5 @@ export declare function do_cache_check(): Promise<void>;
 export declare function START_CACHE_CHECK(interval: number): void;
 export declare function STOP_CACHE_CHECK(): void;
 export declare function deleteDB(name: string): any;
+export declare function exportDBString(name: string): Promise<unknown>;
+export declare function importFromJson(name: string, jsn: string): Promise<unknown>;

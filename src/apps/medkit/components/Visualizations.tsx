@@ -322,6 +322,7 @@ export default function Component() {
 	    }))
 	})() ; 
 	
+	/* 
 	(async function gupdate2() {
 	    let d = await evaluation.get_evaluation_graph_data() 
 	    let df = await evaluation.get_filtered_evaluation_graph_data() 
@@ -331,7 +332,6 @@ export default function Component() {
 	    }))
 	})() ; 	
 	
-	/* 
 	(async function gupdate3() {
 	    let d = await evaluation.boost_parameter_graph_data() 
 	    setGraphs( graphs => ({...graphs,  

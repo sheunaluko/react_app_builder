@@ -2,7 +2,8 @@
   "version": "v1",
   "packages": {
     "tidyscripts_web": {
-      "signature": "76fe576eb06bca05d529dd1d6b4c3aea"
+      "signature": "5e76e63998050e9a8ffcc5448b7164f0",
+      "link": true
     }
   }
 }

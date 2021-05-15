@@ -22,7 +22,9 @@ export function values(a) {
     if (is_empty(ks)) {
         return [];
     }
-    return map(ks, (k) => cloned[k]);
+    else {
+        return map(ks, (k) => cloned[k]);
+    }
 }
 export function merge_dictionary(a, b) {
     return Object.assign(clone(a), b);

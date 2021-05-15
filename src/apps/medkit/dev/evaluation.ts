@@ -159,6 +159,21 @@ export async function run_test_case(ops : any) {
     let dx_has_mesh = state.mesh_id_cache[diagnosis] ? "SUCCESS" : "FAIL"
     log(`DIAGNOSIS mesh=${dx_has_mesh}`)    
     
+    
+    /* 
+     
+       TODO -- refactor so I can actually debug why 
+       I am getting multiple same scores... 
+       First I should manually call diagnosis_cache_to_rankings !! 
+       [1] I should make a STATELESS evaluation pipeline (pure function) 
+       
+       [2] ALSO --- instead of suppressing all logs -- I can decide which 
+       files can log ... based on the header... that seems to be fucking stuff up 
+       
+       [3] L M A O - W T F 
+       
+     */ 
+    
     //compute the rank cache 
     let ALL_RESULTS = [] 
     for (var scoring_params of scoring_params_array) {
@@ -169,8 +184,8 @@ export async function run_test_case(ops : any) {
 	log("Computing wiki ranks...")
 	let wiki_rank = cds.diagnosis_cache_to_rankings(state)    
 	
-	console.log(JSON.stringify(wiki_rank))
-	window.alert("post_rank_wiki!")
+	//console.log(JSON.stringify(wiki_rank))
+	//window.alert("post_rank_wiki!")
 
 	
 	
@@ -178,8 +193,8 @@ export async function run_test_case(ops : any) {
 	log("Computing pubmed ranks...")    
 	let pubmed_rank = cds.diagnosis_cache_to_rankings(state)    
 	
-	console.log(JSON.stringify(pubmed_rank))
-	window.alert("post_rank_pubmed!")
+	//console.log(JSON.stringify(pubmed_rank))
+	//window.alert("post_rank_pubmed!")
 	
 	
 	
@@ -209,10 +224,16 @@ export async function test(ops: any  ){
        an array of results 
      */
     let {test_case} = ops 
-    scoring_params_array = [{ has_mesh : 0.05, max_prior_boost  : 100 }] 
+    let scoring_params_array = [{ has_mesh : 0.05, max_prior_boost  : 100 }] 
     let tmp  = await run_test_case({test_case,scoring_params_array}) 
     return tmp[0] 
 } 
+
+export async function get_test_cases_for_tag(tag : string) { 
+    let ys = await resolve_entries_for_id(tag)   
+    return ys.map(y=>convert_entry_to_test_case(y))	 
+} 
+
 
 export async function run_evaluation_for_tag(tag : string ,nocache : boolean) {
     
@@ -225,20 +246,20 @@ export async function run_evaluation_for_tag(tag : string ,nocache : boolean) {
 	} 
     } 
     
-    let ys = await resolve_entries_for_id(tag) 
     let successes = [] 
     let fails = [] 
-    for ( var i =0;i<fp.len(ys);i++ ){ 
+    let test_cases = await get_test_cases_for_tag(tag)
+    
+    for ( var i =0;i<fp.len(test_cases);i++ ){ 
 	
 	tsw.util.common.params.suppress_log()//log off
 	
-	let y = ys[i]
-	let test_case = convert_entry_to_test_case(y)	
+	let test_case = test_cases[i] ; 
 	let results = await test({test_case}) 
 	
 	
 	tsw.util.common.params.enable_log()//log on 
-	log(`Diagnosis (${i}/${fp.len(ys)}) ${test_case.diagnosis}, [e=${tp_empty}]...`)
+	log(`Diagnosis (${i}/${fp.len(test_cases)}) ${test_case.diagnosis}`) 
 	//window.alert("proceed")
 	if (results.wiki_stats.match || results.pubmed_stats.match ) {
 	    log("S")
@@ -259,7 +280,7 @@ export async function run_evaluation_for_tag(tag : string ,nocache : boolean) {
 export async function run_evaluations(tags : string[]) {
     let evaluation_results = {} 
     for (var tag of tags) { 
-	evaluation_results[tag] = await run_evaluation_for_tag(tag) 
+	evaluation_results[tag] = await run_evaluation_for_tag(tag, true) 
     } 
     return evaluation_results 
 } 
@@ -280,11 +301,14 @@ export async function get_successess() {
     let tags = fp.keys(main_results)  
     
     for (var tag of tags) {
-	let {successes, fails } = main_results[tag]
+	
+	let {successes, fails} = main_results[tag]
+	
 	for (var sc of successes) {
 	    sc[0].tag = tag 
 	    too_explore.push(sc[0]) 
 	} 
+	
     } 
     let labels = await apis.db_fns.cached_qid_request(fp.map_get(too_explore,'diagnosis'))
     too_explore.map( te=> te.label = labels[te.diagnosis])
@@ -569,9 +593,15 @@ export async function get_test_analytics(tag : string) {
     //get their labels as a map of (qid -> label) 
     let labels  = await apis.db_fns.cached_qid_request(qids)
     //get their props as a map of (qid -> prop) 
+    
+    tsw.util.common.params.suppress_log()//log off
+    
     let traced_props = await Promise.all( 
 	tests.map( test=> cds.trace_properties_for_diagnosis(test.diagnosis))
     ) 
+    
+    tsw.util.common.params.enable_log()//log on         
+    
     let prop_map = fp.zip_map(qids,traced_props) 
     
     //and add them to the tests 
@@ -697,3 +727,28 @@ export async function get_test_set_graph_data() {
     
 } 
 
+
+
+export async function debug_1(){
+    
+    let ss = await get_successess() 
+    
+    let scoring_params_array =  [
+	{has_mesh : 0, max_prior_boost : 0},
+	{has_mesh : 0.05, max_prior_boost : 10}	
+    ] 
+    
+    let results = [] 
+    for (var test_case of ss) { 
+	log(`On case: ${test_case.label}`)
+	let tmp = await run_test_case({ 
+	    test_case, 
+	    scoring_params_array 
+	})
+	
+	results.push(tmp) 
+    } 
+    
+    return {results , tests: ss } 
+    
+} 
