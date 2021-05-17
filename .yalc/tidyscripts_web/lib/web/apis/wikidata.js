@@ -13,6 +13,9 @@ let log = common.Logger("wikidata");
 let hlm = hyperloop.main;
 let fp = common.fp;
 let debug = common.debug;
+export function test_throw() {
+    throw new TypeError("!!");
+}
 export function qwikidata(ops) {
     return __awaiter(this, void 0, void 0, function* () {
         ops.format = 'json';
@@ -79,6 +82,23 @@ export function wikidata_instances_of_id(id) {
         return value;
     });
 }
+function handle_bindings(ops) {
+    let { sparql_res, debug_id } = ops;
+    var bindings = null;
+    try {
+        bindings = sparql_res.result.value.results.bindings;
+    }
+    catch (e) {
+        log(e);
+        debug.add(debug_id, sparql_res);
+        let msg = `Error extracting bindings! -- please check debug.get("${debug_id}")`;
+        log(msg);
+        log(sparql_res.result.error);
+        throw new TypeError(msg);
+        bindings = [];
+    }
+    return bindings;
+}
 export function risk_factors_with_meshids() {
     return __awaiter(this, void 0, void 0, function* () {
         let query = ` 
@@ -111,6 +131,7 @@ export function sparql_template_fn(ops) {
         //return sparql 
         log("sparql template fn using:");
         log(sparql);
+        //console.log(sparql)
         //prep url params 
         url_params[param_key || 'query'] = sparql;
         let value = yield hlm.http_json(url_base, url_params);
@@ -214,7 +235,7 @@ export var ID_TO_PREDICATE = {};
 export var PREDICATES_READY = false;
 export function all_predicates() {
     return __awaiter(this, void 0, void 0, function* () {
-        let tmp = yield sparql_template_fn({
+        let sparql_res = yield sparql_template_fn({
             template: all_predicates_template,
             replacers: [],
             url_base: "https://query.wikidata.org/sparql",
@@ -222,7 +243,8 @@ export function all_predicates() {
                 format: 'json'
             }
         });
-        let bindings = tmp.result.value.results.bindings;
+        let debug_id = "all_predicates";
+        let bindings = handle_bindings({ sparql_res, debug_id });
         ALL_PREDICATES = bindings.map((x) => [x.itemLabel.value, x.itemDescription, x.item.value]);
         for (var p of ALL_PREDICATES) {
             let id = fp.last(p[2].split("/"));
@@ -286,7 +308,7 @@ export function default_props_for_ids(mesh_ids) {
     return __awaiter(this, void 0, void 0, function* () {
         yield default_props_ready();
         let prop_ids = fp.values(PREDICATE_TO_ID).map((id) => "wdt:" + id);
-        let tmp = yield sparql_template_fn({
+        let sparql_res = yield sparql_template_fn({
             template: prop_id_template,
             replacers: [["PROP_IDS", prop_ids.join(" ")], ["MESH_IDS", mesh_ids.map((id) => '"' + id + '"').join(" ")],
             ],
@@ -295,16 +317,8 @@ export function default_props_for_ids(mesh_ids) {
                 format: 'json'
             }
         });
-        var bindings = null;
-        try {
-            bindings = tmp.result.value.results.bindings;
-        }
-        catch (e) {
-            log("Error extracting bindings!");
-            log(e);
-            debug.add("wikidata.default_props_for_ids.tmp", tmp);
-            bindings = [];
-        }
+        let debug_id = "default_props_for_ids";
+        let bindings = handle_bindings({ sparql_res, debug_id });
         //*
         var to_return = {};
         for (var binding of bindings) {
@@ -371,7 +385,7 @@ export function default_props_for_qids(qids) {
     return __awaiter(this, void 0, void 0, function* () {
         yield default_props_ready();
         let prop_ids = fp.values(PREDICATE_TO_ID).map((id) => "wdt:" + id);
-        let tmp = yield sparql_template_fn({
+        let sparql_res = yield sparql_template_fn({
             template: prop_qid_template,
             replacers: [["PROP_IDS", prop_ids.join(" ")], ["Q_IDS", qids.map((id) => "wd:" + id).join(" ")],
             ],
@@ -380,16 +394,8 @@ export function default_props_for_qids(qids) {
                 format: 'json'
             }
         });
-        var bindings = null;
-        try {
-            bindings = tmp.result.value.results.bindings;
-        }
-        catch (e) {
-            log("Error extracting bindings!");
-            log(e);
-            debug.add("wikidata.default_props_for_qids.tmp", tmp);
-            bindings = [];
-        }
+        let debug_id = "default_props_for_qids";
+        let bindings = handle_bindings({ sparql_res, debug_id });
         //*
         var to_return = {};
         for (var binding of bindings) {
@@ -459,28 +465,28 @@ WHERE
 /*
    Note... if a result has no bidnings then there will be NO entry for it in the keys
  */
-export function props_for_qids(qids, props) {
+export function props_for_qids(all_qids, props) {
     return __awaiter(this, void 0, void 0, function* () {
         let prop_ids = props.map((id) => "wdt:" + id);
-        let tmp = yield sparql_template_fn({
-            template: props_qids_template,
-            replacers: [["PROP_IDS", prop_ids.join(" ")], ["Q_IDS", qids.map((id) => "wd:" + id).join(" ")],
-            ],
-            url_base: "https://query.wikidata.org/sparql",
-            url_params: {
-                format: 'json'
-            }
-        });
-        var bindings = null;
-        try {
-            bindings = tmp.result.value.results.bindings;
+        //pattern for breaking up the sparql query so I dont get 'URI too long error' 
+        let sets_of_qids = fp.partition(all_qids, 200);
+        let all_bindings = [];
+        for (var qids of sets_of_qids) {
+            let sparql_res = yield sparql_template_fn({
+                template: props_qids_template,
+                replacers: [["PROP_IDS", prop_ids.join(" ")], ["Q_IDS", qids.map((id) => "wd:" + id).join(" ")],
+                ],
+                url_base: "https://query.wikidata.org/sparql",
+                url_params: {
+                    format: 'json'
+                }
+            });
+            let debug_id = "props_for_qids";
+            let bindings = handle_bindings({ sparql_res, debug_id });
+            all_bindings.push(bindings);
         }
-        catch (e) {
-            log("Error extracting bindings!");
-            log(e);
-            debug.add("wikidata.props_for_qids.tmp", tmp);
-            bindings = [];
-        }
+        //and merge the bindings 
+        var bindings = fp.flat_once(all_bindings);
         //*
         var to_return = {};
         for (var binding of bindings) {
@@ -527,7 +533,7 @@ WHERE
 export function reverse_props_for_qids(qids, props) {
     return __awaiter(this, void 0, void 0, function* () {
         let prop_ids = props.map((id) => "wdt:" + id);
-        let tmp = yield sparql_template_fn({
+        let sparql_res = yield sparql_template_fn({
             template: reverse_props_qids_template,
             replacers: [["PROP_IDS", prop_ids.join(" ")], ["Q_IDS", qids.map((id) => "wd:" + id).join(" ")],
             ],
@@ -536,16 +542,8 @@ export function reverse_props_for_qids(qids, props) {
                 format: 'json'
             }
         });
-        var bindings = null;
-        try {
-            bindings = tmp.result.value.results.bindings;
-        }
-        catch (e) {
-            log("Error extracting bindings!");
-            log(e);
-            debug.add("wikidata.props_for_qids.tmp", tmp);
-            bindings = [];
-        }
+        let debug_id = "reverse_for_qids";
+        let bindings = handle_bindings({ sparql_res, debug_id });
         //*
         var to_return = {};
         for (var binding of bindings) {

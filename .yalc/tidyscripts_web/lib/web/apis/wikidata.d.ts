@@ -1,3 +1,4 @@
+export declare function test_throw(): void;
 interface WikiDataOps {
     action: string;
     sites?: string;
@@ -41,7 +42,7 @@ export declare function default_props_ready(): Promise<void>;
 export declare function data_about_entities(entities: string[]): Promise<any>;
 export declare function default_props_for_ids(mesh_ids: string[]): Promise<any>;
 export declare function default_props_for_qids(qids: string[]): Promise<any>;
-export declare function props_for_qids(qids: string[], props: string[]): Promise<any>;
+export declare function props_for_qids(all_qids: string[], props: string[]): Promise<any>;
 export declare function reverse_props_for_qids(qids: string[], props: string[]): Promise<any>;
 export declare function get_csrf_token(): Promise<any>;
 export declare function create_wikidata_item(label: string): Promise<any>;

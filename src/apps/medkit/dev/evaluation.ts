@@ -23,6 +23,15 @@ export var results_db = tsw.apis.db.GET_DB("eval_results")
 
 export var levels = [5,10,20,50,100] 	 ; 
 
+
+/* 
+ config  
+   
+ */
+
+tsw.util.common.params.filter_log(["evaluation", "cds", "wikidata"]) // -- :) 
+
+
 export async function get_data_for_id(id : string) { 
     return meta_db.get(id) 
 } 
@@ -87,13 +96,17 @@ export var state = {
 
 export async function get_data_for_qids( qids : string[]) { 
     let unresolved = qids.filter( qid => !state.data_cache[qid])
-    let results = await Promise.all( unresolved.map( qid => cds.get_diagnostic_properties_for_qid(qid, qid+"_label")))
+    
+    let results = [] ; 
+    log("Req data for qids:")
+    log(qids) 
+    for (var qid of unresolved ){ 
+	results.push(await cds.get_diagnostic_properties_for_qid(qid, qid+"_label"))
+    } 
     let data_cache_update = fp.zip_map(unresolved, results) 
     //update the data_cache 
     Object.assign(state.data_cache, data_cache_update) 
     log(`Updated data cache with: ${fp.keys(data_cache_update)}`)
-    
-        
     return "DONE" 
 } 
 
@@ -119,13 +132,12 @@ export var neph_cache ;
 export async function run_test_case(ops : any) { 
     
     let {test_case, scoring_params_array } = ops 
-    
-    
-    //UPDATE the state here... 
-    state.selected = test_case.inputs.map(id=> ({id}))     ; 
 
+    //FILTER OUT the _unlinked inputs 
+    test_case.inputs = test_case.inputs.filter(x=> !x.includes("_unlinked")) //causes wiki errors
+    //UPDATE the state here...     
+    state.selected = test_case.inputs.map(id=> ({id})) 
 
-    
     //ensure the data is downloaded 
     await get_data_for_qids(test_case.inputs)
     //compute 1 
@@ -150,8 +162,14 @@ export async function run_test_case(ops : any) {
 	} 
     }); 
     let retrieved_ids = await cds.retrieve_mesh_ids(to_request) ; 
+
+    
     //and then we cache them here! 
+    console.log(`LOOKB => ${JSON.stringify(state.mesh_id_cache['Q936382'])}`)	    
+    console.log(retrieved_ids) 
     state.mesh_id_cache = fp.merge_dictionary(state.mesh_id_cache, retrieved_ids)
+    console.log(`LOOKA => ${JSON.stringify(state.mesh_id_cache['Q936382'])}`)	        
+    //debugger; 
     // -- CACHE MESH IDS -- // 
     
     let diagnosis = test_case.diagnosis ;     
@@ -252,14 +270,13 @@ export async function run_evaluation_for_tag(tag : string ,nocache : boolean) {
     
     for ( var i =0;i<fp.len(test_cases);i++ ){ 
 	
-	tsw.util.common.params.suppress_log()//log off
 	
 	let test_case = test_cases[i] ; 
 	let results = await test({test_case}) 
 	
 	
-	tsw.util.common.params.enable_log()//log on 
 	log(`Diagnosis (${i}/${fp.len(test_cases)}) ${test_case.diagnosis}`) 
+	log(`LOOK => ${JSON.stringify(state.mesh_id_cache['Q936382'])}`)	
 	//window.alert("proceed")
 	if (results.wiki_stats.match || results.pubmed_stats.match ) {
 	    log("S")
@@ -268,6 +285,8 @@ export async function run_evaluation_for_tag(tag : string ,nocache : boolean) {
 	    fails.push([test_case,results]) 
 	    log("F")	    
 	} 
+	
+	break; 
     } 
     
     log("Saving results to db")
@@ -326,7 +345,8 @@ export async function  single_boost_parameter_analysis(test_case : any, max_boos
 
 
 export async function boost_parameter_analysis() {
-    let max_boosts  = [ 0, 0.1 , 0.5 , 1 , 3, 5 , 10 ,20 , 50 , 100 ]  ; 
+    //let max_boosts  = [ 0, 0.1 , 0.5 , 1 , 3, 5 , 10 ,20 , 50 , 100 ]  ; 
+    let max_boosts  = [ 0, 10,50 ] ; 
     var results = {} ; 
     let test_cases = await get_successess() 
     for ( var tc of test_cases ) { 
@@ -376,7 +396,6 @@ export async function boost_parameter_graph_data()  {
 
 export async function get_evaluation_stats(ops : any ) {
     
-    tsw.util.common.params.suppress_log() 
     
     let {filter_possible} = ops 
     
@@ -464,7 +483,6 @@ export async function get_evaluation_stats(ops : any ) {
     }     
     
     
-    tsw.util.common.params.enable_log()     
     
     return { 
 	wiki_sum , 	
@@ -585,22 +603,26 @@ export async function get_filtered_evaluation_graph_data() {
 // first get analytics for the different types of test cases 
 
 export async function get_test_analytics(tag : string) { 
-    let ys = await resolve_entries_for_id(tag)  ; 
-    //convert to test cases 
-    let tests = ys.map(convert_entry_to_test_case)  ; 
+    // get test cases 
+    let tests = await get_test_cases_for_tag(tag) 
     //get qids 
     let qids = fp.map_get(tests,'diagnosis')
     //get their labels as a map of (qid -> label) 
     let labels  = await apis.db_fns.cached_qid_request(qids)
     //get their props as a map of (qid -> prop) 
     
-    tsw.util.common.params.suppress_log()//log off
     
+    /*
+      I believe this version was getting rate limit errors because of parallel reqs 
     let traced_props = await Promise.all( 
 	tests.map( test=> cds.trace_properties_for_diagnosis(test.diagnosis))
     ) 
+    */
+    let traced_props = [] 
+    for (var test  of tests)  {
+	traced_props.push( await cds.trace_properties_for_diagnosis(test.diagnosis))
+    }
     
-    tsw.util.common.params.enable_log()//log on         
     
     let prop_map = fp.zip_map(qids,traced_props) 
     
@@ -752,3 +774,14 @@ export async function debug_1(){
     return {results , tests: ss } 
     
 } 
+
+
+
+export async function clear_caches(to_clear : string[]){
+    for (var d of  to_clear ){ 
+	tsw.apis.db.deleteDB(d) 
+    } 
+} 
+
+export function clear_id_caches() { clear_caches(["qid_labels", "mesh_ids"]) } 
+export function clear_hl_caches() { clear_caches(["HL_CLIENT"]) } 

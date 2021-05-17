@@ -48,10 +48,13 @@ export async function get_diagnostic_properties_for_qid(qid : string, label?  : 
     let fprops = wiki_props.property_ids_of_type("diagnostic","forward")
     let bprops = wiki_props.property_ids_of_type("diagnostic","backward")    
     // -- fyi - f(orward) means |qid pred val| and b(ackward) means |val pred qid| 
-    let fresults = wiki.props_for_qids([qid],fprops)  
-    let bresults = wiki.reverse_props_for_qids([qid],bprops)         
+    let forward = await wiki.props_for_qids([qid],fprops)  
+    let backward = await wiki.reverse_props_for_qids([qid],bprops)         
+    /*
+      nevermind because of rate limit 
     // -- dont want to await them in series - should do parallel network req 
     let [forward,backward] = await Promise.all([fresults, bresults])
+    */ 
     // --
     let result = { forward : forward[qid] || {} , backward : backward[qid] || {}  , label : (label || null) }
     // -- 
@@ -410,7 +413,8 @@ export function diagnosis_cache_to_rankings(state : any){
 
 export async function retrieve_mesh_ids(qids : string[]) {
     log("RETRIEVING MESH IDS")
-    return await tsw.apis.db_fns.cached_mesh_id_request(qids) 
+    let res = await tsw.apis.db_fns.cached_mesh_id_request(qids)     
+    return res 
 } 
 
 

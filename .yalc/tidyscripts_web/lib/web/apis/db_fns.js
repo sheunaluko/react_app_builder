@@ -53,6 +53,7 @@ export function cached_db_id_request(ops) {
 export function mesh_retrieval_function(ids) {
     return __awaiter(this, void 0, void 0, function* () {
         let tmp_results = yield wiki.props_for_qids(ids, ["P486"]);
+        console.log(tmp_results);
         let results = {};
         for (var qid of ids) {
             //get our caching parameters 
